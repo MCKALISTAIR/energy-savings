@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { SlidersHorizontal } from 'lucide-react';
@@ -13,6 +13,11 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
   const [localConfig, setLocalConfig] = useState<DashboardConfig>(config);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Sync local config with prop changes
+  useEffect(() => {
+    setLocalConfig(config);
+  }, [config]);
+
   const handleSave = () => {
     onConfigChange(localConfig);
     setIsOpen(false);
@@ -24,8 +29,16 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
     onConfigChange(defaultConfig);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      // Reset local config to current config when opening
+      setLocalConfig(config);
+    }
+  };
+
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="ml-auto">
           <SlidersHorizontal className="w-4 h-4 mr-2" />
@@ -38,19 +51,19 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
             <h4 className="font-medium mb-3">Dashboard Settings</h4>
           </div>
 
-          <TimePeriodsSection 
-            config={localConfig} 
-            onConfigChange={setLocalConfig} 
+          <TimePeriodsSection
+            config={localConfig}
+            onConfigChange={setLocalConfig}
           />
 
-          <VisibilitySection 
-            config={localConfig} 
-            onConfigChange={setLocalConfig} 
+          <VisibilitySection
+            config={localConfig}
+            onConfigChange={setLocalConfig}
           />
 
-          <ActionButtons 
-            onSave={handleSave} 
-            onReset={handleReset} 
+          <ActionButtons
+            onSave={handleSave}
+            onReset={handleReset}
           />
         </div>
       </PopoverContent>
