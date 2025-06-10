@@ -11,9 +11,11 @@ import ActionButtons from './ActionButtons';
 
 const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigChange }) => {
   const [localConfig, setLocalConfig] = useState<DashboardConfig>(config);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = () => {
     onConfigChange(localConfig);
+    setIsOpen(false);
   };
 
   const handleReset = () => {
@@ -23,14 +25,14 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
   };
 
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="ml-auto">
           <SlidersHorizontal className="w-4 h-4 mr-2" />
           Customize
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80" align="center">
+      <PopoverContent className="w-80" align="center" side="bottom">
         <div className="space-y-4">
           <div>
             <h4 className="font-medium mb-3">Dashboard Settings</h4>
