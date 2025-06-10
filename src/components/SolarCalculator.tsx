@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Sun, DollarSign, Calendar, TrendingUp } from 'lucide-react';
+import { Sun, PoundSterling, Calendar, TrendingUp } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 
 interface SolarCalculatorProps {
