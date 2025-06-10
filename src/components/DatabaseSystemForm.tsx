@@ -213,6 +213,72 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
           </div>
         );
 
+      case 'heat_pump':
+        return (
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="heatPumpType">Heat Pump Type</Label>
+              <Select
+                value={getSpecValue('heatPumpType', 'air-source')}
+                onValueChange={(value) => updateSpecification('heatPumpType', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="air-source">Air Source</SelectItem>
+                  <SelectItem value="ground-source">Ground Source (Geothermal)</SelectItem>
+                  <SelectItem value="water-source">Water Source</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="cop">Coefficient of Performance (COP)</Label>
+              <Input
+                id="cop"
+                type="number"
+                step="0.1"
+                value={getSpecValue('cop')}
+                onChange={(e) => updateSpecification('cop', Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="heatingCapacity">Heating Capacity (BTU/hr)</Label>
+              <Input
+                id="heatingCapacity"
+                type="number"
+                value={getSpecValue('heatingCapacity')}
+                onChange={(e) => updateSpecification('heatingCapacity', Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="coolingCapacity">Cooling Capacity (BTU/hr)</Label>
+              <Input
+                id="coolingCapacity"
+                type="number"
+                value={getSpecValue('coolingCapacity')}
+                onChange={(e) => updateSpecification('coolingCapacity', Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="brand">Brand</Label>
+              <Input
+                id="brand"
+                value={getSpecValue('brand')}
+                onChange={(e) => updateSpecification('brand', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="model">Model</Label>
+              <Input
+                id="model"
+                value={getSpecValue('model')}
+                onChange={(e) => updateSpecification('model', e.target.value)}
+              />
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }
@@ -234,7 +300,7 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
         <Label>System Type</Label>
         <Select
           value={formData.type}
-          onValueChange={(value: 'solar' | 'battery' | 'ev') => 
+          onValueChange={(value: 'solar' | 'battery' | 'ev' | 'heat_pump') => 
             setFormData(prev => ({ ...prev, type: value, specifications: {} }))
           }
         >
@@ -245,6 +311,7 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
             <SelectItem value="solar">Solar Panels</SelectItem>
             <SelectItem value="battery">Battery Storage</SelectItem>
             <SelectItem value="ev">Electric Vehicle</SelectItem>
+            <SelectItem value="heat_pump">Heat Pump</SelectItem>
           </SelectContent>
         </Select>
       </div>

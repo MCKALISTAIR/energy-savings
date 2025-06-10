@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -5,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import SolarCalculator from '@/components/SolarCalculator';
 import BatteryCalculator from '@/components/BatteryCalculator';
 import EVCalculator from '@/components/EVCalculator';
+import HeatPumpCalculator from '@/components/HeatPumpCalculator';
 import SavingsDashboard from '@/components/SavingsDashboard';
 import DatabaseHouseSelector from '@/components/DatabaseHouseSelector';
 import DatabaseSystemManager from '@/components/DatabaseSystemManager';
 import { useAuth } from '@/contexts/AuthContext';
-import { Zap, Battery, Car, BarChart3, Settings, LogOut, User } from 'lucide-react';
+import { Zap, Battery, Car, BarChart3, Settings, LogOut, User, Thermometer } from 'lucide-react';
 import ProfileModal from '@/components/ProfileModal';
 
 export interface SavingsData {
@@ -33,6 +35,12 @@ export interface SavingsData {
     totalMonthlySavings: number;
     paybackPeriod: number;
     tenYearSavings: number;
+  };
+  heatPump: {
+    systemCost: number;
+    monthlySavings: number;
+    paybackPeriod: number;
+    twentyYearSavings: number;
   };
 }
 
@@ -59,6 +67,12 @@ const Index = () => {
       totalMonthlySavings: 0,
       paybackPeriod: 0,
       tenYearSavings: 0
+    },
+    heatPump: {
+      systemCost: 0,
+      monthlySavings: 0,
+      paybackPeriod: 0,
+      twentyYearSavings: 0
     }
   });
 
@@ -74,6 +88,10 @@ const Index = () => {
     setSavingsData(prev => ({ ...prev, ev: data }));
   };
 
+  const updateHeatPumpData = (data: SavingsData['heatPump']) => {
+    setSavingsData(prev => ({ ...prev, heatPump: data }));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
@@ -84,7 +102,7 @@ const Index = () => {
               Renewable Energy Savings Calculator
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover how much you can save with solar panels, battery storage, and electric vehicles. 
+              Discover how much you can save with solar panels, battery storage, electric vehicles, and heat pumps. 
               Make informed decisions about your sustainable energy future.
             </p>
           </div>
@@ -105,7 +123,7 @@ const Index = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="systems" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-6 mb-8">
             <TabsTrigger value="systems" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Systems
@@ -121,6 +139,10 @@ const Index = () => {
             <TabsTrigger value="ev" className="flex items-center gap-2">
               <Car className="w-4 h-4" />
               Electric Vehicle
+            </TabsTrigger>
+            <TabsTrigger value="heatpump" className="flex items-center gap-2">
+              <Thermometer className="w-4 h-4" />
+              Heat Pump
             </TabsTrigger>
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
@@ -145,6 +167,10 @@ const Index = () => {
 
           <TabsContent value="ev" className="animate-fade-in">
             <EVCalculator onUpdate={updateEVData} />
+          </TabsContent>
+
+          <TabsContent value="heatpump" className="animate-fade-in">
+            <HeatPumpCalculator onUpdate={updateHeatPumpData} />
           </TabsContent>
 
           <TabsContent value="dashboard" className="animate-fade-in">

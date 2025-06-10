@@ -8,7 +8,7 @@ export interface System {
   user_id: string;
   house_id: string;
   name: string;
-  type: 'solar' | 'battery' | 'ev';
+  type: 'solar' | 'battery' | 'ev' | 'heat_pump';
   install_date: string;
   is_active: boolean;
   specifications: Record<string, any>;
@@ -42,7 +42,7 @@ export const useSystems = (houseId?: string) => {
       // Type assertion to ensure compatibility with our System interface
       const typedSystems = (data || []).map(system => ({
         ...system,
-        type: system.type as 'solar' | 'battery' | 'ev',
+        type: system.type as 'solar' | 'battery' | 'ev' | 'heat_pump',
         specifications: system.specifications as Record<string, any>
       }));
       
@@ -57,7 +57,7 @@ export const useSystems = (houseId?: string) => {
   const addSystem = async (systemData: {
     house_id: string;
     name: string;
-    type: 'solar' | 'battery' | 'ev';
+    type: 'solar' | 'battery' | 'ev' | 'heat_pump';
     install_date: string;
     is_active: boolean;
     specifications: Record<string, any>;
@@ -79,7 +79,7 @@ export const useSystems = (houseId?: string) => {
       // Type assertion for the returned data
       const typedSystem = {
         ...data,
-        type: data.type as 'solar' | 'battery' | 'ev',
+        type: data.type as 'solar' | 'battery' | 'ev' | 'heat_pump',
         specifications: data.specifications as Record<string, any>
       };
       
@@ -105,7 +105,7 @@ export const useSystems = (houseId?: string) => {
       // Type assertion for the returned data
       const typedSystem = {
         ...data,
-        type: data.type as 'solar' | 'battery' | 'ev',
+        type: data.type as 'solar' | 'battery' | 'ev' | 'heat_pump',
         specifications: data.specifications as Record<string, any>
       };
       
