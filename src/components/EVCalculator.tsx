@@ -14,10 +14,10 @@ interface EVCalculatorProps {
 }
 
 const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
-  const [milesPerYear, setMilesPerYear] = useState<string>('12000');
-  const [currentMPG, setCurrentMPG] = useState<string>('25');
-  const [gasPrice, setGasPrice] = useState<string>('3.50');
-  const [electricityRate, setElectricityRate] = useState<string>('0.12');
+  const [milesPerYear, setMilesPerYear] = useState<string>('10000'); // UK average lower
+  const [currentMPG, setCurrentMPG] = useState<string>('40'); // UK cars more efficient
+  const [petrolPrice, setPetrolPrice] = useState<string>('1.45'); // UK petrol price per litre
+  const [electricityRate, setElectricityRate] = useState<string>('0.30'); // UK electricity rate
   const [evType, setEVType] = useState<string>('mid-range');
   const [results, setResults] = useState<SavingsData['ev']>({
     vehicleCost: 0,
@@ -31,43 +31,44 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
   const calculateSavings = () => {
     const milesPerYearNum = parseFloat(milesPerYear) || 0;
     const currentMPGNum = parseFloat(currentMPG) || 0;
-    const gasPriceNum = parseFloat(gasPrice) || 0;
+    const petrolPriceNum = parseFloat(petrolPrice) || 0;
     const electricityRateNum = parseFloat(electricityRate) || 0;
 
-    // EV specifications based on type
+    // EV specifications based on type (UK market)
     const evSpecs: { [key: string]: { efficiency: number; cost: number; range: number } } = {
-      'economy': { efficiency: 4.0, cost: 30000, range: 250 }, // miles per kWh
-      'mid-range': { efficiency: 3.5, cost: 45000, range: 300 },
-      'luxury': { efficiency: 3.0, cost: 70000, range: 400 },
-      'truck': { efficiency: 2.5, cost: 60000, range: 300 }
+      'economy': { efficiency: 4.5, cost: 25000, range: 200 }, // miles per kWh
+      'mid-range': { efficiency: 4.0, cost: 35000, range: 250 },
+      'luxury': { efficiency: 3.5, cost: 55000, range: 300 },
+      'truck': { efficiency: 3.0, cost: 50000, range: 250 }
     };
 
     const selectedEV = evSpecs[evType] || evSpecs['mid-range'];
 
-    // Current annual fuel costs
-    const annualGallons = milesPerYearNum / currentMPGNum;
-    const annualGasCost = annualGallons * gasPriceNum;
+    // Current annual fuel costs (convert MPG to miles per litre)
+    const milesPerLitre = currentMPGNum / 4.546; // 1 gallon = 4.546 litres
+    const annualLitres = milesPerYearNum / milesPerLitre;
+    const annualPetrolCost = annualLitres * petrolPriceNum;
 
     // EV annual electricity costs
     const annualKWh = milesPerYearNum / selectedEV.efficiency;
     const annualElectricityCost = annualKWh * electricityRateNum;
 
     // Annual fuel savings
-    const annualFuelSavings = annualGasCost - annualElectricityCost;
+    const annualFuelSavings = annualPetrolCost - annualElectricityCost;
 
-    // Annual maintenance savings (EVs require ~40% less maintenance)
-    const annualMaintenanceSavings = 1200; // Typical savings on oil changes, brake pads, etc.
+    // Annual maintenance savings (EVs require ~50% less maintenance in UK)
+    const annualMaintenanceSavings = 800; // Typical UK savings
 
     // Total annual savings
     const totalAnnualSavings = annualFuelSavings + annualMaintenanceSavings;
 
-    // Vehicle cost premium over comparable gas car
-    const gasPriceEquivalent = 35000; // Average comparable gas vehicle
-    const vehicleCostPremium = selectedEV.cost - gasPriceEquivalent;
+    // Vehicle cost premium over comparable petrol car
+    const petrolCarEquivalent = 28000; // Average comparable petrol vehicle in UK
+    const vehicleCostPremium = selectedEV.cost - petrolCarEquivalent;
 
-    // Payback period (considering federal tax credit)
-    const federalTaxCredit = 7500;
-    const netCostPremium = Math.max(0, vehicleCostPremium - federalTaxCredit);
+    // Payback period (considering UK EV grants where applicable)
+    const evGrant = selectedEV.cost <= 35000 ? 2500 : 0; // UK EV grant for cars under £35k
+    const netCostPremium = Math.max(0, vehicleCostPremium - evGrant);
     const paybackPeriod = netCostPremium / totalAnnualSavings;
 
     // 10-year savings
@@ -88,11 +89,11 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
 
   useEffect(() => {
     calculateSavings();
-  }, [milesPerYear, currentMPG, gasPrice, electricityRate, evType]);
+  }, [milesPerYear, currentMPG, petrolPrice, electricityRate, evType]);
 
   const getEVDescription = () => {
     const descriptions: { [key: string]: string } = {
-      'economy': 'Nissan Leaf, Chevy Bolt',
+      'economy': 'Nissan Leaf, MG4',
       'mid-range': 'Tesla Model 3, Hyundai Ioniq 5',
       'luxury': 'Tesla Model S, BMW iX',
       'truck': 'Ford Lightning, Rivian R1T'
@@ -121,7 +122,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
               type="number"
               value={milesPerYear}
               onChange={(e) => setMilesPerYear(e.target.value)}
-              placeholder="12000"
+              placeholder="10000"
             />
           </div>
 
@@ -132,31 +133,31 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
               type="number"
               value={currentMPG}
               onChange={(e) => setCurrentMPG(e.target.value)}
-              placeholder="25"
+              placeholder="40"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="gasPrice">Gas Price ($/gallon)</Label>
+            <Label htmlFor="petrolPrice">Petrol Price (£/litre)</Label>
             <Input
-              id="gasPrice"
+              id="petrolPrice"
               type="number"
               step="0.01"
-              value={gasPrice}
-              onChange={(e) => setGasPrice(e.target.value)}
-              placeholder="3.50"
+              value={petrolPrice}
+              onChange={(e) => setPetrolPrice(e.target.value)}
+              placeholder="1.45"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="electricityRate">Electricity Rate ($/kWh)</Label>
+            <Label htmlFor="electricityRate">Electricity Rate (£/kWh)</Label>
             <Input
               id="electricityRate"
               type="number"
               step="0.01"
               value={electricityRate}
               onChange={(e) => setElectricityRate(e.target.value)}
-              placeholder="0.12"
+              placeholder="0.30"
             />
           </div>
 
@@ -167,10 +168,10 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
                 <SelectValue placeholder="Select EV type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="economy">Economy EV (~$30k)</SelectItem>
-                <SelectItem value="mid-range">Mid-Range EV (~$45k)</SelectItem>
-                <SelectItem value="luxury">Luxury EV (~$70k)</SelectItem>
-                <SelectItem value="truck">Electric Truck (~$60k)</SelectItem>
+                <SelectItem value="economy">Economy EV (~£25k)</SelectItem>
+                <SelectItem value="mid-range">Mid-Range EV (~£35k)</SelectItem>
+                <SelectItem value="luxury">Luxury EV (~£55k)</SelectItem>
+                <SelectItem value="truck">Electric SUV (~£50k)</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
@@ -197,13 +198,13 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
-                ${results.totalMonthlySavings.toFixed(0)}
+                £{results.totalMonthlySavings.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">Monthly Savings</div>
             </div>
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
-                ${results.vehicleCost.toFixed(0)}
+                £{results.vehicleCost.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">Vehicle Cost</div>
             </div>
@@ -216,7 +217,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
                 Annual Fuel Savings
               </span>
               <span className="font-semibold text-green-600">
-                ${results.fuelSavings.toFixed(0)}
+                £{results.fuelSavings.toFixed(0)}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
@@ -225,7 +226,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
                 Annual Maintenance Savings
               </span>
               <span className="font-semibold text-green-600">
-                ${results.maintenanceSavings.toFixed(0)}
+                £{results.maintenanceSavings.toFixed(0)}
               </span>
             </div>
           </div>
@@ -244,10 +245,10 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
               10-Year Net Savings
             </h4>
             <div className="text-2xl font-bold text-green-600">
-              ${results.tenYearSavings.toFixed(0)}
+              £{results.tenYearSavings.toFixed(0)}
             </div>
             <p className="text-sm text-muted-foreground mt-2">
-              Including $7,500 federal tax credit
+              Including applicable UK EV grants
             </p>
           </div>
 
@@ -256,7 +257,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
             <p className="text-sm text-muted-foreground">
               You'll prevent approximately{' '}
               <span className="font-semibold text-green-600">
-                {((parseFloat(milesPerYear) / parseFloat(currentMPG)) * 19.6 / 1000).toFixed(1)} tons
+                {((parseFloat(milesPerYear) / parseFloat(currentMPG)) * 2.3 * 4.546 / 1000).toFixed(1)} tonnes
               </span>{' '}
               of CO₂ emissions annually.
             </p>

@@ -14,9 +14,9 @@ interface SolarCalculatorProps {
 }
 
 const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
-  const [homeSize, setHomeSize] = useState<string>('2000');
-  const [monthlyBill, setMonthlyBill] = useState<string>('150');
-  const [sunlightHours, setSunlightHours] = useState<string>('5.5');
+  const [homeSize, setHomeSize] = useState<string>('185'); // m² instead of sq ft
+  const [monthlyBill, setMonthlyBill] = useState<string>('120');
+  const [sunlightHours, setSunlightHours] = useState<string>('3.5'); // UK average
   const [location, setLocation] = useState<string>('moderate');
   const [results, setResults] = useState<SavingsData['solar']>({
     monthlyEnergyCost: 0,
@@ -31,30 +31,30 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
     const monthlyBillNum = parseFloat(monthlyBill) || 0;
     const sunlightHoursNum = parseFloat(sunlightHours) || 0;
 
-    // Location multiplier for solar efficiency
+    // Location multiplier for solar efficiency in UK
     const locationMultipliers: { [key: string]: number } = {
-      'excellent': 1.2,
-      'good': 1.0,
-      'moderate': 0.8,
-      'poor': 0.6
+      'excellent': 1.1, // Southern England
+      'good': 1.0, // Central England
+      'moderate': 0.9, // Northern England
+      'poor': 0.7 // Scotland/Northern areas
     };
 
     const locationMultiplier = locationMultipliers[location] || 1.0;
 
     // Estimate system size needed (kW) based on home size and monthly bill
-    const estimatedSystemSize = (homeSizeNum * 0.006) + (monthlyBillNum * 0.05);
+    const estimatedSystemSize = (homeSizeNum * 0.03) + (monthlyBillNum * 0.04);
     
-    // System cost calculation ($3 per watt average)
-    const systemCost = estimatedSystemSize * 1000 * 3;
+    // System cost calculation (£1,500-2,000 per kW in UK)
+    const systemCost = estimatedSystemSize * 1750; // £1,750 per kW average
     
     // Monthly energy production (kWh)
     const monthlyProduction = estimatedSystemSize * sunlightHoursNum * 30 * locationMultiplier;
     
-    // Assuming $0.12 per kWh average electricity rate
-    const monthlyEnergyValue = monthlyProduction * 0.12;
+    // UK electricity rate (average £0.30 per kWh)
+    const monthlyEnergyValue = monthlyProduction * 0.30;
     
-    // Monthly savings (typically 70-90% of bill can be offset)
-    const offsetPercentage = Math.min(0.85, monthlyEnergyValue / monthlyBillNum);
+    // Monthly savings (typically 60-80% of bill can be offset in UK)
+    const offsetPercentage = Math.min(0.75, monthlyEnergyValue / monthlyBillNum);
     const monthlySavings = monthlyBillNum * offsetPercentage;
     
     // Payback period in years
@@ -94,24 +94,24 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="homeSize">Home Size (sq ft)</Label>
+            <Label htmlFor="homeSize">Home Size (m²)</Label>
             <Input
               id="homeSize"
               type="number"
               value={homeSize}
               onChange={(e) => setHomeSize(e.target.value)}
-              placeholder="2000"
+              placeholder="185"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="monthlyBill">Monthly Electric Bill ($)</Label>
+            <Label htmlFor="monthlyBill">Monthly Electric Bill (£)</Label>
             <Input
               id="monthlyBill"
               type="number"
               value={monthlyBill}
               onChange={(e) => setMonthlyBill(e.target.value)}
-              placeholder="150"
+              placeholder="120"
             />
           </div>
 
@@ -123,7 +123,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
               step="0.1"
               value={sunlightHours}
               onChange={(e) => setSunlightHours(e.target.value)}
-              placeholder="5.5"
+              placeholder="3.5"
             />
           </div>
 
@@ -134,10 +134,10 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
                 <SelectValue placeholder="Select location type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="excellent">Excellent (Southwest US)</SelectItem>
-                <SelectItem value="good">Good (Most of US)</SelectItem>
-                <SelectItem value="moderate">Moderate (Northern States)</SelectItem>
-                <SelectItem value="poor">Poor (Very cloudy regions)</SelectItem>
+                <SelectItem value="excellent">Excellent (Southern England)</SelectItem>
+                <SelectItem value="good">Good (Central England)</SelectItem>
+                <SelectItem value="moderate">Moderate (Northern England)</SelectItem>
+                <SelectItem value="poor">Poor (Scotland/Wales)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -163,13 +163,13 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
-                ${results.monthlySavings.toFixed(0)}
+                £{results.monthlySavings.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">Monthly Savings</div>
             </div>
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
-                ${results.systemCost.toFixed(0)}
+                £{results.systemCost.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">System Cost</div>
             </div>
@@ -193,7 +193,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
                 20-Year Net Savings
               </span>
               <span className="font-semibold text-green-600">
-                ${results.twentyYearSavings.toFixed(0)}
+                £{results.twentyYearSavings.toFixed(0)}
               </span>
             </div>
             <div className="text-sm text-muted-foreground">
@@ -206,7 +206,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
             <p className="text-sm text-muted-foreground">
               Your solar system would offset approximately{' '}
               <span className="font-semibold text-green-600">
-                {(results.monthlySavings * 12 * 20 / 120).toFixed(1)} tons
+                {(results.monthlySavings * 12 * 20 / 120).toFixed(1)} tonnes
               </span>{' '}
               of CO₂ over 20 years.
             </p>

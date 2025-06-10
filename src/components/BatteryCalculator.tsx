@@ -14,8 +14,8 @@ interface BatteryCalculatorProps {
 }
 
 const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
-  const [monthlyBill, setMonthlyBill] = useState<string>('150');
-  const [peakUsage, setPeakUsage] = useState<string>('30');
+  const [monthlyBill, setMonthlyBill] = useState<string>('120');
+  const [peakUsage, setPeakUsage] = useState<string>('25');
   const [outageFrequency, setOutageFrequency] = useState<string>('low');
   const [batterySize, setBatterySize] = useState<string>('13.5');
   const [results, setResults] = useState<SavingsData['battery']>({
@@ -30,17 +30,17 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
     const peakUsageNum = parseFloat(peakUsage) || 0;
     const batterySizeNum = parseFloat(batterySize) || 0;
 
-    // Battery system cost (including installation)
-    const costPerKWh = 1200; // Average cost per kWh of battery storage
-    const systemCost = batterySizeNum * costPerKWh + 3000; // Base installation cost
+    // Battery system cost in UK (including installation)
+    const costPerKWh = 1000; // £1000 per kWh in UK
+    const systemCost = batterySizeNum * costPerKWh + 2500; // Base installation cost
 
-    // Peak hour savings (assuming time-of-use rates)
-    const peakRateDiff = 0.15; // Difference between peak and off-peak rates
+    // Peak hour savings (Economy 7 and time-of-use tariffs)
+    const peakRateDiff = 0.20; // Difference between peak and off-peak rates in UK
     const dailyPeakSavings = Math.min(peakUsageNum, batterySizeNum) * peakRateDiff;
     const monthlyPeakSavings = dailyPeakSavings * 30;
 
-    // Grid independence benefit (reduced demand charges)
-    const demandChargeSavings = monthlyBillNum * 0.1; // Typical 10% of bill from demand charges
+    // Grid independence benefit (reduced standing charges and peak demand)
+    const demandChargeSavings = monthlyBillNum * 0.08; // Typical 8% savings
 
     // Total monthly savings
     const monthlySavings = monthlyPeakSavings + demandChargeSavings;
@@ -68,11 +68,11 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
 
   const getOutageValue = () => {
     const values: { [key: string]: string } = {
-      'low': '$500',
-      'medium': '$1,500',
-      'high': '$3,000'
+      'low': '£400',
+      'medium': '£1,200',
+      'high': '£2,500'
     };
-    return values[outageFrequency] || '$500';
+    return values[outageFrequency] || '£400';
   };
 
   return (
@@ -90,13 +90,13 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="monthlyBill">Monthly Electric Bill ($)</Label>
+            <Label htmlFor="monthlyBill">Monthly Electric Bill (£)</Label>
             <Input
               id="monthlyBill"
               type="number"
               value={monthlyBill}
               onChange={(e) => setMonthlyBill(e.target.value)}
-              placeholder="150"
+              placeholder="120"
             />
           </div>
 
@@ -107,10 +107,10 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
               type="number"
               value={peakUsage}
               onChange={(e) => setPeakUsage(e.target.value)}
-              placeholder="30"
+              placeholder="25"
             />
             <p className="text-xs text-muted-foreground">
-              Typical peak hours: 4-9 PM weekdays
+              Typical peak hours: 4-7 PM weekdays
             </p>
           </div>
 
@@ -164,13 +164,13 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
-                ${results.monthlySavings.toFixed(0)}
+                £{results.monthlySavings.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">Monthly Savings</div>
             </div>
             <div className="text-center p-4 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">
-                ${results.systemCost.toFixed(0)}
+                £{results.systemCost.toFixed(0)}
               </div>
               <div className="text-sm text-muted-foreground">System Cost</div>
             </div>
@@ -191,7 +191,7 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
                 20-Year Net Savings
               </span>
               <span className="font-semibold text-green-600">
-                ${results.twentyYearSavings.toFixed(0)}
+                £{results.twentyYearSavings.toFixed(0)}
               </span>
             </div>
           </div>

@@ -36,7 +36,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
     };
   });
 
-  const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
+  const formatCurrency = (value: number) => `£${value.toLocaleString()}`;
 
   return (
     <div className="space-y-6">
@@ -51,7 +51,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Savings</p>
                 <p className="text-2xl font-bold text-green-600">
-                  ${totalMonthlySavings.toFixed(0)}
+                  £{totalMonthlySavings.toFixed(0)}
                 </p>
               </div>
             </div>
@@ -67,7 +67,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
               <div>
                 <p className="text-sm text-muted-foreground">Annual Savings</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  ${(totalAnnualSavings).toFixed(0)}
+                  £{(totalAnnualSavings).toFixed(0)}
                 </p>
               </div>
             </div>
@@ -99,7 +99,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
               <div>
                 <p className="text-sm text-muted-foreground">20-Year Impact</p>
                 <p className="text-2xl font-bold text-green-600">
-                  ${((totalAnnualSavings * 20) - totalSystemCost).toFixed(0)}
+                  £{((totalAnnualSavings * 20) - totalSystemCost).toFixed(0)}
                 </p>
               </div>
             </div>
@@ -124,13 +124,13 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
                   cy="50%"
                   outerRadius={100}
                   dataKey="value"
-                  label={({ name, value }) => `${name}: $${value.toFixed(0)}`}
+                  label={({ name, value }) => `${name}: £${value.toFixed(0)}`}
                 >
                   {monthlySavingsData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => `$${Number(value).toFixed(0)}`} />
+                <Tooltip formatter={(value) => `£${Number(value).toFixed(0)}`} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
@@ -147,7 +147,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
               <BarChart data={investmentData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+                <YAxis tickFormatter={(value) => `£${(value / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                 <Bar dataKey="cost" fill="#8884d8" />
               </BarChart>
@@ -167,7 +167,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
             <LineChart data={projectedSavingsData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="year" />
-              <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+              <YAxis tickFormatter={(value) => `£${(value / 1000).toFixed(0)}k`} />
               <Tooltip formatter={(value) => formatCurrency(Number(value))} />
               <Legend />
               <Line 
@@ -203,7 +203,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
           <CardContent className="space-y-3">
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Monthly Savings</span>
-              <span className="font-semibold">${data.solar.monthlySavings.toFixed(0)}</span>
+              <span className="font-semibold">£{data.solar.monthlySavings.toFixed(0)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Payback Period</span>
@@ -228,7 +228,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
           <CardContent className="space-y-3">
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Monthly Savings</span>
-              <span className="font-semibold">${data.battery.monthlySavings.toFixed(0)}</span>
+              <span className="font-semibold">£{data.battery.monthlySavings.toFixed(0)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Payback Period</span>
@@ -253,7 +253,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
           <CardContent className="space-y-3">
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Monthly Savings</span>
-              <span className="font-semibold">${data.ev.totalMonthlySavings.toFixed(0)}</span>
+              <span className="font-semibold">£{data.ev.totalMonthlySavings.toFixed(0)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">Payback Period</span>
@@ -262,7 +262,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
             <div className="flex justify-between">
               <span className="text-sm text-muted-foreground">10-Year ROI</span>
               <span className="font-semibold text-green-600">
-                {((data.ev.tenYearSavings / (data.ev.vehicleCost - 35000)) * 100).toFixed(0)}%
+                {((data.ev.tenYearSavings / (data.ev.vehicleCost - 28000)) * 100).toFixed(0)}%
               </span>
             </div>
           </CardContent>
@@ -285,7 +285,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
                 {((data.solar.monthlySavings * 12 * 20 / 120) + 
                   (data.ev.fuelSavings * 20 / 2000)).toFixed(1)}
               </div>
-              <p className="text-sm text-muted-foreground">Tons of CO₂ prevented over 20 years</p>
+              <p className="text-sm text-muted-foreground">Tonnes of CO₂ prevented over 20 years</p>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-blue-600 mb-2">
@@ -295,7 +295,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-purple-600 mb-2">
-                {((data.ev.fuelSavings / 3.5) * 19.6 / 2000).toFixed(1)}
+                {((data.ev.fuelSavings / 1.45) * 2.3 / 1000).toFixed(1)}
               </div>
               <p className="text-sm text-muted-foreground">Cars removed from road equivalent</p>
             </div>
