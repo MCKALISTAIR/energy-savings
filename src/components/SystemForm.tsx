@@ -10,19 +10,19 @@ import { useSystem } from '@/contexts/SystemContext';
 import { SystemType } from '@/types';
 
 interface SystemFormProps {
-  system?: SystemType;
-  onClose: () => void;
+  initialData?: SystemType;
+  onSuccess: () => void;
 }
 
-const SystemForm: React.FC<SystemFormProps> = ({ system, onClose }) => {
+const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
   const { addSystem, updateSystem, currentHouse } = useSystem();
   
   const [formData, setFormData] = useState({
-    name: system?.name || '',
-    type: system?.type || 'solar' as const,
-    installDate: system?.installDate ? system.installDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-    isActive: system?.isActive ?? true,
-    specifications: system?.specifications || {}
+    name: initialData?.name || '',
+    type: initialData?.type || 'solar' as const,
+    installDate: initialData?.installDate ? initialData.installDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    isActive: initialData?.isActive ?? true,
+    specifications: initialData?.specifications || {}
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,12 +38,12 @@ const SystemForm: React.FC<SystemFormProps> = ({ system, onClose }) => {
       specifications: formData.specifications
     };
 
-    if (system) {
-      updateSystem(system.id, systemData);
+    if (initialData) {
+      updateSystem(initialData.id, systemData);
     } else {
       addSystem(systemData as Omit<SystemType, 'id'>);
     }
-    onClose();
+    onSuccess();
   };
 
   const updateSpecification = (key: string, value: any) => {
@@ -211,74 +211,67 @@ const SystemForm: React.FC<SystemFormProps> = ({ system, onClose }) => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{system ? 'Edit System' : 'Add New System'}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">System Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              required
-            />
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="name">System Name</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          required
+        />
+      </div>
 
-          <div>
-            <Label>System Type</Label>
-            <Select
-              value={formData.type}
-              onValueChange={(value: 'solar' | 'battery' | 'ev') => 
-                setFormData(prev => ({ ...prev, type: value, specifications: {} }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="solar">Solar Panels</SelectItem>
-                <SelectItem value="battery">Battery Storage</SelectItem>
-                <SelectItem value="ev">Electric Vehicle</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div>
+        <Label>System Type</Label>
+        <Select
+          value={formData.type}
+          onValueChange={(value: 'solar' | 'battery' | 'ev') => 
+            setFormData(prev => ({ ...prev, type: value, specifications: {} }))
+          }
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="solar">Solar Panels</SelectItem>
+            <SelectItem value="battery">Battery Storage</SelectItem>
+            <SelectItem value="ev">Electric Vehicle</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-          <div>
-            <Label htmlFor="installDate">Install Date</Label>
-            <Input
-              id="installDate"
-              type="date"
-              value={formData.installDate}
-              onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
-              required
-            />
-          </div>
+      <div>
+        <Label htmlFor="installDate">Install Date</Label>
+        <Input
+          id="installDate"
+          type="date"
+          value={formData.installDate}
+          onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
+          required
+        />
+      </div>
 
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="isActive"
-              checked={formData.isActive}
-              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
-            />
-            <Label htmlFor="isActive">System Active</Label>
-          </div>
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="isActive"
+          checked={formData.isActive}
+          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+        />
+        <Label htmlFor="isActive">System Active</Label>
+      </div>
 
-          {renderSpecificationsFields()}
+      {renderSpecificationsFields()}
 
-          <div className="flex gap-2">
-            <Button type="submit">
-              {system ? 'Update System' : 'Add System'}
-            </Button>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+      <div className="flex gap-2">
+        <Button type="submit">
+          {initialData ? 'Update System' : 'Add System'}
+        </Button>
+        <Button type="button" variant="outline" onClick={onSuccess}>
+          Cancel
+        </Button>
+      </div>
+    </form>
   );
 };
 
