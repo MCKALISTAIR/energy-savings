@@ -30,7 +30,7 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
           Customize
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80" align="end">
+      <PopoverContent className="w-80" align="center">
         <div className="space-y-4">
           <div>
             <h4 className="font-medium mb-3">Dashboard Settings</h4>
