@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { useSystem } from '@/contexts/SystemContext';
 import { Home, Plus, Edit, Trash2, Search, MapPin } from 'lucide-react';
@@ -137,6 +138,9 @@ const HouseSelector: React.FC = () => {
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Add New House</DialogTitle>
+                <DialogDescription>
+                  Add a new house to your account. You can search by postcode or enter the address manually.
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -166,12 +170,16 @@ const HouseSelector: React.FC = () => {
                           type="button" 
                           onClick={searchAddresses}
                           disabled={loadingAddresses || !postcode.trim()}
-                          size="sm"
+                          variant="default"
+                          className="px-4"
                         >
                           {loadingAddresses ? (
-                            <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
-                            <Search className="w-4 h-4" />
+                            <>
+                              <Search className="w-4 h-4 mr-2" />
+                              Search
+                            </>
                           )}
                         </Button>
                       </div>
