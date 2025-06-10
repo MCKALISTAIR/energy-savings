@@ -38,7 +38,15 @@ export const useSystems = (houseId?: string) => {
       const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
-      setSystems(data || []);
+      
+      // Type assertion to ensure compatibility with our System interface
+      const typedSystems = (data || []).map(system => ({
+        ...system,
+        type: system.type as 'solar' | 'battery' | 'ev',
+        specifications: system.specifications as Record<string, any>
+      }));
+      
+      setSystems(typedSystems);
     } catch (error) {
       console.error('Error fetching systems:', error);
     } finally {
@@ -67,8 +75,16 @@ export const useSystems = (houseId?: string) => {
         .single();
 
       if (error) throw error;
-      setSystems(prev => [data, ...prev]);
-      return data;
+      
+      // Type assertion for the returned data
+      const typedSystem = {
+        ...data,
+        type: data.type as 'solar' | 'battery' | 'ev',
+        specifications: data.specifications as Record<string, any>
+      };
+      
+      setSystems(prev => [typedSystem, ...prev]);
+      return typedSystem;
     } catch (error) {
       console.error('Error adding system:', error);
       throw error;
@@ -85,8 +101,16 @@ export const useSystems = (houseId?: string) => {
         .single();
 
       if (error) throw error;
-      setSystems(prev => prev.map(system => system.id === id ? data : system));
-      return data;
+      
+      // Type assertion for the returned data
+      const typedSystem = {
+        ...data,
+        type: data.type as 'solar' | 'battery' | 'ev',
+        specifications: data.specifications as Record<string, any>
+      };
+      
+      setSystems(prev => prev.map(system => system.id === id ? typedSystem : system));
+      return typedSystem;
     } catch (error) {
       console.error('Error updating system:', error);
       throw error;
