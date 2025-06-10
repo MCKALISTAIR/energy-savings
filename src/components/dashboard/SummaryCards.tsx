@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp, PoundSterling, Calendar, Leaf } from 'lucide-react';
+import { formatCurrency } from '@/utils/currency';
 
 interface SummaryCardsProps {
   totalMonthlySavings: number;
@@ -29,7 +30,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
             <div>
               <p className="text-sm text-muted-foreground">Monthly Savings</p>
               <p className="text-2xl font-bold text-green-600">
-                £{totalMonthlySavings.toFixed(0)}
+                {formatCurrency(Math.round(totalMonthlySavings))}
               </p>
             </div>
           </div>
@@ -45,7 +46,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
             <div>
               <p className="text-sm text-muted-foreground">Annual Savings</p>
               <p className="text-2xl font-bold text-blue-600">
-                £{totalAnnualSavings.toFixed(0)}
+                {formatCurrency(Math.round(totalAnnualSavings))}
               </p>
             </div>
           </div>
@@ -77,7 +78,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
             <div>
               <p className="text-sm text-muted-foreground">{impactTimeframe}-Year Impact</p>
               <p className="text-2xl font-bold text-green-600">
-                £{totalImpactSavings.toFixed(0)}
+                {formatCurrency(Math.round(totalImpactSavings))}
               </p>
             </div>
           </div>

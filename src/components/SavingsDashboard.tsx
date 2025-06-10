@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { SavingsData } from '@/pages/Index';
 import SummaryCards from '@/components/dashboard/SummaryCards';
@@ -27,8 +28,8 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
     showEnvironmentalImpact: true,
   });
 
-  const totalMonthlySavings = data.solar.monthlySavings + data.battery.monthlySavings + data.ev.totalMonthlySavings;
-  const totalSystemCost = data.solar.systemCost + data.battery.systemCost + data.ev.vehicleCost;
+  const totalMonthlySavings = data.solar.monthlySavings + data.battery.monthlySavings + data.ev.totalMonthlySavings + data.heatPump.monthlySavings;
+  const totalSystemCost = data.solar.systemCost + data.battery.systemCost + data.ev.vehicleCost + data.heatPump.systemCost;
   const totalAnnualSavings = totalMonthlySavings * 12;
 
   return (

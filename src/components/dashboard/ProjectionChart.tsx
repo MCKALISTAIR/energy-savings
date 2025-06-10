@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { formatCurrency } from '@/utils/currency';
 
 interface ProjectionChartProps {
   totalAnnualSavings: number;
@@ -23,8 +24,6 @@ const ProjectionChart: React.FC<ProjectionChartProps> = ({
     };
   });
 
-  const formatCurrency = (value: number) => `£${value.toLocaleString()}`;
-
   return (
     <Card className="hover-scale">
       <CardHeader>
@@ -36,7 +35,7 @@ const ProjectionChart: React.FC<ProjectionChartProps> = ({
           <LineChart data={projectedSavingsData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" />
-            <YAxis tickFormatter={(value) => `£${(value / 1000).toFixed(0)}k`} />
+            <YAxis tickFormatter={(value) => formatCurrency(value / 1000) + 'k'} />
             <Tooltip formatter={(value) => formatCurrency(Number(value))} />
             <Legend />
             <Line 

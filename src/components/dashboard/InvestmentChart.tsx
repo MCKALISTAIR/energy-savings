@@ -2,12 +2,14 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatCurrency } from '@/utils/currency';
 
 interface InvestmentChartProps {
   data: {
     solar: { systemCost: number };
     battery: { systemCost: number };
     ev: { vehicleCost: number };
+    heatPump: { systemCost: number };
   };
 }
 
@@ -16,9 +18,8 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ data }) => {
     { name: 'Solar System', cost: data.solar.systemCost, color: '#f59e0b' },
     { name: 'Battery System', cost: data.battery.systemCost, color: '#3b82f6' },
     { name: 'Electric Vehicle', cost: data.ev.vehicleCost, color: '#10b981' },
+    { name: 'Heat Pump', cost: data.heatPump.systemCost, color: '#8b5cf6' },
   ];
-
-  const formatCurrency = (value: number) => `£${value.toLocaleString()}`;
 
   return (
     <Card className="hover-scale">
@@ -31,7 +32,7 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ data }) => {
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis tickFormatter={(value) => `£${(value / 1000).toFixed(0)}k`} />
+            <YAxis tickFormatter={(value) => formatCurrency(value / 1000) + 'k'} />
             <Tooltip formatter={(value) => formatCurrency(Number(value))} />
             <Bar dataKey="cost" fill="#8884d8" />
           </BarChart>

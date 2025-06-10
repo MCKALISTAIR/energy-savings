@@ -2,12 +2,14 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatCurrency } from '@/utils/currency';
 
 interface SavingsBreakdownChartProps {
   data: {
     solar: { monthlySavings: number };
     battery: { monthlySavings: number };
     ev: { totalMonthlySavings: number };
+    heatPump: { monthlySavings: number };
   };
 }
 
@@ -16,6 +18,7 @@ const SavingsBreakdownChart: React.FC<SavingsBreakdownChartProps> = ({ data }) =
     { name: 'Solar', value: data.solar.monthlySavings, color: '#f59e0b' },
     { name: 'Battery', value: data.battery.monthlySavings, color: '#3b82f6' },
     { name: 'Electric Vehicle', value: data.ev.totalMonthlySavings, color: '#10b981' },
+    { name: 'Heat Pump', value: data.heatPump.monthlySavings, color: '#8b5cf6' },
   ];
 
   return (
@@ -33,13 +36,13 @@ const SavingsBreakdownChart: React.FC<SavingsBreakdownChartProps> = ({ data }) =
               cy="50%"
               outerRadius={100}
               dataKey="value"
-              label={({ name, value }) => `${name}: £${value.toFixed(0)}`}
+              label={({ name, value }) => `${name}: ${formatCurrency(value)}`}
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip formatter={(value) => `£${Number(value).toFixed(0)}`} />
+            <Tooltip formatter={(value) => formatCurrency(Number(value))} />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>
