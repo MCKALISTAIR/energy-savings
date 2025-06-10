@@ -1,26 +1,28 @@
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { useSystem } from '@/contexts/SystemContext';
 import { SystemType } from '@/types';
 
 interface SystemFormProps {
-  initialData?: SystemType;
-  onSuccess: () => void;
+  system?: SystemType;
+  onClose: () => void;
 }
 
-const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
+const SystemForm: React.FC<SystemFormProps> = ({ system, onClose }) => {
   const { addSystem, updateSystem, currentHouse } = useSystem();
-  const isEditing = !!initialData;
-
+  
   const [formData, setFormData] = useState({
-    name: initialData?.name || '',
-    type: initialData?.type || 'solar',
-    installDate: initialData?.installDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
-    specifications: initialData?.specifications || {},
+    name: system?.name || '',
+    type: system?.type || 'solar' as const,
+    installDate: system?.installDate ? system.installDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    isActive: system?.isActive ?? true,
+    specifications: system?.specifications || {}
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -28,19 +30,20 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     if (!currentHouse) return;
 
     const systemData = {
-      ...formData,
       houseId: currentHouse.id,
+      name: formData.name,
+      type: formData.type,
       installDate: new Date(formData.installDate),
-      isActive: true,
+      isActive: formData.isActive,
+      specifications: formData.specifications
     };
 
-    if (isEditing && initialData) {
-      updateSystem(initialData.id, systemData);
+    if (system) {
+      updateSystem(system.id, systemData);
     } else {
       addSystem(systemData as Omit<SystemType, 'id'>);
     }
-
-    onSuccess();
+    onClose();
   };
 
   const updateSpecification = (key: string, value: any) => {
@@ -48,179 +51,158 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
       ...prev,
       specifications: {
         ...prev.specifications,
-        [key]: value,
-      },
+        [key]: value
+      }
     }));
   };
 
-  const renderSpecificationFields = () => {
+  const getSpecValue = (key: string, defaultValue: any = '') => {
+    return (formData.specifications as any)[key] || defaultValue;
+  };
+
+  const renderSpecificationsFields = () => {
     switch (formData.type) {
       case 'solar':
         return (
-          <>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="capacity">System Capacity (kW)</Label>
-                <Input
-                  id="capacity"
-                  type="number"
-                  step="0.1"
-                  value={formData.specifications.capacity || ''}
-                  onChange={(e) => updateSpecification('capacity', parseFloat(e.target.value))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="panelCount">Number of Panels</Label>
-                <Input
-                  id="panelCount"
-                  type="number"
-                  value={formData.specifications.panelCount || ''}
-                  onChange={(e) => updateSpecification('panelCount', parseInt(e.target.value))}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="efficiency">Panel Efficiency (%)</Label>
-                <Input
-                  id="efficiency"
-                  type="number"
-                  step="0.1"
-                  value={formData.specifications.efficiency || ''}
-                  onChange={(e) => updateSpecification('efficiency', parseFloat(e.target.value))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="orientation">Orientation</Label>
-                <Select 
-                  value={formData.specifications.orientation || 'south'} 
-                  onValueChange={(value) => updateSpecification('orientation', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="north">North</SelectItem>
-                    <SelectItem value="south">South</SelectItem>
-                    <SelectItem value="east">East</SelectItem>
-                    <SelectItem value="west">West</SelectItem>
-                    <SelectItem value="southeast">South East</SelectItem>
-                    <SelectItem value="southwest">South West</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="capacity">Capacity (kW)</Label>
+              <Input
+                id="capacity"
+                type="number"
+                value={getSpecValue('capacity')}
+                onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
+              />
             </div>
             <div>
-              <Label htmlFor="tilt">Roof Tilt (degrees)</Label>
+              <Label htmlFor="panelCount">Panel Count</Label>
+              <Input
+                id="panelCount"
+                type="number"
+                value={getSpecValue('panelCount')}
+                onChange={(e) => updateSpecification('panelCount', Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="efficiency">Efficiency (%)</Label>
+              <Input
+                id="efficiency"
+                type="number"
+                step="0.1"
+                value={getSpecValue('efficiency')}
+                onChange={(e) => updateSpecification('efficiency', Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="orientation">Orientation</Label>
+              <Input
+                id="orientation"
+                value={getSpecValue('orientation')}
+                onChange={(e) => updateSpecification('orientation', e.target.value)}
+                placeholder="e.g., South"
+              />
+            </div>
+            <div>
+              <Label htmlFor="tilt">Tilt (degrees)</Label>
               <Input
                 id="tilt"
                 type="number"
-                value={formData.specifications.tilt || ''}
-                onChange={(e) => updateSpecification('tilt', parseInt(e.target.value))}
+                value={getSpecValue('tilt')}
+                onChange={(e) => updateSpecification('tilt', Number(e.target.value))}
               />
             </div>
-          </>
+          </div>
         );
 
       case 'battery':
         return (
-          <>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="capacity">Battery Capacity (kWh)</Label>
-                <Input
-                  id="capacity"
-                  type="number"
-                  step="0.1"
-                  value={formData.specifications.capacity || ''}
-                  onChange={(e) => updateSpecification('capacity', parseFloat(e.target.value))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="efficiency">Round-trip Efficiency (%)</Label>
-                <Input
-                  id="efficiency"
-                  type="number"
-                  step="0.1"
-                  value={formData.specifications.efficiency || ''}
-                  onChange={(e) => updateSpecification('efficiency', parseFloat(e.target.value))}
-                />
-              </div>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="capacity">Capacity (kWh)</Label>
+              <Input
+                id="capacity"
+                type="number"
+                value={getSpecValue('capacity')}
+                onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
+              />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="brand">Brand</Label>
-                <Input
-                  id="brand"
-                  value={formData.specifications.brand || ''}
-                  onChange={(e) => updateSpecification('brand', e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="model">Model</Label>
-                <Input
-                  id="model"
-                  value={formData.specifications.model || ''}
-                  onChange={(e) => updateSpecification('model', e.target.value)}
-                />
-              </div>
+            <div>
+              <Label htmlFor="efficiency">Efficiency (%)</Label>
+              <Input
+                id="efficiency"
+                type="number"
+                step="0.1"
+                value={getSpecValue('efficiency')}
+                onChange={(e) => updateSpecification('efficiency', Number(e.target.value))}
+              />
             </div>
-          </>
+            <div>
+              <Label htmlFor="brand">Brand</Label>
+              <Input
+                id="brand"
+                value={getSpecValue('brand')}
+                onChange={(e) => updateSpecification('brand', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="model">Model</Label>
+              <Input
+                id="model"
+                value={getSpecValue('model')}
+                onChange={(e) => updateSpecification('model', e.target.value)}
+              />
+            </div>
+          </div>
         );
 
       case 'ev':
         return (
-          <>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="make">Make</Label>
-                <Input
-                  id="make"
-                  value={formData.specifications.make || ''}
-                  onChange={(e) => updateSpecification('make', e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="model">Model</Label>
-                <Input
-                  id="model"
-                  value={formData.specifications.model || ''}
-                  onChange={(e) => updateSpecification('model', e.target.value)}
-                />
-              </div>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="make">Make</Label>
+              <Input
+                id="make"
+                value={getSpecValue('make')}
+                onChange={(e) => updateSpecification('make', e.target.value)}
+              />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="batteryCapacity">Battery Capacity (kWh)</Label>
-                <Input
-                  id="batteryCapacity"
-                  type="number"
-                  step="0.1"
-                  value={formData.specifications.batteryCapacity || ''}
-                  onChange={(e) => updateSpecification('batteryCapacity', parseFloat(e.target.value))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="efficiency">Efficiency (miles/kWh)</Label>
-                <Input
-                  id="efficiency"
-                  type="number"
-                  step="0.1"
-                  value={formData.specifications.efficiency || ''}
-                  onChange={(e) => updateSpecification('efficiency', parseFloat(e.target.value))}
-                />
-              </div>
+            <div>
+              <Label htmlFor="model">Model</Label>
+              <Input
+                id="model"
+                value={getSpecValue('model')}
+                onChange={(e) => updateSpecification('model', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label htmlFor="batteryCapacity">Battery Capacity (kWh)</Label>
+              <Input
+                id="batteryCapacity"
+                type="number"
+                value={getSpecValue('batteryCapacity')}
+                onChange={(e) => updateSpecification('batteryCapacity', Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="efficiency">Efficiency (miles/kWh)</Label>
+              <Input
+                id="efficiency"
+                type="number"
+                step="0.1"
+                value={getSpecValue('efficiency')}
+                onChange={(e) => updateSpecification('efficiency', Number(e.target.value))}
+              />
             </div>
             <div>
               <Label htmlFor="annualMileage">Annual Mileage</Label>
               <Input
                 id="annualMileage"
                 type="number"
-                value={formData.specifications.annualMileage || ''}
-                onChange={(e) => updateSpecification('annualMileage', parseInt(e.target.value))}
+                value={getSpecValue('annualMileage')}
+                onChange={(e) => updateSpecification('annualMileage', Number(e.target.value))}
               />
             </div>
-          </>
+          </div>
         );
 
       default:
@@ -229,53 +211,74 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="name">System Name</Label>
-        <Input
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          placeholder="e.g. Roof Solar Array, Tesla Powerwall"
-          required
-        />
-      </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>{system ? 'Edit System' : 'Add New System'}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="name">System Name</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="type">System Type</Label>
-        <Select 
-          value={formData.type} 
-          onValueChange={(value: any) => setFormData(prev => ({ ...prev, type: value, specifications: {} }))}
-          disabled={isEditing}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="solar">Solar Panels</SelectItem>
-            <SelectItem value="battery">Battery Storage</SelectItem>
-            <SelectItem value="ev">Electric Vehicle</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+          <div>
+            <Label>System Type</Label>
+            <Select
+              value={formData.type}
+              onValueChange={(value: 'solar' | 'battery' | 'ev') => 
+                setFormData(prev => ({ ...prev, type: value, specifications: {} }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="solar">Solar Panels</SelectItem>
+                <SelectItem value="battery">Battery Storage</SelectItem>
+                <SelectItem value="ev">Electric Vehicle</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div>
-        <Label htmlFor="installDate">Installation Date</Label>
-        <Input
-          id="installDate"
-          type="date"
-          value={formData.installDate}
-          onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="installDate">Install Date</Label>
+            <Input
+              id="installDate"
+              type="date"
+              value={formData.installDate}
+              onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
+              required
+            />
+          </div>
 
-      {renderSpecificationFields()}
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="isActive"
+              checked={formData.isActive}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+            />
+            <Label htmlFor="isActive">System Active</Label>
+          </div>
 
-      <Button type="submit" className="w-full">
-        {isEditing ? 'Update System' : 'Add System'}
-      </Button>
-    </form>
+          {renderSpecificationsFields()}
+
+          <div className="flex gap-2">
+            <Button type="submit">
+              {system ? 'Update System' : 'Add System'}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 

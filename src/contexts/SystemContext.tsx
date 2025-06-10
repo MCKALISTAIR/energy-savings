@@ -71,7 +71,7 @@ export const SystemProvider: React.FC<SystemProviderProps> = ({ children }) => {
   };
 
   const addSystem = (systemData: Omit<SystemType, 'id'>) => {
-    const newSystem: SystemType = {
+    const newSystem = {
       id: Date.now().toString(),
       ...systemData,
     } as SystemType;
@@ -80,7 +80,7 @@ export const SystemProvider: React.FC<SystemProviderProps> = ({ children }) => {
 
   const updateSystem = (id: string, systemData: Partial<SystemType>) => {
     setSystems(prev => prev.map(system => 
-      system.id === id ? { ...system, ...systemData } : system
+      system.id === id ? { ...system, ...systemData } as SystemType : system
     ));
   };
 
