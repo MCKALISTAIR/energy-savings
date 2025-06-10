@@ -39,7 +39,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     };
 
     if (initialData) {
-      updateSystem(initialData.id, systemData);
+      updateSystem(initialData.id, systemData as Partial<SystemType>);
     } else {
       addSystem(systemData as Omit<SystemType, 'id'>);
     }
