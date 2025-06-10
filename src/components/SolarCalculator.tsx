@@ -152,7 +152,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
       <Card className="hover-scale">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-green-500" />
+            <PoundSterling className="w-5 h-5 text-green-500" />
             Your Solar Savings Potential
           </CardTitle>
           <CardDescription>
