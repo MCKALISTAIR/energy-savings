@@ -10,6 +10,7 @@ import DatabaseHouseSelector from '@/components/DatabaseHouseSelector';
 import DatabaseSystemManager from '@/components/DatabaseSystemManager';
 import { useAuth } from '@/contexts/AuthContext';
 import { Zap, Battery, Car, BarChart3, Settings, LogOut, User } from 'lucide-react';
+import ProfileModal from '@/components/ProfileModal';
 
 export interface SavingsData {
   solar: {
@@ -90,7 +91,9 @@ const Index = () => {
           
           <div className="flex items-center gap-3 ml-4">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="w-4 h-4" />
+              <ProfileModal>
+                <User className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
+              </ProfileModal>
               {user?.email}
             </div>
             <LogOut 
