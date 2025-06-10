@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
-import { TrendingUp, DollarSign, Calendar, Leaf, Zap, Battery, Car } from 'lucide-react';
+import { TrendingUp, PoundSterling, Calendar, Leaf, Zap, Battery, Car } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 
 interface SavingsDashboardProps {
@@ -46,7 +45,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-green-100 rounded-full">
-                <DollarSign className="w-6 h-6 text-green-600" />
+                <PoundSterling className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Monthly Savings</p>
