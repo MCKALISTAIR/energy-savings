@@ -16,7 +16,7 @@ interface DatabaseSystemContextType {
   addSystem: (system: {
     house_id: string;
     name: string;
-    type: 'solar' | 'battery' | 'ev';
+    type: 'solar' | 'battery' | 'ev' | 'heat_pump';
     install_date: string;
     is_active: boolean;
     specifications: Record<string, any>;
@@ -94,7 +94,7 @@ export const DatabaseSystemProvider: React.FC<DatabaseSystemProviderProps> = ({ 
   const addSystem = async (systemData: {
     house_id: string;
     name: string;
-    type: 'solar' | 'battery' | 'ev';
+    type: 'solar' | 'battery' | 'ev' | 'heat_pump';
     install_date: string;
     is_active: boolean;
     specifications: Record<string, any>;
