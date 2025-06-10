@@ -89,15 +89,16 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
               {user?.email}
             </div>
-            <Button variant="outline" size="sm" onClick={signOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            <LogOut 
+              className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" 
+              onClick={signOut}
+              title="Sign Out"
+            />
           </div>
         </div>
 
