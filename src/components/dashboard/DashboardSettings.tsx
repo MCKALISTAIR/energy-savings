@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Settings } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 
 export interface DashboardConfig {
   impactTimeframe: number;
@@ -53,7 +52,7 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="ml-auto">
-          <Settings className="w-4 h-4 mr-2" />
+          <SlidersHorizontal className="w-4 h-4 mr-2" />
           Customize
         </Button>
       </PopoverTrigger>
