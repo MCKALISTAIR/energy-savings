@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { SlidersHorizontal } from 'lucide-react';
 import { DashboardConfig, DashboardSettingsProps } from './types';
 import { getDefaultConfig } from './defaultConfig';
@@ -45,27 +46,29 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
           Customize
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Dashboard Settings</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
-          <TimePeriodsSection
-            config={localConfig}
-            onConfigChange={setLocalConfig}
-          />
+        <ScrollArea className="max-h-[60vh] pr-4">
+          <div className="space-y-4">
+            <TimePeriodsSection
+              config={localConfig}
+              onConfigChange={setLocalConfig}
+            />
 
-          <VisibilitySection
-            config={localConfig}
-            onConfigChange={setLocalConfig}
-          />
+            <VisibilitySection
+              config={localConfig}
+              onConfigChange={setLocalConfig}
+            />
 
-          <ActionButtons
-            onSave={handleSave}
-            onReset={handleReset}
-          />
-        </div>
+            <ActionButtons
+              onSave={handleSave}
+              onReset={handleReset}
+            />
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
