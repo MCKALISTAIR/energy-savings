@@ -7,13 +7,17 @@ interface SummaryCardsProps {
   totalMonthlySavings: number;
   totalAnnualSavings: number;
   totalSystemCost: number;
+  impactTimeframe?: number;
 }
 
 const SummaryCards: React.FC<SummaryCardsProps> = ({
   totalMonthlySavings,
   totalAnnualSavings,
-  totalSystemCost
+  totalSystemCost,
+  impactTimeframe = 20
 }) => {
+  const totalImpactSavings = (totalAnnualSavings * impactTimeframe) - totalSystemCost;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
       <Card className="hover-scale">
@@ -57,7 +61,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
             <div>
               <p className="text-sm text-muted-foreground">Payback Period</p>
               <p className="text-2xl font-bold text-orange-600">
-                {(totalSystemCost / totalAnnualSavings).toFixed(1)}y
+                {totalAnnualSavings > 0 ? (totalSystemCost / totalAnnualSavings).toFixed(1) : '0'}y
               </p>
             </div>
           </div>
@@ -71,9 +75,9 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
               <Leaf className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">20-Year Impact</p>
+              <p className="text-sm text-muted-foreground">{impactTimeframe}-Year Impact</p>
               <p className="text-2xl font-bold text-green-600">
-                £{((totalAnnualSavings * 20) - totalSystemCost).toFixed(0)}
+                £{totalImpactSavings.toFixed(0)}
               </p>
             </div>
           </div>

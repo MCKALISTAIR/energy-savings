@@ -6,10 +6,15 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 interface ProjectionChartProps {
   totalAnnualSavings: number;
   totalSystemCost: number;
+  timeframe?: number;
 }
 
-const ProjectionChart: React.FC<ProjectionChartProps> = ({ totalAnnualSavings, totalSystemCost }) => {
-  const projectedSavingsData = Array.from({ length: 21 }, (_, year) => {
+const ProjectionChart: React.FC<ProjectionChartProps> = ({ 
+  totalAnnualSavings, 
+  totalSystemCost, 
+  timeframe = 20 
+}) => {
+  const projectedSavingsData = Array.from({ length: timeframe + 1 }, (_, year) => {
     const cumulativeSavings = totalAnnualSavings * year - totalSystemCost;
     return {
       year,
@@ -23,7 +28,7 @@ const ProjectionChart: React.FC<ProjectionChartProps> = ({ totalAnnualSavings, t
   return (
     <Card className="hover-scale">
       <CardHeader>
-        <CardTitle>20-Year Financial Projection</CardTitle>
+        <CardTitle>{timeframe}-Year Financial Projection</CardTitle>
         <CardDescription>Cumulative savings and break-even analysis</CardDescription>
       </CardHeader>
       <CardContent>
