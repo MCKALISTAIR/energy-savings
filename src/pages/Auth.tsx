@@ -1,14 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import { Zap } from 'lucide-react';
 
 const Auth: React.FC = () => {
@@ -16,9 +16,19 @@ const Auth: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberEmail, setRememberEmail] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Load saved email on component mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberEmail(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -30,6 +40,13 @@ const Auth: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // Save or remove email based on remember me checkbox
+    if (rememberEmail) {
+      localStorage.setItem('rememberedEmail', email);
+    } else {
+      localStorage.removeItem('rememberedEmail');
+    }
 
     const { error } = await signIn(email, password);
     
@@ -44,6 +61,13 @@ const Auth: React.FC = () => {
     setLoading(true);
     setError(null);
     setSuccess(null);
+
+    // Save or remove email based on remember me checkbox
+    if (rememberEmail) {
+      localStorage.setItem('rememberedEmail', email);
+    } else {
+      localStorage.removeItem('rememberedEmail');
+    }
 
     const { error } = await signUp(email, password);
     
@@ -101,6 +125,16 @@ const Auth: React.FC = () => {
                       required
                     />
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="remember-email"
+                      checked={rememberEmail}
+                      onCheckedChange={(checked) => setRememberEmail(checked as boolean)}
+                    />
+                    <Label htmlFor="remember-email" className="text-sm font-normal">
+                      Remember my email
+                    </Label>
+                  </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Signing in...' : 'Sign In'}
                   </Button>
@@ -129,6 +163,16 @@ const Auth: React.FC = () => {
                       required
                       minLength={6}
                     />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="remember-email-signup"
+                      checked={rememberEmail}
+                      onCheckedChange={(checked) => setRememberEmail(checked as boolean)}
+                    />
+                    <Label htmlFor="remember-email-signup" className="text-sm font-normal">
+                      Remember my email
+                    </Label>
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Creating account...' : 'Sign Up'}
