@@ -143,5 +143,3 @@ const Auth: React.FC = () => {
 };
 
 export default Auth;
-
-</edits_to_apply>
