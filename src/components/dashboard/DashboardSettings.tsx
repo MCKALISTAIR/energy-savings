@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { SlidersHorizontal } from 'lucide-react';
 import { DashboardConfig, DashboardSettingsProps } from './types';
 import { getDefaultConfig } from './defaultConfig';
@@ -38,19 +38,19 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="ml-auto">
           <SlidersHorizontal className="w-4 h-4 mr-2" />
           Customize
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80" align="center" side="bottom">
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Dashboard Settings</DialogTitle>
+        </DialogHeader>
+        
         <div className="space-y-4">
-          <div>
-            <h4 className="font-medium mb-3">Dashboard Settings</h4>
-          </div>
-
           <TimePeriodsSection
             config={localConfig}
             onConfigChange={setLocalConfig}
@@ -66,8 +66,8 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
             onReset={handleReset}
           />
         </div>
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 };
 
