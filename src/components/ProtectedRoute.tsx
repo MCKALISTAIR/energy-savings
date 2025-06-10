@@ -10,6 +10,9 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
 
+  // Check for development bypass flag
+  const devBypass = localStorage.getItem('devBypass') === 'true';
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
@@ -21,7 +24,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (!user) {
+  // Allow access if user is authenticated OR development bypass is enabled
+  if (!user && !devBypass) {
     return <Navigate to="/auth" replace />;
   }
 

@@ -78,6 +78,7 @@ const Auth: React.FC = () => {
 
   const handleDevBypass = () => {
     console.log('Development bypass activated - redirecting to main app');
+    localStorage.setItem('devBypass', 'true');
     navigate('/');
   };
 
@@ -142,3 +143,5 @@ const Auth: React.FC = () => {
 };
 
 export default Auth;
+
+</edits_to_apply>
