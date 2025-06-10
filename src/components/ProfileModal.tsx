@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -30,6 +29,21 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
   // Check if user is using Google OAuth
   const isGoogleUser = user?.app_metadata?.provider === 'google';
   const hasPassword = user?.app_metadata?.providers?.includes('email');
+
+  // Function to validate name input (letters and hyphens only)
+  const validateNameInput = (value: string): string => {
+    return value.replace(/[^a-zA-Z-]/g, '');
+  };
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const validatedValue = validateNameInput(e.target.value);
+    setFirstName(validatedValue);
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const validatedValue = validateNameInput(e.target.value);
+    setLastName(validatedValue);
+  };
 
   useEffect(() => {
     if (user && isOpen) {
@@ -154,9 +168,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
                   <Input
                     id="firstName"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={handleFirstNameChange}
                     placeholder="Enter your first name"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Only letters and hyphens allowed
+                  </p>
                 </div>
 
                 <div>
@@ -164,9 +181,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
                   <Input
                     id="lastName"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={handleLastNameChange}
                     placeholder="Enter your last name"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Only letters and hyphens allowed
+                  </p>
                 </div>
               </div>
             </div>
