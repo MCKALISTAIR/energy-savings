@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { SavingsData } from '@/pages/Index';
 import SummaryCards from '@/components/dashboard/SummaryCards';
@@ -7,7 +6,8 @@ import InvestmentChart from '@/components/dashboard/InvestmentChart';
 import ProjectionChart from '@/components/dashboard/ProjectionChart';
 import TechnologyComparison from '@/components/dashboard/TechnologyComparison';
 import EnvironmentalImpact from '@/components/dashboard/EnvironmentalImpact';
-import DashboardSettings, { DashboardConfig } from '@/components/dashboard/DashboardSettings';
+import DashboardSettings from '@/components/dashboard/DashboardSettings';
+import { DashboardConfig } from '@/components/dashboard/types';
 
 interface SavingsDashboardProps {
   data: SavingsData;
