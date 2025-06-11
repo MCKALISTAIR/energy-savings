@@ -54,7 +54,7 @@ const DashboardSettings: React.FC<DashboardSettingsPropsExtended> = ({
           {!iconOnly && <span className="ml-2">Customize</span>}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[80vh]">
+      <DialogContent className="max-w-lg max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Dashboard Settings</DialogTitle>
         </DialogHeader>
