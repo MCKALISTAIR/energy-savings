@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -156,12 +155,14 @@ const Index = () => {
               </TabsTrigger>
             </TabsList>
             
-            {/* Dashboard Customize Button with fade-in animation */}
-            {activeTab === 'dashboard' && (
-              <div className="animate-fade-in">
-                <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
-              </div>
-            )}
+            {/* Dashboard Customize Button with conditional animation */}
+            <div className="w-24 flex justify-end">
+              {activeTab === 'dashboard' && (
+                <div className="animate-fade-in">
+                  <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Dashboard Subtitle - only shown when dashboard tab is active */}
