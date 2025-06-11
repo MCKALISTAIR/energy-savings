@@ -128,42 +128,46 @@ const Index = () => {
 
         {/* Main Tabs */}
         <Tabs defaultValue="systems" value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-6">
-            <TabsTrigger value="systems" className="flex items-center gap-2">
-              <Settings className="w-4 h-4" />
-              Systems
-            </TabsTrigger>
-            <TabsTrigger value="solar" className="flex items-center gap-2">
-              <Zap className="w-4 h-4" />
-              Solar
-            </TabsTrigger>
-            <TabsTrigger value="battery" className="flex items-center gap-2">
-              <Battery className="w-4 h-4" />
-              Battery
-            </TabsTrigger>
-            <TabsTrigger value="ev" className="flex items-center gap-2">
-              <Car className="w-4 h-4" />
-              Electric Vehicle
-            </TabsTrigger>
-            <TabsTrigger value="heatpump" className="flex items-center gap-2">
-              <Thermometer className="w-4 h-4" />
-              Heat Pump
-            </TabsTrigger>
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Dashboard
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex items-center justify-between mb-6">
+            <TabsList className="grid grid-cols-6 flex-1 mr-4">
+              <TabsTrigger value="systems" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Systems
+              </TabsTrigger>
+              <TabsTrigger value="solar" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Solar
+              </TabsTrigger>
+              <TabsTrigger value="battery" className="flex items-center gap-2">
+                <Battery className="w-4 h-4" />
+                Battery
+              </TabsTrigger>
+              <TabsTrigger value="ev" className="flex items-center gap-2">
+                <Car className="w-4 h-4" />
+                Electric Vehicle
+              </TabsTrigger>
+              <TabsTrigger value="heatpump" className="flex items-center gap-2">
+                <Thermometer className="w-4 h-4" />
+                Heat Pump
+              </TabsTrigger>
+              <TabsTrigger value="dashboard" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Dashboard
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Dashboard Customize Button - only shown when dashboard tab is active */}
+            {activeTab === 'dashboard' && (
+              <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
+            )}
+          </div>
 
           {/* Dashboard Subtitle - only shown when dashboard tab is active */}
           {activeTab === 'dashboard' && (
-            <div className="flex justify-center items-center mb-6">
-              <div className="text-center flex-1">
-                <p className="text-muted-foreground">
-                  Overview of your renewable energy investments
-                </p>
-              </div>
-              <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
+            <div className="text-center mb-6">
+              <p className="text-muted-foreground">
+                Overview of your renewable energy investments
+              </p>
             </div>
           )}
 
