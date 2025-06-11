@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -136,7 +135,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-lg max-h-[80vh]">
+      <DialogContent className="max-w-xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5" />
@@ -144,8 +143,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[60vh] pr-6">
-          <div className="space-y-6">
+        <ScrollArea className="max-h-[60vh] pr-8">
+          <div className="space-y-6 pr-2">
             {/* User Information */}
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-muted-foreground">Personal Information</h3>
