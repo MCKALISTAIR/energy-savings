@@ -12,37 +12,17 @@ import { DashboardConfig } from '@/components/dashboard/types';
 
 interface SavingsDashboardProps {
   data: SavingsData;
+  config: DashboardConfig;
+  onConfigChange: (config: DashboardConfig) => void;
 }
 
-const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data }) => {
-  const [config, setConfig] = useState<DashboardConfig>({
-    impactTimeframe: 20,
-    solarROIPeriod: 20,
-    batteryROIPeriod: 20,
-    evROIPeriod: 10,
-    showSummaryCards: true,
-    showSavingsChart: true,
-    showInvestmentChart: true,
-    showProjectionChart: true,
-    showTechnologyComparison: true,
-    showEnvironmentalImpact: true,
-  });
-
+const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data, config, onConfigChange }) => {
   const totalMonthlySavings = data.solar.monthlySavings + data.battery.monthlySavings + data.ev.totalMonthlySavings + data.heatPump.monthlySavings;
   const totalSystemCost = data.solar.systemCost + data.battery.systemCost + data.ev.vehicleCost + data.heatPump.systemCost;
   const totalAnnualSavings = totalMonthlySavings * 12;
 
   return (
     <div className="space-y-6">
-      {/* Header with Settings */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Savings Dashboard</h2>
-          <p className="text-muted-foreground">Overview of your renewable energy investments</p>
-        </div>
-        <DashboardSettings config={config} onConfigChange={setConfig} />
-      </div>
-
       {/* Summary Cards */}
       {config.showSummaryCards && (
         <SummaryCards 

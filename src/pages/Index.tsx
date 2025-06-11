@@ -10,7 +10,10 @@ import HeatPumpCalculator from '@/components/HeatPumpCalculator';
 import SavingsDashboard from '@/components/SavingsDashboard';
 import DatabaseHouseSelector from '@/components/DatabaseHouseSelector';
 import DatabaseSystemManager from '@/components/DatabaseSystemManager';
+import DashboardSettings from '@/components/dashboard/DashboardSettings';
 import { useAuth } from '@/contexts/AuthContext';
+import { DashboardConfig } from '@/components/dashboard/types';
+import { getDefaultConfig } from '@/components/dashboard/defaultConfig';
 import { Zap, Battery, Car, BarChart3, Settings, LogOut, User, Thermometer } from 'lucide-react';
 import ProfileModal from '@/components/ProfileModal';
 
@@ -46,6 +49,8 @@ export interface SavingsData {
 
 const Index = () => {
   const { user, signOut } = useAuth();
+  const [activeTab, setActiveTab] = useState('systems');
+  const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig>(getDefaultConfig());
   const [savingsData, setSavingsData] = useState<SavingsData>({
     solar: {
       monthlyEnergyCost: 0,
@@ -122,8 +127,8 @@ const Index = () => {
         </div>
 
         {/* Main Tabs */}
-        <Tabs defaultValue="systems" className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-8">
+        <Tabs defaultValue="systems" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="systems" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               Systems
@@ -150,6 +155,18 @@ const Index = () => {
             </TabsTrigger>
           </TabsList>
 
+          {/* Dashboard Subtitle - only shown when dashboard tab is active */}
+          {activeTab === 'dashboard' && (
+            <div className="flex justify-center items-center mb-6">
+              <div className="text-center flex-1">
+                <p className="text-muted-foreground">
+                  Overview of your renewable energy investments
+                </p>
+              </div>
+              <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
+            </div>
+          )}
+
           <TabsContent value="systems" className="animate-fade-in">
             <div className="space-y-6">
               <DatabaseHouseSelector />
@@ -174,7 +191,11 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="dashboard" className="animate-fade-in">
-            <SavingsDashboard data={savingsData} />
+            <SavingsDashboard 
+              data={savingsData} 
+              config={dashboardConfig}
+              onConfigChange={setDashboardConfig}
+            />
           </TabsContent>
         </Tabs>
       </div>
