@@ -10,7 +10,15 @@ import TimePeriodsSection from './TimePeriodsSection';
 import VisibilitySection from './VisibilitySection';
 import ActionButtons from './ActionButtons';
 
-const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigChange }) => {
+interface DashboardSettingsPropsExtended extends DashboardSettingsProps {
+  iconOnly?: boolean;
+}
+
+const DashboardSettings: React.FC<DashboardSettingsPropsExtended> = ({ 
+  config, 
+  onConfigChange, 
+  iconOnly = false 
+}) => {
   const [localConfig, setLocalConfig] = useState<DashboardConfig>(config);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -41,9 +49,9 @@ const DashboardSettings: React.FC<DashboardSettingsProps> = ({ config, onConfigC
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-auto">
-          <SlidersHorizontal className="w-4 h-4 mr-2" />
-          Customize
+        <Button variant="outline" size={iconOnly ? "icon" : "sm"} className="ml-auto">
+          <SlidersHorizontal className="w-4 h-4" />
+          {!iconOnly && <span className="ml-2">Customize</span>}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[80vh]">

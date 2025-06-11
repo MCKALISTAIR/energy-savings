@@ -45,11 +45,11 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         </TabsTrigger>
       </TabsList>
       
-      {/* Dashboard Customize Button with conditional animation */}
-      <div className="w-24 flex justify-end">
+      {/* Dashboard Customize Button with conditional animation - icon only */}
+      <div className="w-10 flex justify-end">
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in">
-            <DashboardSettings config={dashboardConfig} onConfigChange={onConfigChange} />
+            <DashboardSettings config={dashboardConfig} onConfigChange={onConfigChange} iconOnly />
           </div>
         )}
       </div>
