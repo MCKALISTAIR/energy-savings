@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -156,10 +157,13 @@ const Index = () => {
 
           {/* Dashboard Subtitle - only shown when dashboard tab is active */}
           {activeTab === 'dashboard' && (
-            <div className="text-center mb-6">
-              <p className="text-muted-foreground">
-                Overview of your renewable energy investments
-              </p>
+            <div className="flex justify-center items-center mb-6">
+              <div className="text-center flex-1">
+                <p className="text-muted-foreground">
+                  Overview of your renewable energy investments
+                </p>
+              </div>
+              <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
             </div>
           )}
 
