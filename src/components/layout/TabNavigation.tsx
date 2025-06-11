@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardSettings from '@/components/dashboard/DashboardSettings';
 import { DashboardConfig } from '@/components/dashboard/types';
@@ -16,6 +16,23 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   dashboardConfig,
   onConfigChange
 }) => {
+  const [showButton, setShowButton] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'dashboard') {
+      setShowButton(true);
+      setIsAnimating(true);
+    } else {
+      setIsAnimating(false);
+      // Delay hiding the button to allow fade-out animation
+      const timer = setTimeout(() => {
+        setShowButton(false);
+      }, 300); // Match the animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [activeTab]);
+
   return (
     <div className="flex items-center justify-between mb-6">
       <TabsList className="grid grid-cols-6 flex-1 mr-4">
@@ -47,8 +64,8 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
       
       {/* Dashboard Customize Button with conditional animation - icon only */}
       <div className="w-10 flex justify-end">
-        {activeTab === 'dashboard' && (
-          <div className="animate-fade-in">
+        {showButton && (
+          <div className={isAnimating ? "animate-fade-in" : "animate-fade-out"}>
             <DashboardSettings config={dashboardConfig} onConfigChange={onConfigChange} iconOnly />
           </div>
         )}
