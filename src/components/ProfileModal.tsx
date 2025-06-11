@@ -144,7 +144,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
         </DialogHeader>
         
         <ScrollArea className="max-h-[60vh] pr-8">
-          <div className="space-y-6 pr-2">
+          <div className="space-y-6 pr-2 pl-2">
             {/* User Information */}
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-muted-foreground">Personal Information</h3>
