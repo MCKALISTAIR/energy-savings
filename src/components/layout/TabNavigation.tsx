@@ -34,8 +34,13 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   }, [activeTab]);
 
   return (
-    <div className="flex items-center justify-between mb-6">
-      <TabsList className="grid grid-cols-6 flex-1 mr-4">
+    <div className="flex items-center justify-center mb-6 px-10">
+      {/* Left spacer - matches the width of the right button area */}
+      <div className="w-10 flex justify-start">
+        {/* Empty space for symmetry */}
+      </div>
+      
+      <TabsList className="grid grid-cols-6 mx-4">
         <TabsTrigger value="systems" className="flex items-center gap-2">
           <Settings className="w-4 h-4" />
           Systems
@@ -62,7 +67,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         </TabsTrigger>
       </TabsList>
       
-      {/* Dashboard Customize Button with conditional animation - icon only */}
+      {/* Right button area - always takes up space */}
       <div className="w-10 flex justify-end">
         {showButton && (
           <div className={isAnimating ? "animate-fade-in" : "animate-fade-out"}>
