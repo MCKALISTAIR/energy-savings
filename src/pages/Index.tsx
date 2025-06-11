@@ -156,9 +156,11 @@ const Index = () => {
               </TabsTrigger>
             </TabsList>
             
-            {/* Dashboard Customize Button - only shown when dashboard tab is active */}
+            {/* Dashboard Customize Button with fade-in animation */}
             {activeTab === 'dashboard' && (
-              <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
+              <div className="animate-fade-in">
+                <DashboardSettings config={dashboardConfig} onConfigChange={setDashboardConfig} />
+              </div>
             )}
           </div>
 
