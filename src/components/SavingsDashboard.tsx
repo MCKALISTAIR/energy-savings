@@ -23,14 +23,23 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data, config, onCon
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
+      {/* Summary Cards with integrated customize button */}
       {config.showSummaryCards && (
         <SummaryCards 
           totalMonthlySavings={totalMonthlySavings}
           totalAnnualSavings={totalAnnualSavings}
           totalSystemCost={totalSystemCost}
           impactTimeframe={config.impactTimeframe}
+          config={config}
+          onConfigChange={onConfigChange}
         />
+      )}
+
+      {/* Fallback customize button when summary cards are hidden */}
+      {!config.showSummaryCards && (
+        <div className="flex justify-end">
+          <DashboardSettings config={config} onConfigChange={onConfigChange} />
+        </div>
       )}
 
       {/* Charts Row */}
