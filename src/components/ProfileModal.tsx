@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -144,7 +143,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 pr-8">
+        <ScrollArea className="flex-1 max-h-[calc(80vh-120px)] pr-8">
           <div className="space-y-6 pr-2 pl-2">
             {/* User Information */}
             <div className="space-y-4">
