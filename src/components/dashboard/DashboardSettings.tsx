@@ -49,12 +49,16 @@ const DashboardSettings: React.FC<DashboardSettingsPropsExtended> = ({
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size={iconOnly ? "icon" : "sm"} className="ml-auto">
+        <Button 
+          variant="outline" 
+          size={iconOnly ? "icon" : "sm"} 
+          className="ml-auto hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
           <SlidersHorizontal className="w-4 h-4" />
           {!iconOnly && <span className="ml-2">Customize</span>}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg max-h-[80vh]">
+      <DialogContent className="max-w-xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Dashboard Settings</DialogTitle>
         </DialogHeader>
