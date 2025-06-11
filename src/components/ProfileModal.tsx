@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -135,7 +136,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-xl max-h-[80vh]">
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5" />
@@ -143,7 +144,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
           </DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[60vh] pr-8">
+        <ScrollArea className="flex-1 pr-8">
           <div className="space-y-6 pr-2 pl-2">
             {/* User Information */}
             <div className="space-y-4">
@@ -284,26 +285,26 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
                 <p className="text-sm text-green-600">{success}</p>
               </div>
             )}
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4 border-t">
-              <Button
-                onClick={handleSaveProfile}
-                disabled={loading}
-                className="flex-1"
-              >
-                {loading ? 'Saving...' : 'Save Profile'}
-              </Button>
-              <Button
-                onClick={() => setIsOpen(false)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
           </div>
         </ScrollArea>
+
+        {/* Fixed Action Buttons at Bottom */}
+        <div className="flex gap-3 pt-4 border-t bg-background">
+          <Button
+            onClick={handleSaveProfile}
+            disabled={loading}
+            className="flex-1"
+          >
+            {loading ? 'Saving...' : 'Save Profile'}
+          </Button>
+          <Button
+            onClick={() => setIsOpen(false)}
+            variant="outline"
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
