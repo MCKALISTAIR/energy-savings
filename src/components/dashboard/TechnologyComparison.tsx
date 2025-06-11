@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { SavingsData } from '@/pages/Index';
 import { DashboardConfig } from './types';
+import { formatCurrency } from '@/utils/currency';
 
 interface TechnologyComparisonProps {
   data: SavingsData;
@@ -29,21 +31,21 @@ const TechnologyComparison: React.FC<TechnologyComparisonProps> = ({ data, confi
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span>Solar Savings</span>
-            <span>${solarSavings.toLocaleString()}</span>
+            <span>{formatCurrency(solarSavings)}</span>
           </div>
           <Progress value={solarPercentage} />
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span>Battery Savings</span>
-            <span>${batterySavings.toLocaleString()}</span>
+            <span>{formatCurrency(batterySavings)}</span>
           </div>
           <Progress value={batteryPercentage} />
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span>EV Savings</span>
-            <span>${evSavings.toLocaleString()}</span>
+            <span>{formatCurrency(evSavings)}</span>
           </div>
           <Progress value={evPercentage} />
         </div>

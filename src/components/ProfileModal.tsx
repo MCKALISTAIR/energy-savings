@@ -18,7 +18,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('GBP'); // Changed default from 'USD' to 'GBP'
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -52,8 +52,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
       setFirstName(metadata.first_name || '');
       setLastName(metadata.last_name || '');
       
-      // Load currency preference from localStorage or default to USD
-      const savedCurrency = localStorage.getItem('preferredCurrency') || 'USD';
+      // Load currency preference from localStorage or default to GBP
+      const savedCurrency = localStorage.getItem('preferredCurrency') || 'GBP';
       setCurrency(savedCurrency);
     }
   }, [user, isOpen]);
@@ -202,9 +202,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="GBP">GBP (£)</SelectItem>
                     <SelectItem value="USD">USD ($)</SelectItem>
                     <SelectItem value="EUR">EUR (€)</SelectItem>
-                    <SelectItem value="GBP">GBP (£)</SelectItem>
                     <SelectItem value="CAD">CAD (C$)</SelectItem>
                     <SelectItem value="AUD">AUD (A$)</SelectItem>
                   </SelectContent>
