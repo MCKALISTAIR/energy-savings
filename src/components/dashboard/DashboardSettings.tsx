@@ -63,8 +63,8 @@ const DashboardSettings: React.FC<DashboardSettingsPropsExtended> = ({
           <DialogTitle>Dashboard Settings</DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[60vh] pr-4">
-          <div className="space-y-4">
+        <ScrollArea className="max-h-[60vh] pr-6">
+          <div className="space-y-4 pr-2">
             <TimePeriodsSection
               config={localConfig}
               onConfigChange={setLocalConfig}
