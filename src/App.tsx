@@ -18,6 +18,7 @@ const AppContent = () => {
   return (
     <DatabaseSystemProvider>
       <Routes>
+        <Route path="/landing" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
         <Route 
           path="/" 

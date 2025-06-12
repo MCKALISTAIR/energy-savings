@@ -2,10 +2,19 @@
 import React from 'react';
 import { User, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import ProfileModal from '@/components/ProfileModal';
 
 const Header: React.FC = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    // Clear development bypass when logging out
+    localStorage.removeItem('devBypass');
+    navigate('/landing');
+  };
 
   return (
     <div className="flex justify-between items-start mb-8">
@@ -28,7 +37,7 @@ const Header: React.FC = () => {
         </div>
         <LogOut 
           className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" 
-          onClick={signOut}
+          onClick={handleSignOut}
         />
       </div>
     </div>
