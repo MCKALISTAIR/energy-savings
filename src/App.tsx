@@ -11,6 +11,9 @@ import './App.css';
 
 const AppContent = () => {
   const { user } = useAuth();
+  
+  // Check for development bypass flag
+  const devBypass = localStorage.getItem('devBypass') === 'true';
 
   return (
     <DatabaseSystemProvider>
@@ -19,7 +22,7 @@ const AppContent = () => {
         <Route 
           path="/" 
           element={
-            user ? (
+            (user || devBypass) ? (
               <ProtectedRoute>
                 <Index />
               </ProtectedRoute>
