@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,9 @@ import UserActions from '@/components/UserActions';
 const Landing: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  // Check for development bypass flag
+  const devBypass = localStorage.getItem('devBypass') === 'true';
 
   const features = [
     {
@@ -55,7 +57,7 @@ const Landing: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
       {/* Header with User Actions */}
-      {user && (
+      {(user || devBypass) && (
         <div className="container mx-auto px-4 pt-6 pb-4">
           <div className="flex justify-end">
             <UserActions />
@@ -76,7 +78,7 @@ const Landing: React.FC = () => {
             battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {user ? (
+            {(user || devBypass) ? (
               <Button 
                 size="lg" 
                 onClick={() => navigate('/')}
@@ -178,7 +180,7 @@ const Landing: React.FC = () => {
           <p className="text-xl mb-8 opacity-90">
             Join thousands of homeowners making informed decisions about renewable energy
           </p>
-          {user ? (
+          {(user || devBypass) ? (
             <Button 
               size="lg" 
               variant="secondary"

@@ -9,6 +9,9 @@ const UserActions: React.FC = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
+  // Check for development bypass flag
+  const devBypass = localStorage.getItem('devBypass') === 'true';
+
   const handleSignOut = async () => {
     await signOut();
     // Clear development bypass when logging out
@@ -16,7 +19,8 @@ const UserActions: React.FC = () => {
     navigate('/landing');
   };
 
-  if (!user) return null;
+  // Don't show anything if user is not logged in AND dev bypass is not active
+  if (!user && !devBypass) return null;
 
   return (
     <div className="flex items-center gap-3">
@@ -24,7 +28,7 @@ const UserActions: React.FC = () => {
         <ProfileModal>
           <User className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
         </ProfileModal>
-        {user?.email}
+        {user?.email || (devBypass && 'Dev Mode')}
       </div>
       <LogOut 
         className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" 
