@@ -56,7 +56,7 @@ const Landing: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
       {/* Header with User Actions */}
       {user && (
-        <div className="container mx-auto px-4 pt-4">
+        <div className="container mx-auto px-4 pt-6 pb-4">
           <div className="flex justify-end">
             <UserActions />
           </div>
