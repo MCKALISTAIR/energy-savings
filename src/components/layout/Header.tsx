@@ -1,23 +1,25 @@
 
 import React from 'react';
-import { User, LogOut } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { House } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ProfileModal from '@/components/ProfileModal';
+import UserActions from '@/components/UserActions';
 
 const Header: React.FC = () => {
-  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignOut = async () => {
-    await signOut();
-    // Clear development bypass when logging out
-    localStorage.removeItem('devBypass');
+  const handleHomeClick = () => {
     navigate('/landing');
   };
 
   return (
     <div className="flex justify-between items-start mb-8">
+      <div className="flex items-center">
+        <House 
+          className="w-6 h-6 text-muted-foreground hover:text-foreground cursor-pointer transition-colors mr-4" 
+          onClick={handleHomeClick}
+        />
+      </div>
+
       <div className="text-center flex-1">
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
           Renewable Energy Savings Calculator
@@ -28,17 +30,8 @@ const Header: React.FC = () => {
         </p>
       </div>
       
-      <div className="flex items-center gap-3 ml-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <ProfileModal>
-            <User className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
-          </ProfileModal>
-          {user?.email}
-        </div>
-        <LogOut 
-          className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" 
-          onClick={handleSignOut}
-        />
+      <div className="ml-4">
+        <UserActions />
       </div>
     </div>
   );

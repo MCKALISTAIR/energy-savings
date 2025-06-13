@@ -4,9 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap, Battery, Car, Thermometer, Calculator, TrendingUp, PoundSterling, Leaf } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import UserActions from '@/components/UserActions';
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const features = [
     {
@@ -51,6 +54,15 @@ const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
+      {/* Header with User Actions */}
+      {user && (
+        <div className="container mx-auto px-4 pt-4">
+          <div className="flex justify-end">
+            <UserActions />
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
@@ -64,22 +76,35 @@ const Landing: React.FC = () => {
             battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/auth')}
-              className="text-lg px-8 py-6"
-            >
-              <Zap className="w-5 h-5 mr-2" />
-              Start Calculating Savings
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={() => navigate('/auth')}
-              className="text-lg px-8 py-6"
-            >
-              Learn More
-            </Button>
+            {user ? (
+              <Button 
+                size="lg" 
+                onClick={() => navigate('/')}
+                className="text-lg px-8 py-6"
+              >
+                <Calculator className="w-5 h-5 mr-2" />
+                Go to Calculator
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate('/auth')}
+                  className="text-lg px-8 py-6"
+                >
+                  <Zap className="w-5 h-5 mr-2" />
+                  Start Calculating Savings
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => navigate('/auth')}
+                  className="text-lg px-8 py-6"
+                >
+                  Learn More
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -153,14 +178,25 @@ const Landing: React.FC = () => {
           <p className="text-xl mb-8 opacity-90">
             Join thousands of homeowners making informed decisions about renewable energy
           </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => navigate('/auth')}
-            className="text-lg px-8 py-6"
-          >
-            Get Started Free
-          </Button>
+          {user ? (
+            <Button 
+              size="lg" 
+              variant="secondary"
+              onClick={() => navigate('/')}
+              className="text-lg px-8 py-6"
+            >
+              Go to Calculator
+            </Button>
+          ) : (
+            <Button 
+              size="lg" 
+              variant="secondary"
+              onClick={() => navigate('/auth')}
+              className="text-lg px-8 py-6"
+            >
+              Get Started Free
+            </Button>
+          )}
         </div>
       </div>
     </div>
