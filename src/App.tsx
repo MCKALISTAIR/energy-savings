@@ -24,9 +24,7 @@ const AppContent = () => {
           path="/" 
           element={
             (user || devBypass) ? (
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
+              <Index />
             ) : (
               <Landing />
             )
