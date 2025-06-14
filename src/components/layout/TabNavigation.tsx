@@ -101,7 +101,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
             </TabsTrigger>
           </TabsList>
 
-          {/* Second Row - Electric Vehicle, Heat Pump (centered) */}
+          {/* Second Row - Electric Vehicle, Heating (centered) */}
           <div className="flex justify-center">
             <TabsList className="grid grid-cols-2 w-auto">
               <TabsTrigger 
@@ -118,7 +118,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
                 onClick={() => handleTabClick('heatpump')}
               >
                 <Thermometer className={getIconClassName('heatpump')} />
-                Heat Pump
+                Heating
               </TabsTrigger>
             </TabsList>
           </div>
