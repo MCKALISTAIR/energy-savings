@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import AuthHeader from '@/components/auth/AuthHeader';
@@ -20,7 +19,7 @@ const Auth: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Load saved email on component mount
+  // Load saved email on component mount (if user opted to remember)
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {
@@ -92,12 +91,6 @@ const Auth: React.FC = () => {
     setLoading(false);
   };
 
-  const handleDevBypass = () => {
-    console.log('Development bypass activated - redirecting to main app');
-    localStorage.setItem('devBypass', 'true');
-    navigate('/');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -127,20 +120,6 @@ const Auth: React.FC = () => {
               handleSignIn={handleSignIn}
               handleSignUp={handleSignUp}
             />
-
-            {/* Development bypass button */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
-              <Button
-                onClick={handleDevBypass}
-                variant="outline"
-                className="w-full bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100"
-              >
-                🚧 Dev Bypass (Skip Login)
-              </Button>
-              <p className="text-xs text-yellow-600 mt-1 text-center">
-                For development only
-              </p>
-            </div>
 
             {error && (
               <Alert className="mt-4">
