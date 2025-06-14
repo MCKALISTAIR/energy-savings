@@ -10,9 +10,10 @@ import { useProfileForm } from '@/hooks/useProfileForm';
 
 interface ProfileFormProps {
   isOpen: boolean;
+  onClose: () => void;
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ isOpen }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ isOpen, onClose }) => {
   const {
     user,
     firstName,
@@ -91,6 +92,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ isOpen }) => {
 
       {/* Action Buttons - Side by Side */}
       <div className="flex gap-3 p-6 pt-4 border-t bg-background">
+        <Button
+          onClick={onClose}
+          variant="outline"
+          className="flex-1"
+        >
+          Cancel
+        </Button>
         <Button
           onClick={handleSaveProfile}
           disabled={loading}

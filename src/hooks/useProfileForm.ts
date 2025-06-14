@@ -14,6 +14,12 @@ export const useProfileForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Initial values to track changes
+  const [initialFirstName, setInitialFirstName] = useState('');
+  const [initialLastName, setInitialLastName] = useState('');
+  const [initialCurrency, setInitialCurrency] = useState('GBP');
 
   // Check if user is using Google OAuth
   const isGoogleUser = user?.app_metadata?.provider === 'google';
@@ -26,23 +32,50 @@ export const useProfileForm = () => {
   const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const validatedValue = validateNameInput(e.target.value);
     setFirstName(validatedValue);
+    setHasUnsavedChanges(true);
   };
 
   const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const validatedValue = validateNameInput(e.target.value);
     setLastName(validatedValue);
+    setHasUnsavedChanges(true);
   };
+
+  const handleCurrencyChange = (value: string) => {
+    setCurrency(value);
+    setHasUnsavedChanges(true);
+  };
+
+  // Check for unsaved changes
+  useEffect(() => {
+    const hasChanges = 
+      firstName !== initialFirstName ||
+      lastName !== initialLastName ||
+      currency !== initialCurrency ||
+      newPassword !== '' ||
+      confirmPassword !== '';
+    
+    setHasUnsavedChanges(hasChanges);
+  }, [firstName, lastName, currency, newPassword, confirmPassword, initialFirstName, initialLastName, initialCurrency]);
 
   const loadUserData = (isOpen: boolean) => {
     if (user && isOpen) {
       // Load user metadata if available
       const metadata = user.user_metadata || {};
-      setFirstName(metadata.first_name || '');
-      setLastName(metadata.last_name || '');
+      const userFirstName = metadata.first_name || '';
+      const userLastName = metadata.last_name || '';
+      
+      setFirstName(userFirstName);
+      setLastName(userLastName);
+      setInitialFirstName(userFirstName);
+      setInitialLastName(userLastName);
       
       // Load currency preference from localStorage or default to GBP
       const savedCurrency = localStorage.getItem('preferredCurrency') || 'GBP';
       setCurrency(savedCurrency);
+      setInitialCurrency(savedCurrency);
+      
+      setHasUnsavedChanges(false);
     }
   };
 
@@ -64,6 +97,12 @@ export const useProfileForm = () => {
 
       // Save currency preference to localStorage
       localStorage.setItem('preferredCurrency', currency);
+
+      // Update initial values after successful save
+      setInitialFirstName(firstName);
+      setInitialLastName(lastName);
+      setInitialCurrency(currency);
+      setHasUnsavedChanges(false);
 
       setSuccess('Profile updated successfully');
     } catch (err: any) {
@@ -98,6 +137,7 @@ export const useProfileForm = () => {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      setHasUnsavedChanges(false);
       setSuccess('Password updated successfully');
     } catch (err: any) {
       setError(err.message);
@@ -112,6 +152,12 @@ export const useProfileForm = () => {
     setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
+    setHasUnsavedChanges(false);
+    
+    // Reset to initial values
+    setFirstName(initialFirstName);
+    setLastName(initialLastName);
+    setCurrency(initialCurrency);
   };
 
   return {
@@ -126,9 +172,10 @@ export const useProfileForm = () => {
     error,
     success,
     isGoogleUser,
+    hasUnsavedChanges,
     handleFirstNameChange,
     handleLastNameChange,
-    setCurrency,
+    setCurrency: handleCurrencyChange,
     setNewPassword,
     setConfirmPassword,
     loadUserData,
