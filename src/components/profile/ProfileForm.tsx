@@ -1,0 +1,105 @@
+
+import React from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import PersonalInfoSection from './PersonalInfoSection';
+import PreferencesSection from './PreferencesSection';
+import LoginMethodSection from './LoginMethodSection';
+import PasswordChangeSection from './PasswordChangeSection';
+import { useProfileForm } from '@/hooks/useProfileForm';
+
+interface ProfileFormProps {
+  isOpen: boolean;
+}
+
+const ProfileForm: React.FC<ProfileFormProps> = ({ isOpen }) => {
+  const {
+    user,
+    firstName,
+    lastName,
+    currency,
+    newPassword,
+    confirmPassword,
+    loading,
+    error,
+    success,
+    isGoogleUser,
+    handleFirstNameChange,
+    handleLastNameChange,
+    setCurrency,
+    setNewPassword,
+    setConfirmPassword,
+    loadUserData,
+    handleSaveProfile,
+    handleChangePassword,
+  } = useProfileForm();
+
+  React.useEffect(() => {
+    loadUserData(isOpen);
+  }, [isOpen]);
+
+  return (
+    <>
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-[calc(90vh-140px)] pl-4 pr-4">
+          <div className="space-y-6 pb-6 pr-2 pl-2">
+            {/* Personal Information */}
+            <PersonalInfoSection
+              email={user?.email || ''}
+              firstName={firstName}
+              lastName={lastName}
+              onFirstNameChange={handleFirstNameChange}
+              onLastNameChange={handleLastNameChange}
+            />
+
+            {/* Preferences */}
+            <PreferencesSection
+              currency={currency}
+              onCurrencyChange={setCurrency}
+            />
+
+            {/* Login Method */}
+            <LoginMethodSection isGoogleUser={isGoogleUser} />
+
+            {/* Password Change (only for email users) */}
+            {!isGoogleUser && (
+              <PasswordChangeSection
+                newPassword={newPassword}
+                confirmPassword={confirmPassword}
+                loading={loading}
+                onNewPasswordChange={(e) => setNewPassword(e.target.value)}
+                onConfirmPasswordChange={(e) => setConfirmPassword(e.target.value)}
+                onChangePassword={handleChangePassword}
+              />
+            )}
+
+            {/* Error/Success Messages */}
+            {error && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                <p className="text-sm text-destructive">{error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-sm text-green-600">{success}</p>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-3 p-6 pt-4 border-t bg-background">
+        <button
+          onClick={handleSaveProfile}
+          disabled={loading}
+          className="flex-1 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+        >
+          {loading ? 'Saving...' : 'Save Profile'}
+        </button>
+      </div>
+    </>
+  );
+};
+
+export default ProfileForm;
