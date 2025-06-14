@@ -43,22 +43,28 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
       <TabsContent value="signin">
         <form onSubmit={handleSignIn} className="space-y-4">
           <div>
-            <Label htmlFor="signin-email">Email</Label>
+            <Label htmlFor="signin-email">
+              Email <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="signin-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
               required
             />
           </div>
           <div>
-            <Label htmlFor="signin-password">Password</Label>
+            <Label htmlFor="signin-password">
+              Password <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="signin-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
               required
             />
           </div>
@@ -81,33 +87,42 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
       <TabsContent value="signup">
         <form onSubmit={handleSignUp} className="space-y-4">
           <div>
-            <Label htmlFor="signup-email">Email</Label>
+            <Label htmlFor="signup-email">
+              Email <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="signup-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
               required
             />
           </div>
           <div>
-            <Label htmlFor="signup-password">Password</Label>
+            <Label htmlFor="signup-password">
+              Password <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="signup-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password (min. 6 characters)"
               required
               minLength={6}
             />
           </div>
           <div>
-            <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+            <Label htmlFor="signup-confirm-password">
+              Confirm Password <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="signup-confirm-password"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter your password"
               required
               minLength={6}
               className={password && confirmPassword && password !== confirmPassword ? 'border-red-500' : ''}
