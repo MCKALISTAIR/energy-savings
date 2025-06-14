@@ -147,7 +147,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
         </DialogHeader>
         
         <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-[calc(90vh-140px)] pl-6 pr-4">
+          <ScrollArea className="h-[calc(90vh-140px)] pl-8 pr-4">
             <div className="space-y-6 pb-6 pr-2">
               {/* User Information */}
               <div className="space-y-4">
