@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -101,3 +102,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .dashboard-tab {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .dashboard-tab:hover:not([data-state="active"]) {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+    color: hsl(var(--primary-foreground));
+    opacity: 0.9;
+  }
+  
+  .dashboard-tab[data-state="active"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+    border-radius: inherit;
+    z-index: -1;
+    animation: dashboard-glow 3s ease-in-out infinite;
+  }
+}
+</layer>

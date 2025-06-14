@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardSettings from '@/components/dashboard/DashboardSettings';
 import { DashboardConfig } from '@/components/dashboard/types';
-import { Zap, Battery, Car, BarChart3, Settings, Thermometer } from 'lucide-react';
+import { Zap, Battery, Car, Settings, Thermometer, LayoutDashboard } from 'lucide-react';
 
 interface TabNavigationProps {
   activeTab: string;
@@ -61,9 +61,12 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
           <Thermometer className="w-4 h-4" />
           Heat Pump
         </TabsTrigger>
-        <TabsTrigger value="dashboard" className="flex items-center gap-2">
-          <BarChart3 className="w-4 h-4" />
-          Dashboard
+        <TabsTrigger 
+          value="dashboard" 
+          className="flex items-center gap-2 dashboard-tab relative overflow-hidden hover:scale-105 transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:font-semibold hover:shadow-md"
+        >
+          <LayoutDashboard className="w-5 h-5" />
+          <span className="font-medium">Dashboard</span>
         </TabsTrigger>
       </TabsList>
       
