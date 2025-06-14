@@ -37,7 +37,7 @@ const UnsavedChangesDialog: React.FC<UnsavedChangesDialogProps> = ({
           <AlertDialogCancel onClick={onCancel}>
             Continue Editing
           </AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} variant="outline">
+          <AlertDialogAction onClick={onConfirm} className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
             Close Without Saving
           </AlertDialogAction>
           <AlertDialogAction onClick={onSave}>
