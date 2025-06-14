@@ -18,6 +18,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
 }) => {
   const [showButton, setShowButton] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [animatingIcons, setAnimatingIcons] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (activeTab === 'dashboard') {
@@ -33,6 +34,35 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
     }
   }, [activeTab]);
 
+  const handleTabClick = (tabValue: string) => {
+    // Add the tab to the animating set
+    setAnimatingIcons(prev => new Set(prev).add(tabValue));
+    
+    // Remove the animation after 2 seconds
+    setTimeout(() => {
+      setAnimatingIcons(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(tabValue);
+        return newSet;
+      });
+    }, 2000);
+  };
+
+  const getIconClassName = (tabValue: string) => {
+    if (!animatingIcons.has(tabValue)) return "w-5 h-5";
+    
+    const baseClass = "w-5 h-5";
+    switch (tabValue) {
+      case 'battery': return `${baseClass} icon-battery-charging`;
+      case 'ev': return `${baseClass} icon-car-moving`;
+      case 'solar': return `${baseClass} icon-solar-pulse`;
+      case 'systems': return `${baseClass} icon-settings-spin`;
+      case 'heatpump': return `${baseClass} icon-heatpump-wave`;
+      case 'dashboard': return `${baseClass} icon-dashboard-bounce`;
+      default: return baseClass;
+    }
+  };
+
   return (
     <div className="flex items-center justify-center mb-6 px-10">
       {/* Left spacer - matches the width of the right button area */}
@@ -45,16 +75,28 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
         <div className="flex flex-col gap-2">
           {/* First Row - Systems, Solar, Battery */}
           <TabsList className="grid grid-cols-3 w-auto">
-            <TabsTrigger value="systems" className="flex items-center gap-2 px-6 min-w-[140px]">
-              <Settings className="w-5 h-5" />
+            <TabsTrigger 
+              value="systems" 
+              className="flex items-center gap-2 px-6 min-w-[140px]"
+              onClick={() => handleTabClick('systems')}
+            >
+              <Settings className={getIconClassName('systems')} />
               Systems
             </TabsTrigger>
-            <TabsTrigger value="solar" className="flex items-center gap-2 px-6 min-w-[130px]">
-              <Zap className="w-5 h-5" />
+            <TabsTrigger 
+              value="solar" 
+              className="flex items-center gap-2 px-6 min-w-[130px]"
+              onClick={() => handleTabClick('solar')}
+            >
+              <Zap className={getIconClassName('solar')} />
               Solar
             </TabsTrigger>
-            <TabsTrigger value="battery" className="flex items-center gap-2 px-6 min-w-[140px]">
-              <Battery className="w-5 h-5" />
+            <TabsTrigger 
+              value="battery" 
+              className="flex items-center gap-2 px-6 min-w-[140px]"
+              onClick={() => handleTabClick('battery')}
+            >
+              <Battery className={getIconClassName('battery')} />
               Battery
             </TabsTrigger>
           </TabsList>
@@ -62,12 +104,20 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
           {/* Second Row - Electric Vehicle, Heat Pump (centered) */}
           <div className="flex justify-center">
             <TabsList className="grid grid-cols-2 w-auto">
-              <TabsTrigger value="ev" className="flex items-center gap-2 px-6 min-w-[170px]">
-                <Car className="w-5 h-5" />
+              <TabsTrigger 
+                value="ev" 
+                className="flex items-center gap-2 px-6 min-w-[170px]"
+                onClick={() => handleTabClick('ev')}
+              >
+                <Car className={getIconClassName('ev')} />
                 Electric Vehicle
               </TabsTrigger>
-              <TabsTrigger value="heatpump" className="flex items-center gap-2 px-6 min-w-[150px]">
-                <Thermometer className="w-5 h-5" />
+              <TabsTrigger 
+                value="heatpump" 
+                className="flex items-center gap-2 px-6 min-w-[150px]"
+                onClick={() => handleTabClick('heatpump')}
+              >
+                <Thermometer className={getIconClassName('heatpump')} />
                 Heat Pump
               </TabsTrigger>
             </TabsList>
@@ -82,8 +132,9 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
           <TabsTrigger 
             value="dashboard" 
             className="flex items-center gap-2 dashboard-tab relative overflow-hidden hover:scale-105 transition-all duration-200 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/90 data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:font-semibold hover:shadow-md px-8 min-w-[160px]"
+            onClick={() => handleTabClick('dashboard')}
           >
-            <LayoutDashboard className="w-5 h-5" />
+            <LayoutDashboard className={getIconClassName('dashboard')} />
             <span className="font-medium">Dashboard</span>
           </TabsTrigger>
         </TabsList>
