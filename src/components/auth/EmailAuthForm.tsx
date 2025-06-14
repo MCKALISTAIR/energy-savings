@@ -11,6 +11,8 @@ interface EmailAuthFormProps {
   setEmail: (email: string) => void;
   password: string;
   setPassword: (password: string) => void;
+  confirmPassword: string;
+  setConfirmPassword: (confirmPassword: string) => void;
   rememberEmail: boolean;
   setRememberEmail: (remember: boolean) => void;
   loading: boolean;
@@ -23,6 +25,8 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
   setEmail,
   password,
   setPassword,
+  confirmPassword,
+  setConfirmPassword,
   rememberEmail,
   setRememberEmail,
   loading,
@@ -96,6 +100,21 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               required
               minLength={6}
             />
+          </div>
+          <div>
+            <Label htmlFor="signup-confirm-password">Confirm Password</Label>
+            <Input
+              id="signup-confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={6}
+              className={password && confirmPassword && password !== confirmPassword ? 'border-red-500' : ''}
+            />
+            {password && confirmPassword && password !== confirmPassword && (
+              <p className="text-sm text-red-600 mt-1">Passwords do not match</p>
+            )}
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
