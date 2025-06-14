@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DashboardSettings from '@/components/dashboard/DashboardSettings';
 import { DashboardConfig } from '@/components/dashboard/types';
-import { Zap, Battery, Car, Settings, Thermometer, LayoutDashboard } from 'lucide-react';
+import { Zap, Battery, Car, Settings, Thermometer, LayoutDashboard, Activity } from 'lucide-react';
 
 interface TabNavigationProps {
   activeTab: string;
@@ -59,6 +59,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
       case 'systems': return `${baseClass} icon-settings-spin`;
       case 'heatpump': return `${baseClass} icon-heatpump-wave`;
       case 'dashboard': return `${baseClass} icon-dashboard-bounce`;
+      case 'smartmeter': return `${baseClass} icon-smart-meter-pulse`;
       default: return baseClass;
     }
   };
@@ -101,9 +102,9 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
             </TabsTrigger>
           </TabsList>
 
-          {/* Second Row - Electric Vehicle, Heating (centered) */}
+          {/* Second Row - Electric Vehicle, Heating, Smart Meter */}
           <div className="flex justify-center">
-            <TabsList className="grid grid-cols-2 w-auto">
+            <TabsList className="grid grid-cols-3 w-auto">
               <TabsTrigger 
                 value="ev" 
                 className="flex items-center gap-2 px-6 min-w-[170px]"
@@ -119,6 +120,14 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
               >
                 <Thermometer className={getIconClassName('heatpump')} />
                 Heating
+              </TabsTrigger>
+              <TabsTrigger 
+                value="smartmeter" 
+                className="flex items-center gap-2 px-6 min-w-[150px]"
+                onClick={() => handleTabClick('smartmeter')}
+              >
+                <Activity className={getIconClassName('smartmeter')} />
+                Smart Meter
               </TabsTrigger>
             </TabsList>
           </div>

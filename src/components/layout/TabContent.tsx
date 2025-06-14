@@ -8,6 +8,7 @@ import HeatPumpCalculator from '@/components/HeatPumpCalculator';
 import SavingsDashboard from '@/components/SavingsDashboard';
 import DatabaseHouseSelector from '@/components/DatabaseHouseSelector';
 import DatabaseSystemManager from '@/components/DatabaseSystemManager';
+import SmartMeterIntegration from '@/components/SmartMeterIntegration';
 import { SavingsData } from '@/pages/Index';
 import { DashboardConfig } from '@/components/dashboard/types';
 
@@ -64,6 +65,10 @@ const TabContent: React.FC<TabContentProps> = ({
 
       <TabsContent value="heatpump" className="animate-fade-in">
         <HeatPumpCalculator onUpdate={updateHeatPumpData} />
+      </TabsContent>
+
+      <TabsContent value="smartmeter" className="animate-fade-in">
+        <SmartMeterIntegration />
       </TabsContent>
 
       <TabsContent value="dashboard" className="animate-fade-in">
