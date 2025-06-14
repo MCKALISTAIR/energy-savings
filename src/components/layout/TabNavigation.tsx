@@ -42,24 +42,24 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
       
       <div className="flex items-center gap-4">
         {/* System Configuration Tabs */}
-        <TabsList className="grid grid-cols-5">
-          <TabsTrigger value="systems" className="flex items-center gap-2">
+        <TabsList className="grid grid-cols-5 w-auto">
+          <TabsTrigger value="systems" className="flex items-center gap-2 px-4 min-w-[120px]">
             <Settings className="w-4 h-4" />
             Systems
           </TabsTrigger>
-          <TabsTrigger value="solar" className="flex items-center gap-2">
+          <TabsTrigger value="solar" className="flex items-center gap-2 px-4 min-w-[100px]">
             <Zap className="w-4 h-4" />
             Solar
           </TabsTrigger>
-          <TabsTrigger value="battery" className="flex items-center gap-2">
+          <TabsTrigger value="battery" className="flex items-center gap-2 px-4 min-w-[110px]">
             <Battery className="w-4 h-4" />
             Battery
           </TabsTrigger>
-          <TabsTrigger value="ev" className="flex items-center gap-2">
+          <TabsTrigger value="ev" className="flex items-center gap-2 px-4 min-w-[140px]">
             <Car className="w-4 h-4" />
             Electric Vehicle
           </TabsTrigger>
-          <TabsTrigger value="heatpump" className="flex items-center gap-2">
+          <TabsTrigger value="heatpump" className="flex items-center gap-2 px-4 min-w-[130px]">
             <Thermometer className="w-4 h-4" />
             Heat Pump
           </TabsTrigger>
