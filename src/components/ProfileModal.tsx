@@ -28,7 +28,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
         {children}
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
-        <DialogHeader className="px-6 pt-6 pb-2">
+        <DialogHeader className="px-8 pt-6 pb-2">
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5" />
             Profile Settings
@@ -39,17 +39,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
         </DialogHeader>
         
         <ProfileForm isOpen={isOpen} />
-
-        {/* Cancel Button */}
-        <div className="px-6 pb-6">
-          <Button
-            onClick={() => setIsOpen(false)}
-            variant="outline"
-            className="w-full"
-          >
-            Cancel
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );

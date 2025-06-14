@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
 import PersonalInfoSection from './PersonalInfoSection';
 import PreferencesSection from './PreferencesSection';
 import LoginMethodSection from './LoginMethodSection';
@@ -88,15 +89,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ isOpen }) => {
         </ScrollArea>
       </div>
 
-      {/* Action Buttons */}
+      {/* Action Buttons - Side by Side */}
       <div className="flex gap-3 p-6 pt-4 border-t bg-background">
-        <button
+        <Button
           onClick={handleSaveProfile}
           disabled={loading}
-          className="flex-1 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+          className="flex-1"
         >
           {loading ? 'Saving...' : 'Save Profile'}
-        </button>
+        </Button>
       </div>
     </>
   );
