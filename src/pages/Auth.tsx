@@ -96,19 +96,6 @@ const Auth: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Back button */}
-        <div className="mb-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Button>
-        </div>
-
         <AuthHeader />
 
         <Card>
@@ -147,6 +134,19 @@ const Auth: React.FC = () => {
                 <AlertDescription className="text-green-600">{success}</AlertDescription>
               </Alert>
             )}
+
+            {/* Back to Landing CTA */}
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/')}
+                className="w-full flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Landing Page
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
