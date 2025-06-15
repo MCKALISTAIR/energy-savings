@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -121,6 +120,7 @@ const Auth: React.FC = () => {
               loading={loading}
               handleSignIn={handleSignIn}
               handleSignUp={handleSignUp}
+              defaultTab="signup"
             />
 
             {error && (

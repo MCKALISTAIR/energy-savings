@@ -18,6 +18,7 @@ interface EmailAuthFormProps {
   loading: boolean;
   handleSignIn: (e: React.FormEvent) => void;
   handleSignUp: (e: React.FormEvent) => void;
+  defaultTab?: string;
 }
 
 const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
@@ -32,9 +33,10 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
   loading,
   handleSignIn,
   handleSignUp,
+  defaultTab = "signin",
 }) => {
   return (
-    <Tabs defaultValue="signin" className="w-full">
+    <Tabs defaultValue={defaultTab} className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="signin">Sign In</TabsTrigger>
         <TabsTrigger value="signup">Sign Up</TabsTrigger>
