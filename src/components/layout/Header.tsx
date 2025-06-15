@@ -4,12 +4,7 @@ import { House } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import UserActions from '@/components/UserActions';
 
-interface HeaderProps {
-  hasUnsavedProgress?: boolean;
-  progressDescription?: string;
-}
-
-const Header: React.FC<HeaderProps> = ({ hasUnsavedProgress, progressDescription }) => {
+const Header: React.FC = () => {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -27,10 +22,7 @@ const Header: React.FC<HeaderProps> = ({ hasUnsavedProgress, progressDescription
         </div>
 
         <div className="ml-4">
-          <UserActions 
-            hasUnsavedProgress={hasUnsavedProgress}
-            progressDescription={progressDescription}
-          />
+          <UserActions />
         </div>
       </div>
       
