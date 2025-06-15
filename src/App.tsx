@@ -6,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import Landing from '@/pages/Landing';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import './App.css';
 
 const AppContent = () => {
@@ -16,14 +15,7 @@ const AppContent = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
-        <Route 
-          path="/calculator" 
-          element={
-            <ProtectedRoute>
-              <Index />
-            </ProtectedRoute>
-          } 
-        />
+        <Route path="/calculator" element={<Index />} />
       </Routes>
     </DatabaseSystemProvider>
   );

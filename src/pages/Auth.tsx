@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Calculator } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import AuthHeader from '@/components/auth/AuthHeader';
@@ -135,8 +135,24 @@ const Auth: React.FC = () => {
               </Alert>
             )}
 
-            {/* Back to Landing CTA */}
+            {/* Continue without account CTA */}
             <div className="mt-6 pt-4 border-t border-gray-200">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate('/calculator')}
+                className="w-full flex items-center justify-center gap-2 mb-3"
+              >
+                <Calculator className="w-4 h-4" />
+                Continue without account
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                You can use the calculator without an account, but you'll need to sign up to save your data
+              </p>
+            </div>
+
+            {/* Back to Landing CTA */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
               <Button
                 variant="ghost"
                 size="sm"

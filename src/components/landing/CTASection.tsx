@@ -17,24 +17,41 @@ const CTASection: React.FC = () => {
         <p className="text-xl mb-8 opacity-90">
           Join thousands of homeowners making informed decisions about renewable energy
         </p>
-        {user ? (
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => navigate('/calculator')}
-            className="text-lg px-8 py-6"
-          >
-            Go to Calculator
-          </Button>
-        ) : (
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => navigate('/auth')}
-            className="text-lg px-8 py-6"
-          >
-            Get Started Free
-          </Button>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {user ? (
+            <Button 
+              size="lg" 
+              variant="secondary"
+              onClick={() => navigate('/calculator')}
+              className="text-lg px-8 py-6"
+            >
+              Go to Calculator
+            </Button>
+          ) : (
+            <>
+              <Button 
+                size="lg" 
+                variant="secondary"
+                onClick={() => navigate('/auth')}
+                className="text-lg px-8 py-6"
+              >
+                Get Started Free
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={() => navigate('/calculator')}
+                className="text-lg px-8 py-6 bg-white/10 border-white/20 text-white hover:bg-white/20"
+              >
+                Try Calculator
+              </Button>
+            </>
+          )}
+        </div>
+        {!user && (
+          <p className="text-sm opacity-75 mt-4">
+            Create an account to save your calculations • No credit card required
+          </p>
         )}
       </div>
     </div>
