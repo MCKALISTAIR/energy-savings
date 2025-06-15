@@ -4,7 +4,6 @@ import { Tabs } from '@/components/ui/tabs';
 import Header from '@/components/layout/Header';
 import TabNavigation from '@/components/layout/TabNavigation';
 import TabContent from '@/components/layout/TabContent';
-import SaveDataPrompt from '@/components/SaveDataPrompt';
 import { DashboardConfig } from '@/components/dashboard/types';
 import { getDefaultConfig } from '@/components/dashboard/defaultConfig';
 import { useAuth } from '@/contexts/AuthContext';
@@ -99,17 +98,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
-        <Header />
-
-        {/* Show save data prompt for unauthenticated users with calculated data */}
-        {!user && hasCalculatedData && (
-          <div className="mb-6">
-            <SaveDataPrompt 
-              hasData={hasCalculatedData}
-              dataDescription="your renewable energy calculations and potential savings"
-            />
-          </div>
-        )}
+        <Header 
+          hasUnsavedProgress={!user && hasCalculatedData}
+          progressDescription="renewable energy calculations and potential savings"
+        />
 
         <Tabs defaultValue="systems" value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabNavigation 
