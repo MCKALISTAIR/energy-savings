@@ -8,9 +8,12 @@ import HeatPumpCalculator from '@/components/HeatPumpCalculator';
 import SavingsDashboard from '@/components/SavingsDashboard';
 import DatabaseHouseSelector from '@/components/DatabaseHouseSelector';
 import DatabaseSystemManager from '@/components/DatabaseSystemManager';
+import HouseSelector from '@/components/HouseSelector';
+import SystemManager from '@/components/SystemManager';
 import SmartMeterIntegration from '@/components/SmartMeterIntegration';
 import { SavingsData } from '@/pages/Index';
 import { DashboardConfig } from '@/components/dashboard/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TabContentProps {
   activeTab: string;
@@ -33,6 +36,8 @@ const TabContent: React.FC<TabContentProps> = ({
   updateEVData,
   updateHeatPumpData
 }) => {
+  const { user } = useAuth();
+
   return (
     <>
       {/* Dashboard Subtitle - only shown when dashboard tab is active */}
@@ -46,8 +51,17 @@ const TabContent: React.FC<TabContentProps> = ({
 
       <TabsContent value="systems" className="animate-fade-in">
         <div className="space-y-6">
-          <DatabaseHouseSelector />
-          <DatabaseSystemManager />
+          {user ? (
+            <>
+              <DatabaseHouseSelector />
+              <DatabaseSystemManager />
+            </>
+          ) : (
+            <>
+              <HouseSelector />
+              <SystemManager />
+            </>
+          )}
         </div>
       </TabsContent>
 
