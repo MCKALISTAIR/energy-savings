@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Zap, Battery, Car, Thermometer, Calculator, TrendingUp, PoundSterling, Leaf } from 'lucide-react';
+import { Zap, Battery, Car, Thermometer, Calculator, TrendingUp, PoundSterling, Leaf, LogIn } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import UserActions from '@/components/UserActions';
 
@@ -56,14 +56,19 @@ const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
-      {/* Header with User Actions */}
-      {(user || devBypass) && (
-        <div className="container mx-auto px-4 pt-6 pb-4">
-          <div className="flex justify-end">
+      {/* Header with User Actions or Login */}
+      <div className="container mx-auto px-4 pt-6 pb-4">
+        <div className="flex justify-end">
+          {user ? (
             <UserActions />
-          </div>
+          ) : (
+            <Button onClick={() => navigate('/auth')}>
+              <LogIn className="mr-2 h-4 w-4" />
+              Login
+            </Button>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
@@ -78,7 +83,7 @@ const Landing: React.FC = () => {
             battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {(user || devBypass) ? (
+            {user ? (
               <Button 
                 size="lg" 
                 onClick={() => navigate('/calculator')}
@@ -88,24 +93,14 @@ const Landing: React.FC = () => {
                 Go to Calculator
               </Button>
             ) : (
-              <>
-                <Button 
-                  size="lg" 
-                  onClick={() => navigate('/auth')}
-                  className="text-lg px-8 py-6"
-                >
-                  <Zap className="w-5 h-5 mr-2" />
-                  Start Calculating Savings
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  onClick={() => navigate('/auth')}
-                  className="text-lg px-8 py-6"
-                >
-                  Learn More
-                </Button>
-              </>
+              <Button 
+                size="lg" 
+                onClick={() => navigate('/auth')}
+                className="text-lg px-8 py-6"
+              >
+                <Zap className="w-5 h-5 mr-2" />
+                Start Calculating Savings
+              </Button>
             )}
           </div>
         </div>
@@ -180,7 +175,7 @@ const Landing: React.FC = () => {
           <p className="text-xl mb-8 opacity-90">
             Join thousands of homeowners making informed decisions about renewable energy
           </p>
-          {(user || devBypass) ? (
+          {user ? (
             <Button 
               size="lg" 
               variant="secondary"
