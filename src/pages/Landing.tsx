@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -56,22 +57,24 @@ const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
-      {/* Header with User Actions or Login */}
-      <div className="container mx-auto px-4 pt-6 pb-4">
-        <div className="flex justify-end">
+      {/* Hero Section with integrated header */}
+      <div className="container mx-auto px-4 py-16 relative">
+        {/* Login/User Actions in top right */}
+        <div className="absolute top-6 right-4">
           {user ? (
             <UserActions />
           ) : (
-            <Button onClick={() => navigate('/auth')}>
-              <LogIn className="mr-2 h-4 w-4" />
-              Login
+            <Button 
+              size="icon"
+              variant="outline"
+              onClick={() => navigate('/auth')}
+              className="bg-white/70 backdrop-blur-sm hover:bg-white/90"
+            >
+              <LogIn className="h-4 w-4" />
             </Button>
           )}
         </div>
-      </div>
 
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
             Discover Your
@@ -82,7 +85,7 @@ const Landing: React.FC = () => {
             Make informed decisions about your sustainable energy future. Calculate potential savings from solar panels, 
             battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             {user ? (
               <Button 
                 size="lg" 
