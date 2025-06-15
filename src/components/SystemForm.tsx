@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSystem } from '@/contexts/SystemContext';
 import { SystemType } from '@/types';
 
@@ -211,67 +212,71 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="name">System Name</Label>
-        <Input
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          required
-        />
-      </div>
+    <div className="max-h-[70vh] overflow-hidden flex flex-col">
+      <ScrollArea className="flex-1 pr-6">
+        <form onSubmit={handleSubmit} className="space-y-4 pb-4">
+          <div>
+            <Label htmlFor="name">System Name</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              required
+            />
+          </div>
 
-      <div>
-        <Label>System Type</Label>
-        <Select
-          value={formData.type}
-          onValueChange={(value: 'solar' | 'battery' | 'ev') => 
-            setFormData(prev => ({ ...prev, type: value, specifications: {} }))
-          }
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="solar">Solar Panels</SelectItem>
-            <SelectItem value="battery">Battery Storage</SelectItem>
-            <SelectItem value="ev">Electric Vehicle</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+          <div>
+            <Label>System Type</Label>
+            <Select
+              value={formData.type}
+              onValueChange={(value: 'solar' | 'battery' | 'ev') => 
+                setFormData(prev => ({ ...prev, type: value, specifications: {} }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="solar">Solar Panels</SelectItem>
+                <SelectItem value="battery">Battery Storage</SelectItem>
+                <SelectItem value="ev">Electric Vehicle</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div>
-        <Label htmlFor="installDate">Install Date</Label>
-        <Input
-          id="installDate"
-          type="date"
-          value={formData.installDate}
-          onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="installDate">Install Date</Label>
+            <Input
+              id="installDate"
+              type="date"
+              value={formData.installDate}
+              onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
+              required
+            />
+          </div>
 
-      <div className="flex items-center space-x-2">
-        <Switch
-          id="isActive"
-          checked={formData.isActive}
-          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
-        />
-        <Label htmlFor="isActive">System Active</Label>
-      </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="isActive"
+              checked={formData.isActive}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
+            />
+            <Label htmlFor="isActive">System Active</Label>
+          </div>
 
-      {renderSpecificationsFields()}
-
-      <div className="flex gap-2">
-        <Button type="submit">
+          {renderSpecificationsFields()}
+        </form>
+      </ScrollArea>
+      
+      <div className="flex gap-2 pt-4 border-t">
+        <Button type="submit" onClick={handleSubmit}>
           {initialData ? 'Update System' : 'Add System'}
         </Button>
         <Button type="button" variant="outline" onClick={onSuccess}>
           Cancel
         </Button>
       </div>
-    </form>
+    </div>
   );
 };
 
