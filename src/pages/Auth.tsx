@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calculator } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthHeader from '@/components/auth/AuthHeader';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailAuthForm from '@/components/auth/EmailAuthForm';
@@ -12,6 +12,11 @@ import EmailAuthForm from '@/components/auth/EmailAuthForm';
 const Auth: React.FC = () => {
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if user came from calculator
+  const cameFromCalculator = location.state?.from === '/calculator';
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -151,16 +156,16 @@ const Auth: React.FC = () => {
               </p>
             </div>
 
-            {/* Back to Landing CTA */}
+            {/* Back CTA - Dynamic based on where user came from */}
             <div className="mt-4 pt-4 border-t border-gray-200">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/')}
+                onClick={() => navigate(cameFromCalculator ? '/calculator' : '/')}
                 className="w-full flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Landing Page
+                {cameFromCalculator ? 'Back to Calculator' : 'Back to Landing Page'}
               </Button>
             </div>
           </CardContent>

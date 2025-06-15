@@ -21,7 +21,7 @@ const UserActions: React.FC = () => {
       <div className="flex items-center gap-3">
         <Button 
           size="sm"
-          onClick={() => navigate('/auth')}
+          onClick={() => navigate('/auth', { state: { from: '/calculator' } })}
           className="flex items-center gap-2"
         >
           <UserPlus className="w-4 h-4" />
