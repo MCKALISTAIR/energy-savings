@@ -81,7 +81,7 @@ const Landing: React.FC = () => {
             {(user || devBypass) ? (
               <Button 
                 size="lg" 
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/calculator')}
                 className="text-lg px-8 py-6"
               >
                 <Calculator className="w-5 h-5 mr-2" />
@@ -184,7 +184,7 @@ const Landing: React.FC = () => {
             <Button 
               size="lg" 
               variant="secondary"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/calculator')}
               className="text-lg px-8 py-6"
             >
               Go to Calculator

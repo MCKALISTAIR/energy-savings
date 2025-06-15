@@ -10,18 +10,14 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import './App.css';
 
 const AppContent = () => {
-  const { user } = useAuth();
-  
-  // Check for development bypass flag
-  const devBypass = localStorage.getItem('devBypass') === 'true';
-
   return (
     <DatabaseSystemProvider>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
         <Route 
-          path="/" 
+          path="/calculator" 
           element={
             <ProtectedRoute>
               <Index />

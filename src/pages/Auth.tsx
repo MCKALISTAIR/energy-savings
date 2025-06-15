@@ -30,7 +30,7 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/calculator');
     }
   }, [user, navigate]);
 
