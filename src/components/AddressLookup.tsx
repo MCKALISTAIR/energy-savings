@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Search, MapPin } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AddressResult {
   formatted_address: string;
@@ -27,65 +28,44 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) 
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const [showManualEntry, setShowManualEntry] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const searchAddresses = async () => {
     if (!postcode.trim()) return;
     
     setLoadingAddresses(true);
+    setError(null);
+    
     try {
-      // First, validate the postcode format and get basic info
-      const postcodeResponse = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode.trim())}`);
+      console.log('Searching addresses for postcode:', postcode);
       
-      if (postcodeResponse.ok) {
-        const postcodeData = await postcodeResponse.json();
-        
-        // For demonstration, we'll create mock addresses based on the postcode
-        // In a real implementation, you'd use a service like GetAddress.io, Ideal Postcodes, or similar
-        const mockAddresses: AddressResult[] = [
-          {
-            formatted_address: `1 ${postcodeData.result.admin_ward}, ${postcodeData.result.admin_district}, ${postcodeData.result.postcode}`,
-            building_number: '1',
-            thoroughfare: postcodeData.result.admin_ward,
-            postcode: postcodeData.result.postcode,
-            post_town: postcodeData.result.admin_district
-          },
-          {
-            formatted_address: `2 ${postcodeData.result.admin_ward}, ${postcodeData.result.admin_district}, ${postcodeData.result.postcode}`,
-            building_number: '2',
-            thoroughfare: postcodeData.result.admin_ward,
-            postcode: postcodeData.result.postcode,
-            post_town: postcodeData.result.admin_district
-          },
-          {
-            formatted_address: `3 ${postcodeData.result.admin_ward}, ${postcodeData.result.admin_district}, ${postcodeData.result.postcode}`,
-            building_number: '3',
-            thoroughfare: postcodeData.result.admin_ward,
-            postcode: postcodeData.result.postcode,
-            post_town: postcodeData.result.admin_district
-          },
-          {
-            formatted_address: `4 ${postcodeData.result.admin_ward}, ${postcodeData.result.admin_district}, ${postcodeData.result.postcode}`,
-            building_number: '4',
-            thoroughfare: postcodeData.result.admin_ward,
-            postcode: postcodeData.result.postcode,
-            post_town: postcodeData.result.admin_district
-          },
-          {
-            formatted_address: `5 ${postcodeData.result.admin_ward}, ${postcodeData.result.admin_district}, ${postcodeData.result.postcode}`,
-            building_number: '5',
-            thoroughfare: postcodeData.result.admin_ward,
-            postcode: postcodeData.result.postcode,
-            post_town: postcodeData.result.admin_district
-          }
-        ];
-        
-        setAddresses(mockAddresses);
+      const { data, error: functionError } = await supabase.functions.invoke('address-lookup', {
+        body: { postcode: postcode.trim() }
+      });
+
+      if (functionError) {
+        console.error('Function error:', functionError);
+        setError('Address lookup service is temporarily unavailable. Please try manual entry.');
+        setAddresses([]);
+        return;
+      }
+
+      if (data.error) {
+        setError(data.error);
+        setAddresses([]);
+        return;
+      }
+
+      if (data.addresses && data.addresses.length > 0) {
+        setAddresses(data.addresses);
       } else {
-        console.error('Postcode lookup failed');
+        setError('No addresses found for this postcode. Please check the postcode or try manual entry.');
         setAddresses([]);
       }
+      
     } catch (error) {
-      console.error('Error looking up postcode:', error);
+      console.error('Error looking up addresses:', error);
+      setError('Address lookup service is temporarily unavailable. Please try manual entry.');
       setAddresses([]);
     } finally {
       setLoadingAddresses(false);
@@ -96,6 +76,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) 
     setFormData(prev => ({ ...prev, address: address.formatted_address }));
     setAddresses([]);
     setPostcode('');
+    setError(null);
   };
 
   const resetAddressForm = () => {
@@ -103,6 +84,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) 
     setAddresses([]);
     setShowManualEntry(false);
     setFormData(prev => ({ ...prev, address: '' }));
+    setError(null);
   };
 
   return (
@@ -118,6 +100,12 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) 
               onChange={(e) => setPostcode(e.target.value.toUpperCase())}
               placeholder="Enter postcode (e.g. SW1A 1AA)"
               className="flex-1"
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  searchAddresses();
+                }
+              }}
             />
             <Button 
               type="button" 
@@ -136,6 +124,12 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) 
               )}
             </Button>
           </div>
+
+          {error && (
+            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2">
+              {error}
+            </div>
+          )}
           
           {addresses.length > 0 && (
             <div className="space-y-2">
