@@ -10,6 +10,25 @@ interface GetAddressResponse {
   addresses: string[];
 }
 
+// Function to properly format UK postcodes
+function formatUKPostcode(postcode: string): string {
+  // Remove all spaces and convert to uppercase
+  const cleaned = postcode.replace(/\s+/g, '').toUpperCase();
+  
+  // UK postcode format: outward code (2-4 chars) + space + inward code (3 chars)
+  // Examples: M1 1AA, M60 1NW, B33 8TH, W1A 0AX, EC1A 1BB
+  
+  if (cleaned.length < 5 || cleaned.length > 7) {
+    return cleaned; // Return as-is if invalid length
+  }
+  
+  // Insert space before the last 3 characters (inward code)
+  const inwardCode = cleaned.slice(-3);
+  const outwardCode = cleaned.slice(0, -3);
+  
+  return `${outwardCode} ${inwardCode}`;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -35,14 +54,14 @@ serve(async (req) => {
       );
     }
 
-    // Clean and format postcode
-    const cleanPostcode = postcode.replace(/\s+/g, '').toUpperCase();
+    // Format postcode properly for UK format
+    const formattedPostcode = formatUKPostcode(postcode);
     
-    console.log(`Looking up addresses for postcode: ${cleanPostcode}`);
-    console.log(`Using API URL: https://api.getAddress.io/find/${encodeURIComponent(cleanPostcode)}`);
+    console.log(`Looking up addresses for postcode: ${formattedPostcode}`);
+    console.log(`Using API URL: https://api.getAddress.io/find/${encodeURIComponent(formattedPostcode)}`);
 
     const response = await fetch(
-      `https://api.getAddress.io/find/${encodeURIComponent(cleanPostcode)}?api-key=${apiKey}`,
+      `https://api.getAddress.io/find/${encodeURIComponent(formattedPostcode)}?api-key=${apiKey}`,
       {
         method: 'GET',
         headers: {
@@ -98,7 +117,7 @@ serve(async (req) => {
         formatted_address: address,
         building_number: parts[0] || '',
         thoroughfare: parts[1] || '',
-        postcode: cleanPostcode,
+        postcode: formattedPostcode,
         post_town: parts[parts.length - 2] || '',
         county: parts[parts.length - 1] || ''
       };
