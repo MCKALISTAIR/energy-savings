@@ -39,6 +39,7 @@ serve(async (req) => {
     const cleanPostcode = postcode.replace(/\s+/g, '').toUpperCase();
     
     console.log(`Looking up addresses for postcode: ${cleanPostcode}`);
+    console.log(`Using API URL: https://api.getAddress.io/find/${encodeURIComponent(cleanPostcode)}`);
 
     const response = await fetch(
       `https://api.getAddress.io/find/${encodeURIComponent(cleanPostcode)}?api-key=${apiKey}`,
@@ -50,7 +51,12 @@ serve(async (req) => {
       }
     );
 
+    console.log(`GetAddress API response status: ${response.status}`);
+    
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('GetAddress API error response:', errorText);
+      
       if (response.status === 404) {
         return new Response(
           JSON.stringify({ addresses: [], error: 'No addresses found for this postcode' }),
@@ -58,8 +64,20 @@ serve(async (req) => {
         );
       }
       
-      const errorText = await response.text();
-      console.error('GetAddress API error:', response.status, errorText);
+      if (response.status === 400) {
+        return new Response(
+          JSON.stringify({ addresses: [], error: 'Invalid postcode format' }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      if (response.status === 401) {
+        console.error('GetAddress API authentication failed - check API key');
+        return new Response(
+          JSON.stringify({ error: 'API authentication failed' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       
       return new Response(
         JSON.stringify({ error: 'Address lookup service temporarily unavailable' }),
@@ -68,6 +86,7 @@ serve(async (req) => {
     }
 
     const data: GetAddressResponse = await response.json();
+    console.log(`GetAddress API response data:`, JSON.stringify(data));
     console.log(`Found ${data.addresses?.length || 0} addresses`);
 
     // Transform GetAddress.io format to our expected format
