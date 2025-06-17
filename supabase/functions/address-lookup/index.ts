@@ -7,7 +7,11 @@ const corsHeaders = {
 };
 
 interface GetAddressResponse {
-  addresses: string[];
+  suggestions: Array<{
+    address: string;
+    url: string;
+    id: string;
+  }>;
 }
 
 // Function to properly format UK postcodes
@@ -61,10 +65,10 @@ serve(async (req) => {
     console.log(`Formatted postcode: "${formattedPostcode}"`);
     console.log(`API key present: ${apiKey ? 'Yes' : 'No'}`);
     console.log(`API key length: ${apiKey ? apiKey.length : 0}`);
-    console.log(`Using API URL: https://api.getAddress.io/find/${encodeURIComponent(formattedPostcode)}`);
+    console.log(`Using autocomplete API URL: https://api.getAddress.io/autocomplete/${encodeURIComponent(formattedPostcode)}`);
 
     const response = await fetch(
-      `https://api.getAddress.io/find/${encodeURIComponent(formattedPostcode)}?api-key=${apiKey}`,
+      `https://api.getAddress.io/autocomplete/${encodeURIComponent(formattedPostcode)}?api-key=${apiKey}`,
       {
         method: 'GET',
         headers: {
@@ -84,7 +88,7 @@ serve(async (req) => {
         // Test with a known working postcode to verify API connectivity
         console.log('Testing API connectivity with known postcode...');
         const testResponse = await fetch(
-          `https://api.getAddress.io/find/SW1A%201AA?api-key=${apiKey}`,
+          `https://api.getAddress.io/autocomplete/SW1A%201AA?api-key=${apiKey}`,
           {
             method: 'GET',
             headers: {
@@ -126,20 +130,20 @@ serve(async (req) => {
 
     const data: GetAddressResponse = await response.json();
     console.log(`GetAddress API response data:`, JSON.stringify(data));
-    console.log(`Found ${data.addresses?.length || 0} addresses`);
+    console.log(`Found ${data.suggestions?.length || 0} suggestions`);
 
-    // Transform GetAddress.io format to our expected format
-    const formattedAddresses = data.addresses?.map((address, index) => {
-      // GetAddress.io returns addresses as comma-separated strings
-      const parts = address.split(',').map(part => part.trim());
+    // Transform GetAddress.io autocomplete format to our expected format
+    const formattedAddresses = data.suggestions?.map((suggestion, index) => {
+      // Parse the address string to extract components
+      const addressParts = suggestion.address.split(',').map(part => part.trim());
       
       return {
-        formatted_address: address,
-        building_number: parts[0] || '',
-        thoroughfare: parts[1] || '',
+        formatted_address: suggestion.address,
+        building_number: addressParts[0]?.split(' ')[0] || '',
+        thoroughfare: addressParts[0]?.split(' ').slice(1).join(' ') || '',
         postcode: formattedPostcode,
-        post_town: parts[parts.length - 2] || '',
-        county: parts[parts.length - 1] || ''
+        post_town: addressParts[addressParts.length - 2] || '',
+        county: addressParts[addressParts.length - 1] || ''
       };
     }) || [];
 
