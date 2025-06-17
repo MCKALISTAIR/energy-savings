@@ -57,7 +57,10 @@ serve(async (req) => {
     // Format postcode properly for UK format
     const formattedPostcode = formatUKPostcode(postcode);
     
-    console.log(`Looking up addresses for postcode: ${formattedPostcode}`);
+    console.log(`Original postcode input: "${postcode}"`);
+    console.log(`Formatted postcode: "${formattedPostcode}"`);
+    console.log(`API key present: ${apiKey ? 'Yes' : 'No'}`);
+    console.log(`API key length: ${apiKey ? apiKey.length : 0}`);
     console.log(`Using API URL: https://api.getAddress.io/find/${encodeURIComponent(formattedPostcode)}`);
 
     const response = await fetch(
@@ -71,14 +74,31 @@ serve(async (req) => {
     );
 
     console.log(`GetAddress API response status: ${response.status}`);
+    console.log(`GetAddress API response headers:`, Object.fromEntries(response.headers.entries()));
     
     if (!response.ok) {
       const errorText = await response.text();
       console.error('GetAddress API error response:', errorText);
       
       if (response.status === 404) {
+        // Test with a known working postcode to verify API connectivity
+        console.log('Testing API connectivity with known postcode...');
+        const testResponse = await fetch(
+          `https://api.getAddress.io/find/SW1A%201AA?api-key=${apiKey}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        console.log(`Test postcode response status: ${testResponse.status}`);
+        
         return new Response(
-          JSON.stringify({ addresses: [], error: 'No addresses found for this postcode' }),
+          JSON.stringify({ 
+            addresses: [], 
+            error: `No addresses found for postcode "${formattedPostcode}". This postcode may not exist or may not be covered by the address lookup service.` 
+          }),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -93,7 +113,7 @@ serve(async (req) => {
       if (response.status === 401) {
         console.error('GetAddress API authentication failed - check API key');
         return new Response(
-          JSON.stringify({ error: 'API authentication failed' }),
+          JSON.stringify({ error: 'API authentication failed. Please check your GetAddress API key.' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
