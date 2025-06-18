@@ -24,6 +24,12 @@ const DatabaseSystemManager: React.FC = () => {
 
   const systems = getCurrentHouseSystems();
 
+  // Debug logging
+  console.log('Systems data:', systems);
+  systems.forEach(system => {
+    console.log(`System ${system.name} cost:`, system.system_cost, typeof system.system_cost);
+  });
+
   const getSystemIcon = (type: string) => {
     switch (type) {
       case 'solar': return <Zap className="w-4 h-4" />;
@@ -145,12 +151,10 @@ const DatabaseSystemManager: React.FC = () => {
                         <Calendar className="w-3 h-3" />
                         Installed: {new Date(system.install_date).toLocaleDateString()}
                       </div>
-                      {system.system_cost > 0 && (
-                        <div className="flex items-center gap-1">
-                          <PoundSterling className="w-3 h-3" />
-                          Cost: {formatCurrency(system.system_cost)}
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1">
+                        <PoundSterling className="w-3 h-3" />
+                        Cost: {formatCurrency(system.system_cost || 0)}
+                      </div>
                     </div>
                     <div className="text-sm">
                       {system.type === 'solar' && system.specifications.capacity && (
