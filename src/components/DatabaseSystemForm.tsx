@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { useDatabaseSystem } from '@/contexts/DatabaseSystemContext';
 import { System } from '@/hooks/useSystems';
+import { getCurrencySymbol, getPreferredCurrency } from '@/utils/currency';
 
 interface DatabaseSystemFormProps {
   initialData?: System;
@@ -25,6 +26,10 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
   });
   
   const [loading, setLoading] = useState(false);
+
+  // Get user's preferred currency
+  const preferredCurrency = getPreferredCurrency();
+  const currencySymbol = getCurrencySymbol(preferredCurrency);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +58,26 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and decimal points
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    // Ensure only one decimal point
+    const parts = numericValue.split('.');
+    if (parts.length > 2) {
+      return;
+    }
+    
+    // Limit decimal places to 2
+    if (parts[1] && parts[1].length > 2) {
+      return;
+    }
+    
+    const parsedValue = numericValue === '' ? 0 : parseFloat(numericValue) || 0;
+    setFormData(prev => ({ ...prev, system_cost: parsedValue }));
   };
 
   const updateSpecification = (key: string, value: any) => {
@@ -318,17 +343,21 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
       </div>
 
       <div>
-        <Label htmlFor="system_cost">System Cost (£)</Label>
-        <Input
-          id="system_cost"
-          type="number"
-          step="0.01"
-          min="0"
-          value={formData.system_cost}
-          onChange={(e) => setFormData(prev => ({ ...prev, system_cost: Number(e.target.value) }))}
-          placeholder="Enter the total system cost"
-          required
-        />
+        <Label htmlFor="system_cost">System Cost</Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+            {currencySymbol}
+          </span>
+          <Input
+            id="system_cost"
+            type="text"
+            value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
+            onChange={handleCostChange}
+            placeholder="Enter the total system cost"
+            className="pl-8"
+            required
+          />
+        </div>
       </div>
 
       <div>
