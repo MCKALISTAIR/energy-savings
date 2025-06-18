@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +11,7 @@ export interface System {
   install_date: string;
   is_active: boolean;
   specifications: Record<string, any>;
+  system_cost: number;
   created_at: string;
   updated_at: string;
 }
@@ -43,7 +43,8 @@ export const useSystems = (houseId?: string) => {
       const typedSystems = (data || []).map(system => ({
         ...system,
         type: system.type as 'solar' | 'battery' | 'ev' | 'heat_pump',
-        specifications: system.specifications as Record<string, any>
+        specifications: system.specifications as Record<string, any>,
+        system_cost: system.system_cost || 0
       }));
       
       setSystems(typedSystems);
@@ -61,6 +62,7 @@ export const useSystems = (houseId?: string) => {
     install_date: string;
     is_active: boolean;
     specifications: Record<string, any>;
+    system_cost: number;
   }) => {
     if (!user) return;
 
@@ -80,7 +82,8 @@ export const useSystems = (houseId?: string) => {
       const typedSystem = {
         ...data,
         type: data.type as 'solar' | 'battery' | 'ev' | 'heat_pump',
-        specifications: data.specifications as Record<string, any>
+        specifications: data.specifications as Record<string, any>,
+        system_cost: data.system_cost || 0
       };
       
       setSystems(prev => [typedSystem, ...prev]);
@@ -106,7 +109,8 @@ export const useSystems = (houseId?: string) => {
       const typedSystem = {
         ...data,
         type: data.type as 'solar' | 'battery' | 'ev' | 'heat_pump',
-        specifications: data.specifications as Record<string, any>
+        specifications: data.specifications as Record<string, any>,
+        system_cost: data.system_cost || 0
       };
       
       setSystems(prev => prev.map(system => system.id === id ? typedSystem : system));

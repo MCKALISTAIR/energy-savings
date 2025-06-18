@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +20,7 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
     type: initialData?.type || 'solar' as const,
     install_date: initialData?.install_date ? initialData.install_date : new Date().toISOString().split('T')[0],
     is_active: initialData?.is_active ?? true,
+    system_cost: initialData?.system_cost || 0,
     specifications: initialData?.specifications || {}
   });
   
@@ -38,6 +38,7 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
         type: formData.type,
         install_date: formData.install_date,
         is_active: formData.is_active,
+        system_cost: formData.system_cost,
         specifications: formData.specifications
       };
 
@@ -314,6 +315,20 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
             <SelectItem value="heat_pump">Heat Pump</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div>
+        <Label htmlFor="system_cost">System Cost (£)</Label>
+        <Input
+          id="system_cost"
+          type="number"
+          step="0.01"
+          min="0"
+          value={formData.system_cost}
+          onChange={(e) => setFormData(prev => ({ ...prev, system_cost: Number(e.target.value) }))}
+          placeholder="Enter the total system cost"
+          required
+        />
       </div>
 
       <div>

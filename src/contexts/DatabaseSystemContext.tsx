@@ -19,6 +19,7 @@ interface DatabaseSystemContextType {
     type: 'solar' | 'battery' | 'ev' | 'heat_pump';
     install_date: string;
     is_active: boolean;
+    system_cost: number;
     specifications: Record<string, any>;
   }) => Promise<System | undefined>;
   updateSystem: (id: string, system: Partial<System>) => Promise<System | undefined>;
@@ -97,6 +98,7 @@ export const DatabaseSystemProvider: React.FC<DatabaseSystemProviderProps> = ({ 
     type: 'solar' | 'battery' | 'ev' | 'heat_pump';
     install_date: string;
     is_active: boolean;
+    system_cost: number;
     specifications: Record<string, any>;
   }) => {
     return await addSystemHook(systemData);

@@ -45,6 +45,7 @@ export type Database = {
           is_active: boolean
           name: string
           specifications: Json
+          system_cost: number | null
           type: string
           updated_at: string
           user_id: string
@@ -57,6 +58,7 @@ export type Database = {
           is_active?: boolean
           name: string
           specifications?: Json
+          system_cost?: number | null
           type: string
           updated_at?: string
           user_id: string
@@ -69,6 +71,7 @@ export type Database = {
           is_active?: boolean
           name?: string
           specifications?: Json
+          system_cost?: number | null
           type?: string
           updated_at?: string
           user_id?: string

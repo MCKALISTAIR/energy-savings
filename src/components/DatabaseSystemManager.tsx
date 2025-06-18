@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useDatabaseSystem } from '@/contexts/DatabaseSystemContext';
-import { Zap, Battery, Car, Plus, Edit, Trash2, Calendar, Thermometer } from 'lucide-react';
+import { Zap, Battery, Car, Plus, Edit, Trash2, Calendar, Thermometer, PoundSterling } from 'lucide-react';
 import DatabaseSystemForm from './DatabaseSystemForm';
 import { System } from '@/hooks/useSystems';
+import { formatCurrency } from '@/utils/currency';
 
 const DatabaseSystemManager: React.FC = () => {
   const { 
@@ -139,11 +140,17 @@ const DatabaseSystemManager: React.FC = () => {
                       </Badge>
                       <h3 className="font-semibold">{system.name}</h3>
                     </div>
-                    <div className="text-sm text-muted-foreground mb-2">
+                    <div className="text-sm text-muted-foreground mb-2 space-y-1">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         Installed: {new Date(system.install_date).toLocaleDateString()}
                       </div>
+                      {system.system_cost > 0 && (
+                        <div className="flex items-center gap-1">
+                          <PoundSterling className="w-3 h-3" />
+                          Cost: {formatCurrency(system.system_cost)}
+                        </div>
+                      )}
                     </div>
                     <div className="text-sm">
                       {system.type === 'solar' && system.specifications.capacity && (
