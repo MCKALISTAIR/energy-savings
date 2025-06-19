@@ -343,24 +343,6 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
       </div>
 
       <div>
-        <Label htmlFor="system_cost">System Cost</Label>
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-            {currencySymbol}
-          </span>
-          <Input
-            id="system_cost"
-            type="text"
-            value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
-            onChange={handleCostChange}
-            placeholder="Enter the total system cost"
-            className="pl-8"
-            required
-          />
-        </div>
-      </div>
-
-      <div>
         <Label htmlFor="install_date">Install Date</Label>
         <Input
           id="install_date"
@@ -378,6 +360,24 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
         />
         <Label htmlFor="is_active">System Active</Label>
+      </div>
+
+      <div>
+        <Label htmlFor="system_cost">System Cost</Label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+            {currencySymbol}
+          </span>
+          <Input
+            id="system_cost"
+            type="text"
+            value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
+            onChange={handleCostChange}
+            placeholder="Enter the total system cost"
+            className="pl-8"
+            required
+          />
+        </div>
       </div>
 
       {renderSpecificationsFields()}
