@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSystem } from '@/contexts/SystemContext';
 import { SystemType } from '@/types';
+import { getCurrencySymbol, getPreferredCurrency } from '@/utils/currency';
 
 interface SystemFormProps {
   initialData?: SystemType;
@@ -23,8 +23,13 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     type: initialData?.type || 'solar' as const,
     installDate: initialData?.installDate ? initialData.installDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
     isActive: initialData?.isActive ?? true,
+    system_cost: initialData?.system_cost || 0,
     specifications: initialData?.specifications || {}
   });
+
+  // Get user's preferred currency
+  const preferredCurrency = getPreferredCurrency();
+  const currencySymbol = getCurrencySymbol(preferredCurrency);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +41,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
       type: formData.type,
       installDate: new Date(formData.installDate),
       isActive: formData.isActive,
+      system_cost: formData.system_cost,
       specifications: formData.specifications
     };
 
@@ -45,6 +51,26 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
       addSystem(systemData as Omit<SystemType, 'id'>);
     }
     onSuccess();
+  };
+
+  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and decimal points
+    const numericValue = value.replace(/[^0-9.]/g, '');
+    
+    // Ensure only one decimal point
+    const parts = numericValue.split('.');
+    if (parts.length > 2) {
+      return;
+    }
+    
+    // Limit decimal places to 2
+    if (parts[1] && parts[1].length > 2) {
+      return;
+    }
+    
+    const parsedValue = numericValue === '' ? 0 : parseFloat(numericValue) || 0;
+    setFormData(prev => ({ ...prev, system_cost: parsedValue }));
   };
 
   const updateSpecification = (key: string, value: any) => {
@@ -262,6 +288,24 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
               onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
             />
             <Label htmlFor="isActive">System Active</Label>
+          </div>
+
+          <div>
+            <Label htmlFor="system_cost">System Cost</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                {currencySymbol}
+              </span>
+              <Input
+                id="system_cost"
+                type="text"
+                value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
+                onChange={handleCostChange}
+                placeholder="Enter the total system cost"
+                className="pl-8"
+                required
+              />
+            </div>
           </div>
 
           {renderSpecificationsFields()}

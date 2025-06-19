@@ -13,6 +13,7 @@ export interface SystemDetails {
   type: 'solar' | 'battery' | 'ev';
   installDate: Date;
   isActive: boolean;
+  system_cost?: number;
   specifications: {
     [key: string]: any;
   };
