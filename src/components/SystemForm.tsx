@@ -31,6 +31,10 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
   const preferredCurrency = getPreferredCurrency();
   const currencySymbol = getCurrencySymbol(preferredCurrency);
 
+  // Determine if we should use "Vehicle" or "System" terminology
+  const isEV = formData.type === 'ev';
+  const systemOrVehicle = isEV ? 'Vehicle' : 'System';
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentHouse) return;
@@ -242,7 +246,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
       <ScrollArea className="flex-1 pr-6">
         <form onSubmit={handleSubmit} className="space-y-4 pb-4">
           <div>
-            <Label htmlFor="name">System Name</Label>
+            <Label htmlFor="name">{systemOrVehicle} Name</Label>
             <Input
               id="name"
               value={formData.name}
@@ -287,11 +291,11 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
               checked={formData.isActive}
               onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
             />
-            <Label htmlFor="isActive">System Active</Label>
+            <Label htmlFor="isActive">{systemOrVehicle} Active</Label>
           </div>
 
           <div>
-            <Label htmlFor="system_cost">System Cost</Label>
+            <Label htmlFor="system_cost">{systemOrVehicle} Cost</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
                 {currencySymbol}
@@ -301,7 +305,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
                 type="text"
                 value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
                 onChange={handleCostChange}
-                placeholder="Enter the total system cost"
+                placeholder={`Enter the total ${systemOrVehicle.toLowerCase()} cost`}
                 className="pl-8"
                 required
               />
@@ -314,7 +318,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
       
       <div className="flex gap-2 pt-4 border-t">
         <Button type="submit" onClick={handleSubmit}>
-          {initialData ? 'Update System' : 'Add System'}
+          {initialData ? `Update ${systemOrVehicle}` : `Add ${systemOrVehicle}`}
         </Button>
         <Button type="button" variant="outline" onClick={onSuccess}>
           Cancel
