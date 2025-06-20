@@ -71,7 +71,7 @@ const SystemManager: React.FC = () => {
                 Add System
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Add New System</DialogTitle>
               </DialogHeader>
@@ -147,7 +147,7 @@ const SystemManager: React.FC = () => {
         )}
 
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Edit System</DialogTitle>
             </DialogHeader>
