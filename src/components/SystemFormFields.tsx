@@ -27,6 +27,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
 }) => {
   const preferredCurrency = getPreferredCurrency();
   const currencySymbol = getCurrencySymbol(preferredCurrency);
+  const isEV = formData.type === 'ev';
 
   return (
     <>
@@ -60,7 +61,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="installDate">Install Date</Label>
+        <Label htmlFor="installDate">{isEV ? 'Delivery Date' : 'Install Date'}</Label>
         <Input
           id="installDate"
           type="date"
@@ -76,7 +77,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
           checked={formData.isActive}
           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
         />
-        <Label htmlFor="isActive">{systemOrVehicle} Active</Label>
+        <Label htmlFor="isActive">{isEV ? 'Current Vehicle' : `${systemOrVehicle} Active`}</Label>
       </div>
 
       <div>
