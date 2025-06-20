@@ -25,6 +25,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('capacity')}
               onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
+              required
             />
           </div>
           <div>
@@ -77,6 +78,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('capacity')}
               onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
+              required
             />
           </div>
           <div>
@@ -134,6 +136,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('batteryCapacity')}
               onChange={(e) => updateSpecification('batteryCapacity', Number(e.target.value))}
+              required
             />
           </div>
           <div>
@@ -153,6 +156,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('annualMileage')}
               onChange={(e) => updateSpecification('annualMileage', Number(e.target.value))}
+              required
             />
           </div>
         </div>
