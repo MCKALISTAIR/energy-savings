@@ -7,12 +7,16 @@ interface SystemSpecificationsProps {
   systemType: 'solar' | 'battery' | 'ev';
   getSpecValue: (key: string, defaultValue?: any) => any;
   updateSpecification: (key: string, value: any) => void;
+  errors: any;
+  showErrors: boolean;
 }
 
 const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
   systemType,
   getSpecValue,
-  updateSpecification
+  updateSpecification,
+  errors,
+  showErrors
 }) => {
   switch (systemType) {
     case 'solar':
@@ -25,8 +29,12 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('capacity')}
               onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
+              className={showErrors && errors.capacity ? 'border-red-500' : ''}
               required
             />
+            {showErrors && errors.capacity && (
+              <p className="text-sm text-red-500 mt-1">{errors.capacity}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="panelCount">Panel Count</Label>
@@ -78,8 +86,12 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('capacity')}
               onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
+              className={showErrors && errors.capacity ? 'border-red-500' : ''}
               required
             />
+            {showErrors && errors.capacity && (
+              <p className="text-sm text-red-500 mt-1">{errors.capacity}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="efficiency">Efficiency (%)</Label>
@@ -136,8 +148,12 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('batteryCapacity')}
               onChange={(e) => updateSpecification('batteryCapacity', Number(e.target.value))}
+              className={showErrors && errors.batteryCapacity ? 'border-red-500' : ''}
               required
             />
+            {showErrors && errors.batteryCapacity && (
+              <p className="text-sm text-red-500 mt-1">{errors.batteryCapacity}</p>
+            )}
           </div>
           <div>
             <Label htmlFor="efficiency">Efficiency (miles/kWh)</Label>
@@ -156,8 +172,12 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('annualMileage')}
               onChange={(e) => updateSpecification('annualMileage', Number(e.target.value))}
+              className={showErrors && errors.annualMileage ? 'border-red-500' : ''}
               required
             />
+            {showErrors && errors.annualMileage && (
+              <p className="text-sm text-red-500 mt-1">{errors.annualMileage}</p>
+            )}
           </div>
         </div>
       );

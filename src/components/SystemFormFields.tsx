@@ -16,14 +16,20 @@ interface SystemFormFieldsProps {
   };
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   handleCostChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFieldChange: (field: string, value: any) => void;
   systemOrVehicle: string;
+  errors: any;
+  showErrors: boolean;
 }
 
 const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
   formData,
   setFormData,
   handleCostChange,
-  systemOrVehicle
+  handleFieldChange,
+  systemOrVehicle,
+  errors,
+  showErrors
 }) => {
   const preferredCurrency = getPreferredCurrency();
   const currencySymbol = getCurrencySymbol(preferredCurrency);
@@ -36,9 +42,13 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
         <Input
           id="name"
           value={formData.name}
-          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          onChange={(e) => handleFieldChange('name', e.target.value)}
+          className={showErrors && errors.name ? 'border-red-500' : ''}
           required
         />
+        {showErrors && errors.name && (
+          <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+        )}
       </div>
 
       <div>
@@ -66,9 +76,13 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
           id="installDate"
           type="date"
           value={formData.installDate}
-          onChange={(e) => setFormData(prev => ({ ...prev, installDate: e.target.value }))}
+          onChange={(e) => handleFieldChange('installDate', e.target.value)}
+          className={showErrors && errors.installDate ? 'border-red-500' : ''}
           required
         />
+        {showErrors && errors.installDate && (
+          <p className="text-sm text-red-500 mt-1">{errors.installDate}</p>
+        )}
       </div>
 
       <div className="flex items-center space-x-2">
@@ -92,10 +106,13 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
             value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
             onChange={handleCostChange}
             placeholder={`Enter the total ${systemOrVehicle.toLowerCase()} cost`}
-            className="pl-8"
+            className={`pl-8 ${showErrors && errors.system_cost ? 'border-red-500' : ''}`}
             required
           />
         </div>
+        {showErrors && errors.system_cost && (
+          <p className="text-sm text-red-500 mt-1">{errors.system_cost}</p>
+        )}
       </div>
     </>
   );

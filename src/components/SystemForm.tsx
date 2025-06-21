@@ -19,7 +19,10 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     handleSubmit,
     handleCostChange,
     updateSpecification,
-    getSpecValue
+    getSpecValue,
+    errors,
+    showErrors,
+    handleFieldChange
   } = useSystemForm({ initialData, onSuccess });
 
   // Determine if we should use "Vehicle" or "System" terminology
@@ -29,25 +32,30 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
   return (
     <div className="max-h-[70vh] overflow-hidden flex flex-col">
       <ScrollArea className="flex-1 pr-6">
-        <div className="p-2">
+        <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4 pb-4">
             <SystemFormFields
               formData={formData}
               setFormData={setFormData}
               handleCostChange={handleCostChange}
+              handleFieldChange={handleFieldChange}
               systemOrVehicle={systemOrVehicle}
+              errors={errors}
+              showErrors={showErrors}
             />
             
             <SystemSpecifications
               systemType={formData.type}
               getSpecValue={getSpecValue}
               updateSpecification={updateSpecification}
+              errors={errors}
+              showErrors={showErrors}
             />
           </form>
         </div>
       </ScrollArea>
       
-      <div className="px-2">
+      <div className="px-6">
         <SystemFormButtons
           initialData={initialData}
           systemOrVehicle={systemOrVehicle}
