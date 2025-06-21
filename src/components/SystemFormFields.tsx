@@ -32,7 +32,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
   return (
     <>
       <div>
-        <Label htmlFor="name">{systemOrVehicle} Name</Label>
+        <Label htmlFor="name">{systemOrVehicle} Name <span className="text-red-500">*</span></Label>
         <Input
           id="name"
           value={formData.name}
@@ -61,7 +61,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="installDate">{isEV ? 'Delivery Date' : 'Install Date'}</Label>
+        <Label htmlFor="installDate">{isEV ? 'Delivery Date' : 'Install Date'} <span className="text-red-500">*</span></Label>
         <Input
           id="installDate"
           type="date"
@@ -81,7 +81,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="system_cost">{systemOrVehicle} Cost</Label>
+        <Label htmlFor="system_cost">{systemOrVehicle} Cost <span className="text-red-500">*</span></Label>
         <div className="relative">
           <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
             {currencySymbol}

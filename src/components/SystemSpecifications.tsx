@@ -19,7 +19,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
       return (
         <div className="space-y-4">
           <div>
-            <Label htmlFor="capacity">Capacity (kW)</Label>
+            <Label htmlFor="capacity">Capacity (kW) <span className="text-red-500">*</span></Label>
             <Input
               id="capacity"
               type="number"
@@ -72,7 +72,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
       return (
         <div className="space-y-4">
           <div>
-            <Label htmlFor="capacity">Capacity (kWh)</Label>
+            <Label htmlFor="capacity">Capacity (kWh) <span className="text-red-500">*</span></Label>
             <Input
               id="capacity"
               type="number"
@@ -130,7 +130,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
             />
           </div>
           <div>
-            <Label htmlFor="batteryCapacity">Battery Capacity (kWh)</Label>
+            <Label htmlFor="batteryCapacity">Battery Capacity (kWh) <span className="text-red-500">*</span></Label>
             <Input
               id="batteryCapacity"
               type="number"
@@ -150,7 +150,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
             />
           </div>
           <div>
-            <Label htmlFor="annualMileage">Annual Mileage</Label>
+            <Label htmlFor="annualMileage">Annual Mileage <span className="text-red-500">*</span></Label>
             <Input
               id="annualMileage"
               type="number"
