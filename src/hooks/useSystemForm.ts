@@ -154,6 +154,13 @@ export const useSystemForm = ({ initialData, onSuccess }: UseSystemFormProps) =>
     }
   };
 
+  const handleSystemTypeChange = (newType: 'solar' | 'battery' | 'ev') => {
+    setFormData(prev => ({ ...prev, type: newType, specifications: {} }));
+    // Clear all errors when system type changes
+    setErrors({});
+    setShowErrors(false);
+  };
+
   return {
     formData,
     setFormData,
@@ -163,6 +170,7 @@ export const useSystemForm = ({ initialData, onSuccess }: UseSystemFormProps) =>
     getSpecValue,
     errors,
     showErrors,
-    handleFieldChange
+    handleFieldChange,
+    handleSystemTypeChange
   };
 };

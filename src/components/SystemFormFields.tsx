@@ -17,6 +17,7 @@ interface SystemFormFieldsProps {
   setFormData: React.Dispatch<React.SetStateAction<any>>;
   handleCostChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleFieldChange: (field: string, value: any) => void;
+  handleSystemTypeChange: (newType: 'solar' | 'battery' | 'ev') => void;
   systemOrVehicle: string;
   errors: any;
   showErrors: boolean;
@@ -27,6 +28,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
   setFormData,
   handleCostChange,
   handleFieldChange,
+  handleSystemTypeChange,
   systemOrVehicle,
   errors,
   showErrors
@@ -55,9 +57,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
         <Label>System Type</Label>
         <Select
           value={formData.type}
-          onValueChange={(value: 'solar' | 'battery' | 'ev') => 
-            setFormData(prev => ({ ...prev, type: value, specifications: {} }))
-          }
+          onValueChange={handleSystemTypeChange}
         >
           <SelectTrigger>
             <SelectValue />

@@ -22,7 +22,8 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     getSpecValue,
     errors,
     showErrors,
-    handleFieldChange
+    handleFieldChange,
+    handleSystemTypeChange
   } = useSystemForm({ initialData, onSuccess });
 
   // Determine if we should use "Vehicle" or "System" terminology
@@ -39,6 +40,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
               setFormData={setFormData}
               handleCostChange={handleCostChange}
               handleFieldChange={handleFieldChange}
+              handleSystemTypeChange={handleSystemTypeChange}
               systemOrVehicle={systemOrVehicle}
               errors={errors}
               showErrors={showErrors}
