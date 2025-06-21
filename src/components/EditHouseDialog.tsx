@@ -112,9 +112,14 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
               <p className="text-sm text-red-500 mt-1">{errors.address}</p>
             )}
           </div>
-          <Button onClick={handleEditHouse} className="w-full">
-            Update House
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleEditHouse} className="flex-1">
+              Update House
+            </Button>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+              Cancel
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
