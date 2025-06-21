@@ -27,43 +27,90 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
   onEditHouse 
 }) => {
   const [formData, setFormData] = useState({ name: '', address: '' });
+  const [errors, setErrors] = useState<{ name?: string; address?: string }>({});
+  const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
     if (house) {
       setFormData({ name: house.name, address: house.address });
+      setErrors({});
+      setShowErrors(false);
     }
   }, [house]);
 
+  const validateForm = () => {
+    const newErrors: { name?: string; address?: string } = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'House name is required';
+    }
+    
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleEditHouse = () => {
-    if (house && formData.name && formData.address) {
+    setShowErrors(true);
+    if (house && validateForm()) {
       onEditHouse(house.id, formData);
       onOpenChange(false);
       setFormData({ name: '', address: '' });
+      setErrors({});
+      setShowErrors(false);
+    }
+  };
+
+  const handleFieldChange = (field: 'name' | 'address', value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Clear error for this field when user starts typing
+    if (showErrors && errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange(open);
+    if (!open) {
+      setErrors({});
+      setShowErrors(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit House</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="edit-house-name">House Name</Label>
+            <Label htmlFor="edit-house-name">House Name <span className="text-red-500">*</span></Label>
             <Input
               id="edit-house-name"
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) => handleFieldChange('name', e.target.value)}
+              className={showErrors && errors.name ? 'border-red-500' : ''}
             />
+            {showErrors && errors.name && (
+              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+            )}
           </div>
           <div>
-            <Label htmlFor="edit-house-address">Address</Label>
+            <Label htmlFor="edit-house-address">Address <span className="text-red-500">*</span></Label>
             <Textarea
               id="edit-house-address"
               value={formData.address}
-              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+              onChange={(e) => handleFieldChange('address', e.target.value)}
+              className={showErrors && errors.address ? 'border-red-500' : ''}
             />
+            {showErrors && errors.address && (
+              <p className="text-sm text-red-500 mt-1">{errors.address}</p>
+            )}
           </div>
           <Button onClick={handleEditHouse} className="w-full">
             Update House

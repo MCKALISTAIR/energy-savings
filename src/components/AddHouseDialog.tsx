@@ -15,11 +15,31 @@ interface AddHouseDialogProps {
 
 const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, onAddHouse }) => {
   const [formData, setFormData] = useState({ name: '', address: '' });
+  const [errors, setErrors] = useState<{ name?: string; address?: string }>({});
+  const [showErrors, setShowErrors] = useState(false);
+
+  const validateForm = () => {
+    const newErrors: { name?: string; address?: string } = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'House name is required';
+    }
+    
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleAddHouse = () => {
-    if (formData.name && formData.address) {
+    setShowErrors(true);
+    if (validateForm()) {
       onAddHouse(formData);
       setFormData({ name: '', address: '' });
+      setErrors({});
+      setShowErrors(false);
       onOpenChange(false);
     }
   };
@@ -28,6 +48,17 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
     onOpenChange(open);
     if (!open) {
       setFormData({ name: '', address: '' });
+      setErrors({});
+      setShowErrors(false);
+    }
+  };
+
+  const handleFieldChange = (field: 'name' | 'address', value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Clear error for this field when user starts typing
+    if (showErrors && errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -47,16 +78,36 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="house-name">House Name</Label>
+            <Label htmlFor="house-name">House Name <span className="text-red-500">*</span></Label>
             <Input
               id="house-name"
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) => handleFieldChange('name', e.target.value)}
               placeholder="e.g. Main House, Holiday Home"
+              className={showErrors && errors.name ? 'border-red-500' : ''}
             />
+            {showErrors && errors.name && (
+              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+            )}
           </div>
           
-          <AddressLookup formData={formData} setFormData={setFormData} />
+          <div>
+            <Label htmlFor="house-address">Address <span className="text-red-500">*</span></Label>
+            <AddressLookup 
+              formData={formData} 
+              setFormData={(newFormData) => {
+                setFormData(newFormData);
+                // Clear address error when address is updated via lookup
+                if (showErrors && errors.address && newFormData.address) {
+                  setErrors(prev => ({ ...prev, address: undefined }));
+                }
+              }}
+              className={showErrors && errors.address ? 'border-red-500' : ''}
+            />
+            {showErrors && errors.address && (
+              <p className="text-sm text-red-500 mt-1">{errors.address}</p>
+            )}
+          </div>
           
           <Button onClick={handleAddHouse} className="w-full">
             Add House
