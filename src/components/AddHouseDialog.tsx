@@ -98,7 +98,7 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
               setFormData={(newFormData) => {
                 setFormData(newFormData);
                 // Clear address error when address is updated via lookup
-                if (showErrors && errors.address && newFormData.address) {
+                if (showErrors && errors.address && typeof newFormData === 'object' && newFormData.address) {
                   setErrors(prev => ({ ...prev, address: undefined }));
                 }
               }}

@@ -21,9 +21,10 @@ interface AddressResult {
 interface AddressLookupProps {
   formData: { name: string; address: string };
   setFormData: React.Dispatch<React.SetStateAction<{ name: string; address: string }>>;
+  className?: string;
 }
 
-const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) => {
+const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, className }) => {
   const [postcode, setPostcode] = useState('');
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
@@ -177,6 +178,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData }) 
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
             placeholder="Full address including postcode"
+            className={className}
           />
           {!showManualEntry && (
             <Button
