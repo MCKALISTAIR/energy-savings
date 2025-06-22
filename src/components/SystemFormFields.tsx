@@ -21,6 +21,7 @@ interface SystemFormFieldsProps {
   systemOrVehicle: string;
   errors: any;
   showErrors: boolean;
+  isMobile?: boolean;
 }
 
 const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
@@ -31,7 +32,8 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
   handleSystemTypeChange,
   systemOrVehicle,
   errors,
-  showErrors
+  showErrors,
+  isMobile = false
 }) => {
   const preferredCurrency = getPreferredCurrency();
   const currencySymbol = getCurrencySymbol(preferredCurrency);
@@ -40,12 +42,14 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
   return (
     <>
       <div>
-        <Label htmlFor="name">{systemOrVehicle} Name <span className="text-red-500">*</span></Label>
+        <Label htmlFor="name" className={isMobile ? 'text-sm' : ''}>
+          {systemOrVehicle} Name <span className="text-red-500">*</span>
+        </Label>
         <Input
           id="name"
           value={formData.name}
           onChange={(e) => handleFieldChange('name', e.target.value)}
-          className={showErrors && errors.name ? 'border-red-500' : ''}
+          className={`${showErrors && errors.name ? 'border-red-500' : ''} ${isMobile ? 'h-12 text-base' : ''}`}
           required
         />
         {showErrors && errors.name && (
@@ -54,12 +58,12 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
       </div>
 
       <div>
-        <Label>System Type</Label>
+        <Label className={isMobile ? 'text-sm' : ''}>System Type</Label>
         <Select
           value={formData.type}
           onValueChange={handleSystemTypeChange}
         >
-          <SelectTrigger>
+          <SelectTrigger className={isMobile ? 'h-12 text-base' : ''}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -71,13 +75,15 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="installDate">{isEV ? 'Delivery Date' : 'Install Date'} <span className="text-red-500">*</span></Label>
+        <Label htmlFor="installDate" className={isMobile ? 'text-sm' : ''}>
+          {isEV ? 'Delivery Date' : 'Install Date'} <span className="text-red-500">*</span>
+        </Label>
         <Input
           id="installDate"
           type="date"
           value={formData.installDate}
           onChange={(e) => handleFieldChange('installDate', e.target.value)}
-          className={showErrors && errors.installDate ? 'border-red-500' : ''}
+          className={`${showErrors && errors.installDate ? 'border-red-500' : ''} ${isMobile ? 'h-12 text-base' : ''}`}
           required
         />
         {showErrors && errors.installDate && (
@@ -85,19 +91,23 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
         )}
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className={`flex items-center space-x-2 ${isMobile ? 'py-2' : ''}`}>
         <Switch
           id="isActive"
           checked={formData.isActive}
           onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: checked }))}
         />
-        <Label htmlFor="isActive">{isEV ? 'Current Vehicle' : `${systemOrVehicle} Active`}</Label>
+        <Label htmlFor="isActive" className={isMobile ? 'text-sm' : ''}>
+          {isEV ? 'Current Vehicle' : `${systemOrVehicle} Active`}
+        </Label>
       </div>
 
       <div>
-        <Label htmlFor="system_cost">{systemOrVehicle} Cost <span className="text-red-500">*</span></Label>
+        <Label htmlFor="system_cost" className={isMobile ? 'text-sm' : ''}>
+          {systemOrVehicle} Cost <span className="text-red-500">*</span>
+        </Label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+          <span className={`absolute ${isMobile ? 'left-4' : 'left-3'} top-1/2 transform -translate-y-1/2 text-muted-foreground ${isMobile ? 'text-base' : ''}`}>
             {currencySymbol}
           </span>
           <Input
@@ -106,7 +116,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
             value={formData.system_cost > 0 ? formData.system_cost.toString() : ''}
             onChange={handleCostChange}
             placeholder={`Enter the total ${systemOrVehicle.toLowerCase()} cost`}
-            className={`pl-8 ${showErrors && errors.system_cost ? 'border-red-500' : ''}`}
+            className={`${isMobile ? 'pl-10 h-12 text-base' : 'pl-8'} ${showErrors && errors.system_cost ? 'border-red-500' : ''}`}
             required
           />
         </div>

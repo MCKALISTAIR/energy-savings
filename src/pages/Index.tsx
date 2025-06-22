@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { Tabs } from '@/components/ui/tabs';
+import { useIsMobile } from '@/hooks/use-mobile';
 import Header from '@/components/layout/Header';
 import TabNavigation from '@/components/layout/TabNavigation';
 import TabContent from '@/components/layout/TabContent';
@@ -41,6 +41,7 @@ export interface SavingsData {
 
 const Index = () => {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState('systems');
   const [dashboardConfig, setDashboardConfig] = useState<DashboardConfig>(getDefaultConfig());
   const [savingsData, setSavingsData] = useState<SavingsData>({
@@ -97,7 +98,7 @@ const Index = () => {
     savingsData.heatPump.monthlySavings > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+    <div className={`min-h-screen bg-gradient-to-br from-green-50 to-blue-50 ${isMobile ? 'p-2' : 'p-4'}`}>
       <div className="max-w-7xl mx-auto">
         <Header />
 

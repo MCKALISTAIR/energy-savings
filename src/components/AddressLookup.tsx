@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,9 +21,10 @@ interface AddressLookupProps {
   formData: { name: string; address: string };
   setFormData: React.Dispatch<React.SetStateAction<{ name: string; address: string }>>;
   className?: string;
+  isMobile?: boolean;
 }
 
-const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, className }) => {
+const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, className, isMobile = false }) => {
   const [postcode, setPostcode] = useState('');
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
@@ -90,17 +90,17 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
 
   return (
     <div>
-      <Label htmlFor="house-address">Address</Label>
+      <Label htmlFor="house-address" className={isMobile ? 'text-sm' : ''}>Address</Label>
       
       {!showManualEntry && !formData.address && (
         <div className="space-y-3">
-          <div className="flex gap-2">
+          <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
             <Input
               id="postcode"
               value={postcode}
               onChange={(e) => setPostcode(e.target.value.toUpperCase())}
               placeholder="Enter postcode (e.g. SW1A 1AA)"
-              className="flex-1"
+              className={`${isMobile ? 'h-12 text-base' : 'flex-1'}`}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
                   e.preventDefault();
@@ -113,7 +113,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
               onClick={searchAddresses}
               disabled={loadingAddresses || !postcode.trim()}
               variant="default"
-              className="px-4"
+              className={`${isMobile ? 'h-12 text-base' : 'px-4'}`}
             >
               {loadingAddresses ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -127,30 +127,30 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
           </div>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2">
+            <div className={`text-red-600 bg-red-50 border border-red-200 rounded p-2 ${isMobile ? 'text-sm' : 'text-sm'}`}>
               {error}
             </div>
           )}
           
           {addresses.length > 0 && (
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Select your address:</p>
-              <div className="max-h-48 overflow-y-auto space-y-1">
+              <p className={`text-muted-foreground ${isMobile ? 'text-sm' : 'text-sm'}`}>Select your address:</p>
+              <div className={`${isMobile ? 'max-h-40' : 'max-h-48'} overflow-y-auto space-y-1`}>
                 {addresses.map((address, index) => (
                   <Button
                     key={index}
                     variant="outline"
-                    className="w-full text-left justify-start h-auto p-3 hover:bg-accent"
+                    className={`w-full text-left justify-start h-auto hover:bg-accent ${isMobile ? 'p-3 text-sm' : 'p-3'}`}
                     onClick={() => selectAddress(address)}
                   >
                     <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
                     <div className="text-left">
-                      <div className="font-medium">
+                      <div className={`font-medium ${isMobile ? 'text-sm' : ''}`}>
                         {address.building_number && `${address.building_number} `}
                         {address.building_name && `${address.building_name}, `}
                         {address.thoroughfare}
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>
                         {address.post_town}, {address.postcode}
                       </div>
                     </div>
@@ -164,7 +164,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
             type="button"
             variant="ghost"
             onClick={() => setShowManualEntry(true)}
-            className="w-full text-sm"
+            className={`w-full ${isMobile ? 'text-sm h-10' : 'text-sm'}`}
           >
             Enter address manually
           </Button>
@@ -178,14 +178,14 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
             value={formData.address}
             onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
             placeholder="Full address including postcode"
-            className={className}
+            className={`${className} ${isMobile ? 'min-h-20 text-base' : ''}`}
           />
           {!showManualEntry && (
             <Button
               type="button"
               variant="ghost"
               onClick={resetAddressForm}
-              className="w-full text-sm"
+              className={`w-full ${isMobile ? 'text-sm h-10' : 'text-sm'}`}
             >
               Use postcode lookup instead
             </Button>

@@ -7,12 +7,73 @@ import { getTabIconClassName } from '@/utils/tabIconClasses';
 interface SystemConfigTabsProps {
   animatingIcons: Set<string>;
   onTabClick: (tabValue: string) => void;
+  isMobile?: boolean;
 }
 
 const SystemConfigTabs: React.FC<SystemConfigTabsProps> = ({
   animatingIcons,
-  onTabClick
+  onTabClick,
+  isMobile = false
 }) => {
+  if (isMobile) {
+    // Mobile: Single scrollable row
+    return (
+      <div className="w-full overflow-x-auto">
+        <TabsList className="grid grid-cols-6 w-max min-w-full">
+          <TabsTrigger 
+            value="systems" 
+            className="flex flex-col items-center gap-1 px-3 py-2 min-w-[80px] text-xs"
+            onClick={() => onTabClick('systems')}
+          >
+            <Settings className={`w-4 h-4 ${getTabIconClassName('systems', animatingIcons)}`} />
+            <span>Systems</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="solar" 
+            className="flex flex-col items-center gap-1 px-3 py-2 min-w-[80px] text-xs"
+            onClick={() => onTabClick('solar')}
+          >
+            <Zap className={`w-4 h-4 ${getTabIconClassName('solar', animatingIcons)}`} />
+            <span>Solar</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="battery" 
+            className="flex flex-col items-center gap-1 px-3 py-2 min-w-[80px] text-xs"
+            onClick={() => onTabClick('battery')}
+          >
+            <Battery className={`w-4 h-4 ${getTabIconClassName('battery', animatingIcons)}`} />
+            <span>Battery</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="ev" 
+            className="flex flex-col items-center gap-1 px-2 py-2 min-w-[70px] text-xs"
+            onClick={() => onTabClick('ev')}
+          >
+            <Car className={`w-4 h-4 ${getTabIconClassName('ev', animatingIcons)}`} />
+            <span>EV</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="heatpump" 
+            className="flex flex-col items-center gap-1 px-2 py-2 min-w-[70px] text-xs"
+            onClick={() => onTabClick('heatpump')}
+          >
+            <Thermometer className={`w-4 h-4 ${getTabIconClassName('heatpump', animatingIcons)}`} />
+            <span>Heat</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="smartmeter" 
+            className="flex flex-col items-center gap-1 px-2 py-2 min-w-[70px] text-xs"
+            onClick={() => onTabClick('smartmeter')}
+          >
+            <Activity className={`w-4 h-4 ${getTabIconClassName('smartmeter', animatingIcons)}`} />
+            <span>Meter</span>
+          </TabsTrigger>
+        </TabsList>
+      </div>
+    );
+  }
+
+  // Desktop: Two row layout
   return (
     <div className="flex flex-col gap-2">
       {/* First Row - Systems, Solar, Battery */}

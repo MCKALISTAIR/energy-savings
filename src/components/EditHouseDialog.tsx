@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface House {
   id: string;
@@ -29,6 +29,7 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
   const [formData, setFormData] = useState({ name: '', address: '' });
   const [errors, setErrors] = useState<{ name?: string; address?: string }>({});
   const [showErrors, setShowErrors] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (house) {
@@ -83,40 +84,52 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent>
+      <DialogContent className={isMobile ? 'w-[95vw] max-w-[95vw] h-[80vh] max-h-[80vh] m-2' : ''}>
         <DialogHeader>
-          <DialogTitle>Edit House</DialogTitle>
+          <DialogTitle className={isMobile ? 'text-lg' : 'text-xl'}>Edit House</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className={`space-y-4 ${isMobile ? 'overflow-y-auto flex-1' : ''}`}>
           <div>
-            <Label htmlFor="edit-house-name">House Name <span className="text-red-500">*</span></Label>
+            <Label htmlFor="edit-house-name" className={isMobile ? 'text-sm' : ''}>
+              House Name <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="edit-house-name"
               value={formData.name}
               onChange={(e) => handleFieldChange('name', e.target.value)}
-              className={showErrors && errors.name ? 'border-red-500' : ''}
+              className={`${showErrors && errors.name ? 'border-red-500' : ''} ${isMobile ? 'h-12 text-base' : ''}`}
             />
             {showErrors && errors.name && (
               <p className="text-sm text-red-500 mt-1">{errors.name}</p>
             )}
           </div>
           <div>
-            <Label htmlFor="edit-house-address">Address <span className="text-red-500">*</span></Label>
+            <Label htmlFor="edit-house-address" className={isMobile ? 'text-sm' : ''}>
+              Address <span className="text-red-500">*</span>
+            </Label>
             <Textarea
               id="edit-house-address"
               value={formData.address}
               onChange={(e) => handleFieldChange('address', e.target.value)}
-              className={showErrors && errors.address ? 'border-red-500' : ''}
+              className={`${showErrors && errors.address ? 'border-red-500' : ''} ${isMobile ? 'min-h-20 text-base' : ''}`}
             />
             {showErrors && errors.address && (
               <p className="text-sm text-red-500 mt-1">{errors.address}</p>
             )}
           </div>
-          <div className="flex gap-2">
-            <Button onClick={handleEditHouse} className="flex-1">
+          <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
+            <Button 
+              onClick={handleEditHouse} 
+              className={`${isMobile ? 'w-full h-12 text-base' : 'flex-1'}`}
+            >
               Update House
             </Button>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => onOpenChange(false)} 
+              className={`${isMobile ? 'w-full h-12 text-base' : 'flex-1'}`}
+            >
               Cancel
             </Button>
           </div>

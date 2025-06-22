@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SystemType } from '@/types';
 import { useSystemForm } from '@/hooks/useSystemForm';
+import { useIsMobile } from '@/hooks/use-mobile';
 import SystemFormFields from './SystemFormFields';
 import SystemSpecifications from './SystemSpecifications';
 import SystemFormButtons from './SystemFormButtons';
@@ -26,14 +27,16 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     handleSystemTypeChange
   } = useSystemForm({ initialData, onSuccess });
 
+  const isMobile = useIsMobile();
+
   // Determine if we should use "Vehicle" or "System" terminology
   const isEV = formData.type === 'ev';
   const systemOrVehicle = isEV ? 'Vehicle' : 'System';
 
   return (
-    <div className="max-h-[70vh] overflow-hidden flex flex-col">
-      <ScrollArea className="flex-1 pr-6">
-        <div className="p-6">
+    <div className={`${isMobile ? 'h-[80vh]' : 'max-h-[70vh]'} overflow-hidden flex flex-col`}>
+      <ScrollArea className={`flex-1 ${isMobile ? 'pr-2' : 'pr-6'}`}>
+        <div className={isMobile ? 'p-4' : 'p-6'}>
           <form onSubmit={handleSubmit} className="space-y-4 pb-4">
             <SystemFormFields
               formData={formData}
@@ -44,6 +47,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
               systemOrVehicle={systemOrVehicle}
               errors={errors}
               showErrors={showErrors}
+              isMobile={isMobile}
             />
             
             <SystemSpecifications
@@ -52,17 +56,19 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
               updateSpecification={updateSpecification}
               errors={errors}
               showErrors={showErrors}
+              isMobile={isMobile}
             />
           </form>
         </div>
       </ScrollArea>
       
-      <div className="px-6">
+      <div className={isMobile ? 'px-4 pb-4' : 'px-6'}>
         <SystemFormButtons
           initialData={initialData}
           systemOrVehicle={systemOrVehicle}
           onSubmit={handleSubmit}
           onCancel={onSuccess}
+          isMobile={isMobile}
         />
       </div>
     </div>
