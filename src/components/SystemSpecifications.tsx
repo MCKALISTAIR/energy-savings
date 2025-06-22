@@ -9,6 +9,7 @@ interface SystemSpecificationsProps {
   updateSpecification: (key: string, value: any) => void;
   errors: any;
   showErrors: boolean;
+  isMobile: boolean;
 }
 
 const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
@@ -16,7 +17,8 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
   getSpecValue,
   updateSpecification,
   errors,
-  showErrors
+  showErrors,
+  isMobile
 }) => {
   switch (systemType) {
     case 'solar':
@@ -29,7 +31,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('capacity')}
               onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
-              className={showErrors && errors.capacity ? 'border-red-500' : ''}
+              className={`${showErrors && errors.capacity ? 'border-red-500' : ''} ${isMobile ? 'h-12' : ''}`}
               required
             />
             {showErrors && errors.capacity && (
@@ -43,6 +45,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('panelCount')}
               onChange={(e) => updateSpecification('panelCount', Number(e.target.value))}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -53,6 +56,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               step="0.1"
               value={getSpecValue('efficiency')}
               onChange={(e) => updateSpecification('efficiency', Number(e.target.value))}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -62,6 +66,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               value={getSpecValue('orientation')}
               onChange={(e) => updateSpecification('orientation', e.target.value)}
               placeholder="e.g., South"
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -71,6 +76,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('tilt')}
               onChange={(e) => updateSpecification('tilt', Number(e.target.value))}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
         </div>
@@ -86,7 +92,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('capacity')}
               onChange={(e) => updateSpecification('capacity', Number(e.target.value))}
-              className={showErrors && errors.capacity ? 'border-red-500' : ''}
+              className={`${showErrors && errors.capacity ? 'border-red-500' : ''} ${isMobile ? 'h-12' : ''}`}
               required
             />
             {showErrors && errors.capacity && (
@@ -101,6 +107,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               step="0.1"
               value={getSpecValue('efficiency')}
               onChange={(e) => updateSpecification('efficiency', Number(e.target.value))}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -109,6 +116,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               id="brand"
               value={getSpecValue('brand')}
               onChange={(e) => updateSpecification('brand', e.target.value)}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -117,6 +125,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               id="model"
               value={getSpecValue('model')}
               onChange={(e) => updateSpecification('model', e.target.value)}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
         </div>
@@ -131,6 +140,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               id="make"
               value={getSpecValue('make')}
               onChange={(e) => updateSpecification('make', e.target.value)}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -139,6 +149,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               id="model"
               value={getSpecValue('model')}
               onChange={(e) => updateSpecification('model', e.target.value)}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -148,7 +159,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('batteryCapacity')}
               onChange={(e) => updateSpecification('batteryCapacity', Number(e.target.value))}
-              className={showErrors && errors.batteryCapacity ? 'border-red-500' : ''}
+              className={`${showErrors && errors.batteryCapacity ? 'border-red-500' : ''} ${isMobile ? 'h-12' : ''}`}
               required
             />
             {showErrors && errors.batteryCapacity && (
@@ -163,6 +174,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               step="0.1"
               value={getSpecValue('efficiency')}
               onChange={(e) => updateSpecification('efficiency', Number(e.target.value))}
+              className={isMobile ? 'h-12' : ''}
             />
           </div>
           <div>
@@ -172,7 +184,7 @@ const SystemSpecifications: React.FC<SystemSpecificationsProps> = ({
               type="number"
               value={getSpecValue('annualMileage')}
               onChange={(e) => updateSpecification('annualMileage', Number(e.target.value))}
-              className={showErrors && errors.annualMileage ? 'border-red-500' : ''}
+              className={`${showErrors && errors.annualMileage ? 'border-red-500' : ''} ${isMobile ? 'h-12' : ''}`}
               required
             />
             {showErrors && errors.annualMileage && (
