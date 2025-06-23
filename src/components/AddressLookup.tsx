@@ -1,8 +1,8 @@
+
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Search, MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,6 +17,13 @@ interface AddressResult {
   county?: string;
 }
 
+interface AddressFields {
+  houseNumber: string;
+  street: string;
+  postcode: string;
+  city: string;
+}
+
 interface AddressLookupProps {
   formData: { name: string; address: string };
   setFormData: React.Dispatch<React.SetStateAction<{ name: string; address: string }>>;
@@ -25,23 +32,29 @@ interface AddressLookupProps {
 }
 
 const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, className, isMobile = false }) => {
-  const [postcode, setPostcode] = useState('');
+  const [searchPostcode, setSearchPostcode] = useState('');
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addressFields, setAddressFields] = useState<AddressFields>({
+    houseNumber: '',
+    street: '',
+    postcode: '',
+    city: ''
+  });
 
   const searchAddresses = async () => {
-    if (!postcode.trim()) return;
+    if (!searchPostcode.trim()) return;
     
     setLoadingAddresses(true);
     setError(null);
     
     try {
-      console.log('Searching addresses for postcode:', postcode);
+      console.log('Searching addresses for postcode:', searchPostcode);
       
       const { data, error: functionError } = await supabase.functions.invoke('address-lookup', {
-        body: { postcode: postcode.trim() }
+        body: { postcode: searchPostcode.trim() }
       });
 
       if (functionError) {
@@ -76,14 +89,33 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
   const selectAddress = (address: AddressResult) => {
     setFormData(prev => ({ ...prev, address: address.formatted_address }));
     setAddresses([]);
-    setPostcode('');
+    setSearchPostcode('');
     setError(null);
   };
 
+  const updateAddressFromFields = (fields: AddressFields) => {
+    const addressParts = [
+      fields.houseNumber,
+      fields.street,
+      fields.city,
+      fields.postcode
+    ].filter(part => part.trim());
+    
+    const fullAddress = addressParts.join(', ');
+    setFormData(prev => ({ ...prev, address: fullAddress }));
+  };
+
+  const handleFieldChange = (field: keyof AddressFields, value: string) => {
+    const newFields = { ...addressFields, [field]: value };
+    setAddressFields(newFields);
+    updateAddressFromFields(newFields);
+  };
+
   const resetAddressForm = () => {
-    setPostcode('');
+    setSearchPostcode('');
     setAddresses([]);
     setShowManualEntry(false);
+    setAddressFields({ houseNumber: '', street: '', postcode: '', city: '' });
     setFormData(prev => ({ ...prev, address: '' }));
     setError(null);
   };
@@ -97,8 +129,8 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
           <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
             <Input
               id="postcode"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value.toUpperCase())}
+              value={searchPostcode}
+              onChange={(e) => setSearchPostcode(e.target.value.toUpperCase())}
               placeholder="Enter postcode (e.g. SW1A 1AA)"
               className={`${isMobile ? 'h-12 text-base' : 'flex-1'}`}
               onKeyPress={(e) => {
@@ -111,7 +143,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
             <Button 
               type="button" 
               onClick={searchAddresses}
-              disabled={loadingAddresses || !postcode.trim()}
+              disabled={loadingAddresses || !searchPostcode.trim()}
               variant="default"
               className={`${isMobile ? 'h-12 text-base' : 'px-4'}`}
             >
@@ -171,15 +203,61 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
         </div>
       )}
       
-      {(showManualEntry || formData.address) && (
-        <div className="space-y-2">
-          <Textarea
-            id="house-address"
-            value={formData.address}
-            onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-            placeholder="Full address including postcode"
-            className={`${className} ${isMobile ? 'min-h-20 text-base' : ''}`}
-          />
+      {(showManualEntry || formData.address) && !addresses.length && (
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="house-number" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
+                House Number/Name
+              </Label>
+              <Input
+                id="house-number"
+                value={addressFields.houseNumber}
+                onChange={(e) => handleFieldChange('houseNumber', e.target.value)}
+                placeholder="e.g. 123 or Flat 2A"
+                className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+              />
+            </div>
+            <div>
+              <Label htmlFor="postcode-manual" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
+                Postcode
+              </Label>
+              <Input
+                id="postcode-manual"
+                value={addressFields.postcode}
+                onChange={(e) => handleFieldChange('postcode', e.target.value.toUpperCase())}
+                placeholder="e.g. SW1A 1AA"
+                className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+              />
+            </div>
+          </div>
+          
+          <div>
+            <Label htmlFor="street" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
+              Street
+            </Label>
+            <Input
+              id="street"
+              value={addressFields.street}
+              onChange={(e) => handleFieldChange('street', e.target.value)}
+              placeholder="e.g. Baker Street"
+              className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="city" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
+              City/Town
+            </Label>
+            <Input
+              id="city"
+              value={addressFields.city}
+              onChange={(e) => handleFieldChange('city', e.target.value)}
+              placeholder="e.g. London"
+              className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+            />
+          </div>
+          
           {!showManualEntry && (
             <Button
               type="button"
