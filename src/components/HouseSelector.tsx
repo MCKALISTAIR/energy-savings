@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSystem } from '@/contexts/SystemContext';
-import { Home, Edit, Trash2 } from 'lucide-react';
+import { Home, Edit, Trash2, Plus } from 'lucide-react';
 import AddHouseDialog from './AddHouseDialog';
 import EditHouseDialog from './EditHouseDialog';
 
@@ -19,6 +19,39 @@ const HouseSelector: React.FC = () => {
     setEditingHouse(house);
     setIsEditDialogOpen(true);
   };
+
+  // Show empty state when no houses exist
+  if (houses.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Home className="w-5 h-5" />
+            House Management
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-center space-y-4">
+          <div className="py-8">
+            <Home className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No houses added yet</h3>
+            <p className="text-muted-foreground mb-6">
+              Add your first house to start managing your renewable energy systems
+            </p>
+            <Button onClick={() => setIsAddDialogOpen(true)} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Add Your First House
+            </Button>
+          </div>
+          
+          <AddHouseDialog
+            isOpen={isAddDialogOpen}
+            onOpenChange={setIsAddDialogOpen}
+            onAddHouse={addHouse}
+          />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>

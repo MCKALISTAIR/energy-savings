@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { House, SystemType } from '@/types';
 
@@ -32,17 +31,9 @@ interface SystemProviderProps {
 }
 
 export const SystemProvider: React.FC<SystemProviderProps> = ({ children }) => {
-  const [houses, setHouses] = useState<House[]>([
-    {
-      id: '1',
-      name: 'Main House',
-      address: '123 Green Street, London, UK',
-      createdAt: new Date(),
-    },
-  ]);
-  
+  const [houses, setHouses] = useState<House[]>([]);
   const [systems, setSystems] = useState<SystemType[]>([]);
-  const [currentHouse, setCurrentHouse] = useState<House | null>(houses[0]);
+  const [currentHouse, setCurrentHouse] = useState<House | null>(null);
 
   const addHouse = (houseData: Omit<House, 'id' | 'createdAt'>) => {
     const newHouse: House = {
@@ -51,6 +42,11 @@ export const SystemProvider: React.FC<SystemProviderProps> = ({ children }) => {
       createdAt: new Date(),
     };
     setHouses(prev => [...prev, newHouse]);
+    
+    // Set as current house if it's the first one added
+    if (houses.length === 0) {
+      setCurrentHouse(newHouse);
+    }
   };
 
   const updateHouse = (id: string, houseData: Partial<House>) => {
@@ -66,7 +62,8 @@ export const SystemProvider: React.FC<SystemProviderProps> = ({ children }) => {
     setHouses(prev => prev.filter(house => house.id !== id));
     setSystems(prev => prev.filter(system => system.houseId !== id));
     if (currentHouse?.id === id) {
-      setCurrentHouse(houses.find(house => house.id !== id) || null);
+      const remainingHouses = houses.filter(house => house.id !== id);
+      setCurrentHouse(remainingHouses.length > 0 ? remainingHouses[0] : null);
     }
   };
 
