@@ -4,6 +4,7 @@ import { House } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import UserActions from '@/components/UserActions';
+import HelpSection from '@/components/HelpSection';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,8 @@ const Header: React.FC = () => {
           />
         </div>
 
-        <div className={isMobile ? 'ml-2' : 'ml-4'}>
+        <div className={`flex items-center gap-2 ${isMobile ? 'ml-2' : 'ml-4'}`}>
+          <HelpSection />
           <UserActions />
         </div>
       </div>
