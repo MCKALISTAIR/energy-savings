@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Landing from '@/pages/Landing';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
+import Help from '@/pages/Help';
 import './App.css';
 
 const AppContent = () => {
@@ -18,6 +19,7 @@ const AppContent = () => {
           <Route path="/landing" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/calculator" element={<Index />} />
+          <Route path="/help" element={<Help />} />
         </Routes>
       </DatabaseSystemProvider>
     </SystemProvider>
