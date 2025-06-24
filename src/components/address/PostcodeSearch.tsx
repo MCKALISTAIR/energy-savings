@@ -6,10 +6,11 @@ import { Search } from 'lucide-react';
 
 interface PostcodeSearchProps {
   searchPostcode: string;
-  setSearchPostcode: (value: string) => void;
+  setSearchPostcode: (postcode: string) => void;
   onSearch: () => void;
   loading: boolean;
   isMobile?: boolean;
+  hasError?: boolean;
 }
 
 const PostcodeSearch: React.FC<PostcodeSearchProps> = ({
@@ -17,38 +18,31 @@ const PostcodeSearch: React.FC<PostcodeSearchProps> = ({
   setSearchPostcode,
   onSearch,
   loading,
-  isMobile = false
+  isMobile = false,
+  hasError = false
 }) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSearch();
+    }
+  };
+
   return (
-    <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
+    <div className="flex gap-2">
       <Input
-        id="postcode"
+        placeholder="Enter postcode (e.g. SW1A 1AA)"
         value={searchPostcode}
         onChange={(e) => setSearchPostcode(e.target.value.toUpperCase())}
-        placeholder="Enter postcode (e.g. SW1A 1AA)"
-        className={`${isMobile ? 'h-12 text-base' : 'flex-1'}`}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            onSearch();
-          }
-        }}
+        onKeyPress={handleKeyPress}
+        className={`flex-1 ${hasError ? 'border-red-500' : ''} ${isMobile ? 'h-12 text-base' : ''}`}
       />
       <Button 
-        type="button" 
-        onClick={onSearch}
-        disabled={loading || !searchPostcode.trim()}
-        variant="default"
-        className={`${isMobile ? 'h-12 text-base' : 'px-4'}`}
+        onClick={onSearch} 
+        disabled={!searchPostcode.trim() || loading}
+        className={isMobile ? 'h-12 px-6' : ''}
       >
-        {loading ? (
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <>
-            <Search className="w-4 h-4 mr-2" />
-            Search
-          </>
-        )}
+        <Search className="w-4 h-4" />
+        {loading ? 'Searching...' : 'Search'}
       </Button>
     </div>
   );

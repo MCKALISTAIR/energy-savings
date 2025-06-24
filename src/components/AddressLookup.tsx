@@ -147,6 +147,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({
             onSearch={searchAddresses}
             loading={loadingAddresses}
             isMobile={isMobile}
+            hasError={hasError}
           />
 
           {error && <AddressError error={error} isMobile={isMobile} />}
