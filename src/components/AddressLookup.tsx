@@ -31,9 +31,18 @@ interface AddressLookupProps {
   setFormData: React.Dispatch<React.SetStateAction<{ name: string; address: string }>>;
   className?: string;
   isMobile?: boolean;
+  showErrors?: boolean;
+  errors?: { address?: string };
 }
 
-const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, className, isMobile = false }) => {
+const AddressLookup: React.FC<AddressLookupProps> = ({ 
+  formData, 
+  setFormData, 
+  className, 
+  isMobile = false,
+  showErrors = false,
+  errors = {}
+}) => {
   const [searchPostcode, setSearchPostcode] = useState('');
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
@@ -122,12 +131,16 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
     setError(null);
   };
 
+  const hasError = showErrors && errors.address;
+
   return (
     <div>
-      <Label htmlFor="house-address" className={isMobile ? 'text-sm' : ''}>Address</Label>
+      <Label htmlFor="house-address" className={isMobile ? 'text-sm' : ''}>
+        Address <span className="text-red-500">*</span>
+      </Label>
       
       {!showManualEntry && !formData.address && (
-        <div className="space-y-3">
+        <div className="space-y-3 mt-2">
           <PostcodeSearch
             searchPostcode={searchPostcode}
             setSearchPostcode={setSearchPostcode}
@@ -156,14 +169,20 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ formData, setFormData, cl
       )}
       
       {(showManualEntry || formData.address) && !addresses.length && (
-        <ManualAddressForm
-          addressFields={addressFields}
-          onFieldChange={handleFieldChange}
-          onReset={resetAddressForm}
-          showResetButton={!showManualEntry}
-          className={className}
-          isMobile={isMobile}
-        />
+        <div className="mt-2">
+          <ManualAddressForm
+            addressFields={addressFields}
+            onFieldChange={handleFieldChange}
+            onReset={resetAddressForm}
+            showResetButton={!showManualEntry}
+            className={hasError ? 'border-red-500' : className}
+            isMobile={isMobile}
+          />
+        </div>
+      )}
+      
+      {hasError && (
+        <p className="text-sm text-red-500 mt-1">{errors.address}</p>
       )}
     </div>
   );

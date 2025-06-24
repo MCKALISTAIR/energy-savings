@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -108,12 +109,10 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
                   }
                 }
               }}
-              className={`${showErrors && errors.address ? 'border-red-500' : ''} ${isMobile ? 'min-h-12 text-base' : ''}`}
               isMobile={isMobile}
+              showErrors={showErrors}
+              errors={errors}
             />
-            {showErrors && errors.address && (
-              <p className="text-sm text-red-500 mt-1">{errors.address}</p>
-            )}
           </div>
           
           <Button 

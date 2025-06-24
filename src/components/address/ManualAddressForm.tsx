@@ -28,6 +28,9 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
   className = '',
   isMobile = false
 }) => {
+  const hasError = className.includes('border-red-500');
+  const errorClass = hasError ? 'border-red-500' : '';
+
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
@@ -40,7 +43,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
             value={addressFields.houseNumber}
             onChange={(e) => onFieldChange('houseNumber', e.target.value)}
             placeholder="e.g. 123 or Flat 2A"
-            className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+            className={`${errorClass} ${isMobile ? 'h-10 text-base' : ''}`}
           />
         </div>
         <div>
@@ -52,7 +55,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
             value={addressFields.postcode}
             onChange={(e) => onFieldChange('postcode', e.target.value.toUpperCase())}
             placeholder="e.g. SW1A 1AA"
-            className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+            className={`${errorClass} ${isMobile ? 'h-10 text-base' : ''}`}
           />
         </div>
       </div>
@@ -66,7 +69,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
           value={addressFields.street}
           onChange={(e) => onFieldChange('street', e.target.value)}
           placeholder="e.g. Baker Street"
-          className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+          className={`${errorClass} ${isMobile ? 'h-10 text-base' : ''}`}
         />
       </div>
       
@@ -79,7 +82,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
           value={addressFields.city}
           onChange={(e) => onFieldChange('city', e.target.value)}
           placeholder="e.g. London"
-          className={`${className} ${isMobile ? 'h-10 text-base' : ''}`}
+          className={`${errorClass} ${isMobile ? 'h-10 text-base' : ''}`}
         />
       </div>
       
