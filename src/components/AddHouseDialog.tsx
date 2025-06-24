@@ -95,9 +95,6 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
           </div>
           
           <div>
-            <Label htmlFor="house-address" className={isMobile ? 'text-sm' : ''}>
-              Address <span className="text-red-500">*</span>
-            </Label>
             <AddressLookup 
               formData={formData} 
               setFormData={(newFormData) => {
