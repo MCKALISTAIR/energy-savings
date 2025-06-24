@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -149,6 +150,10 @@ const AddressLookup: React.FC<AddressLookupProps> = ({
             hasError={hasError}
           />
 
+          {hasError && (
+            <p className="text-sm text-red-500">{errors.address}</p>
+          )}
+
           {error && <AddressError error={error} isMobile={isMobile} />}
           
           <AddressResults
@@ -178,11 +183,10 @@ const AddressLookup: React.FC<AddressLookupProps> = ({
             className={hasError ? 'border-red-500' : className}
             isMobile={isMobile}
           />
+          {hasError && (
+            <p className="text-sm text-red-500 mt-1">{errors.address}</p>
+          )}
         </div>
-      )}
-      
-      {hasError && (
-        <p className="text-sm text-red-500 mt-1">{errors.address}</p>
       )}
     </div>
   );
