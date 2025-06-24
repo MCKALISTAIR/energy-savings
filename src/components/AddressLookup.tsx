@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -131,7 +130,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({
     setError(null);
   };
 
-  const hasError = showErrors && errors.address;
+  const hasError = showErrors && !!errors.address;
 
   return (
     <div>
