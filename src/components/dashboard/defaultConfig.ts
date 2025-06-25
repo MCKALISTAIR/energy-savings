@@ -12,4 +12,9 @@ export const getDefaultConfig = (): DashboardConfig => ({
   showProjectionChart: true,
   showTechnologyComparison: true,
   showEnvironmentalImpact: true,
+  environmentalConfig: {
+    showBreakdown: true,
+    showTreesEquivalent: true,
+    showCarsEquivalent: true,
+  },
 });

@@ -63,6 +63,7 @@ const SavingsDashboard: React.FC<SavingsDashboardProps> = ({ data, config, onCon
         <EnvironmentalImpact 
           data={data} 
           timeframe={config.impactTimeframe}
+          config={config.environmentalConfig}
         />
       )}
     </div>
