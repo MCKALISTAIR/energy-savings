@@ -45,10 +45,14 @@ export const useNumericValidation = () => {
       const numericValue = value === '' ? '' : (allowDecimals ? parseFloat(value) || '' : parseInt(value) || '');
       updateSpecification(fieldKey, numericValue);
     } else {
-      // Show validation error
+      // Show validation error based on whether decimals are allowed
+      const errorMessage = allowDecimals 
+        ? 'Only numbers and decimal points are allowed'
+        : 'Only numbers can be entered';
+      
       setValidationErrors(prev => ({
         ...prev,
-        [fieldKey]: 'Only numbers and decimal points are allowed'
+        [fieldKey]: errorMessage
       }));
     }
   };
