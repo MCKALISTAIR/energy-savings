@@ -35,7 +35,7 @@ const EnvironmentalImpact: React.FC<EnvironmentalImpactProps> = ({
         },
         general: {
           ...DEFAULT_ENVIRONMENTAL_FACTORS.general,
-          treesPerTonneCO2: config.customFactors.treesPerTonneCO2 ?? DEFAULT_ENVIRONMENTAL_FACTORS.general.treesPerTonneCO2,
+          treesPerTonneCo2: config.customFactors.treesPerTonneCO2 ?? DEFAULT_ENVIRONMENTAL_FACTORS.general.treesPerTonneCo2,
         },
       })
     : environmentalCalculator;
