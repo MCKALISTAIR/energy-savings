@@ -41,14 +41,18 @@ const SolarSpecifications: React.FC<SolarSpecificationsProps> = ({
         )}
       </div>
       <div>
-        <Label htmlFor="panelCount">Panel Count</Label>
+        <Label htmlFor="panelCount">Panel Count <span className="text-red-500">*</span></Label>
         <Input
           id="panelCount"
           type="text"
           value={getSpecValue('panelCount')}
           onChange={(e) => handleNumericInput(e, 'panelCount', false, updateSpecification)}
-          className={`${validationErrors.panelCount ? 'border-red-500' : ''} ${isMobile ? 'h-12' : ''}`}
+          className={`${showErrors && errors.panelCount ? 'border-red-500' : ''} ${validationErrors.panelCount ? 'border-red-500' : ''} ${isMobile ? 'h-12' : ''}`}
+          required
         />
+        {showErrors && errors.panelCount && (
+          <p className="text-sm text-red-500 mt-1">{errors.panelCount}</p>
+        )}
         {validationErrors.panelCount && (
           <p className="text-sm text-red-500 mt-1">{validationErrors.panelCount}</p>
         )}

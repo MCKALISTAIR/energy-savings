@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useSystem } from '@/contexts/SystemContext';
 import { SystemType } from '@/types';
@@ -13,6 +12,7 @@ interface ValidationErrors {
   installDate?: string;
   system_cost?: string;
   capacity?: string;
+  panelCount?: string;
   batteryCapacity?: string;
   annualMileage?: string;
 }
@@ -55,6 +55,14 @@ export const useSystemForm = ({ initialData, onSuccess }: UseSystemFormProps) =>
     if (formData.type === 'solar' || formData.type === 'battery') {
       if (!capacity || capacity <= 0) {
         newErrors.capacity = 'Capacity is required and must be greater than 0';
+      }
+    }
+
+    // Validate Panel Count for solar systems
+    if (formData.type === 'solar') {
+      const panelCount = getSpecValue('panelCount');
+      if (!panelCount || panelCount <= 0) {
+        newErrors.panelCount = 'Panel count is required and must be greater than 0';
       }
     }
 
