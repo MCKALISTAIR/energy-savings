@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDatabaseSystem } from '@/contexts/DatabaseSystemContext';
-import { Plus } from 'lucide-react';
+import { Plus, List, Calendar } from 'lucide-react';
 import DatabaseSystemForm from './DatabaseSystemForm';
 import SystemList from './SystemList';
+import SystemTimeline from './SystemTimeline';
 import { System } from '@/hooks/useSystems';
 
 const DatabaseSystemManager: React.FC = () => {
@@ -14,18 +16,20 @@ const DatabaseSystemManager: React.FC = () => {
     getCurrentHouseSystems, 
     deleteSystem, 
     currentHouse,
-    systemsLoading 
+    systemsLoading,
+    houses,
+    systems // Get all systems for timeline view
   } = useDatabaseSystem();
   
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingSystem, setEditingSystem] = useState<System | null>(null);
 
-  const systems = getCurrentHouseSystems();
+  const currentHouseSystems = getCurrentHouseSystems();
 
   // Debug logging
-  console.log('Systems data:', systems);
-  systems.forEach(system => {
+  console.log('Systems data:', currentHouseSystems);
+  currentHouseSystems.forEach(system => {
     console.log(`System ${system.name} cost:`, system.system_cost, typeof system.system_cost);
   });
 
@@ -93,13 +97,35 @@ const DatabaseSystemManager: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <SystemList
-          systems={systems}
-          onEdit={openEditDialog}
-          onDelete={handleDeleteSystem}
-          isAddDialogOpen={isAddDialogOpen}
-          setIsAddDialogOpen={setIsAddDialogOpen}
-        />
+        <Tabs defaultValue="list" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="list" className="flex items-center gap-2">
+              <List className="w-4 h-4" />
+              Current House
+            </TabsTrigger>
+            <TabsTrigger value="timeline" className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Timeline View
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="list" className="mt-4">
+            <SystemList
+              systems={currentHouseSystems}
+              onEdit={openEditDialog}
+              onDelete={handleDeleteSystem}
+              isAddDialogOpen={isAddDialogOpen}
+              setIsAddDialogOpen={setIsAddDialogOpen}
+            />
+          </TabsContent>
+          
+          <TabsContent value="timeline" className="mt-4">
+            <SystemTimeline 
+              systems={systems} 
+              houses={houses}
+            />
+          </TabsContent>
+        </Tabs>
 
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="max-w-2xl">
