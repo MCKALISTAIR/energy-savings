@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,6 +30,9 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
   // Get user's preferred currency
   const preferredCurrency = getPreferredCurrency();
   const currencySymbol = getCurrencySymbol(preferredCurrency);
+
+  // Get today's date in YYYY-MM-DD format for max attribute
+  const today = new Date().toISOString().split('T')[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -349,6 +351,7 @@ const DatabaseSystemForm: React.FC<DatabaseSystemFormProps> = ({ initialData, on
           id="install_date"
           type="date"
           value={formData.install_date}
+          max={today}
           onChange={(e) => setFormData(prev => ({ ...prev, install_date: e.target.value }))}
           required
         />

@@ -39,6 +39,9 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
   const currencySymbol = getCurrencySymbol(preferredCurrency);
   const isEV = formData.type === 'ev';
 
+  // Get today's date in YYYY-MM-DD format for max attribute
+  const today = new Date().toISOString().split('T')[0];
+
   return (
     <>
       <div>
@@ -82,6 +85,7 @@ const SystemFormFields: React.FC<SystemFormFieldsProps> = ({
           id="installDate"
           type="date"
           value={formData.installDate}
+          max={today}
           onChange={(e) => handleFieldChange('installDate', e.target.value)}
           className={`${showErrors && errors.installDate ? 'border-red-500' : ''} ${isMobile ? 'h-12 text-base' : ''}`}
           required
