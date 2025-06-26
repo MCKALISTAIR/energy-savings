@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { System } from '@/hooks/useSystems';
 import { Zap, Battery, Car, Thermometer, Calendar, Home } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, differenceInDays, differenceInWeeks, differenceInMonths, differenceInYears } from 'date-fns';
 
 interface SystemTimelineProps {
   systems: System[];
@@ -37,6 +37,33 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
     return house?.name || 'Unknown House';
   };
 
+  const getTimeActive = () => {
+    if (systems.length === 0) return { value: 0, unit: 'days' };
+
+    // Find the oldest system install date
+    const oldestDate = systems.reduce((oldest, system) => {
+      const systemDate = new Date(system.install_date);
+      return systemDate < oldest ? systemDate : oldest;
+    }, new Date(systems[0].install_date));
+
+    const now = new Date();
+    const days = differenceInDays(now, oldestDate);
+    const weeks = differenceInWeeks(now, oldestDate);
+    const months = differenceInMonths(now, oldestDate);
+    const years = differenceInYears(now, oldestDate);
+
+    // Return appropriate unit based on time elapsed
+    if (days < 7) {
+      return { value: days, unit: days === 1 ? 'day' : 'days' };
+    } else if (days < 30) {
+      return { value: weeks, unit: weeks === 1 ? 'week' : 'weeks' };
+    } else if (months < 12) {
+      return { value: months, unit: months === 1 ? 'month' : 'months' };
+    } else {
+      return { value: years, unit: years === 1 ? 'year' : 'years' };
+    }
+  };
+
   // Sort systems by install date (newest first)
   const sortedSystems = [...systems].sort((a, b) => 
     new Date(b.install_date).getTime() - new Date(a.install_date).getTime()
@@ -53,6 +80,7 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
   }, {} as Record<number, System[]>);
 
   const years = Object.keys(systemsByYear).map(Number).sort((a, b) => b - a);
+  const timeActive = getTimeActive();
 
   if (systems.length === 0) {
     return (
@@ -168,8 +196,10 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
               <div className="text-xs text-muted-foreground">Total Systems</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-primary">{years.length}</div>
-              <div className="text-xs text-muted-foreground">Years Active</div>
+              <div className="text-2xl font-bold text-primary">{timeActive.value}</div>
+              <div className="text-xs text-muted-foreground">
+                {timeActive.unit.charAt(0).toUpperCase() + timeActive.unit.slice(1)} Active
+              </div>
             </div>
             <div>
               <div className="text-2xl font-bold text-primary">{houses.length}</div>
