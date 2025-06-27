@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -53,14 +52,15 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
     const years = differenceInYears(now, oldestDate);
 
     // Return appropriate unit based on time elapsed
-    if (days < 7) {
-      return { value: days, unit: days === 1 ? 'day' : 'days' };
-    } else if (days < 30) {
-      return { value: weeks, unit: weeks === 1 ? 'week' : 'weeks' };
-    } else if (months < 12) {
-      return { value: months, unit: months === 1 ? 'month' : 'months' };
-    } else {
+    // Only show years if it's actually been 1+ years
+    if (years >= 1) {
       return { value: years, unit: years === 1 ? 'year' : 'years' };
+    } else if (months >= 1) {
+      return { value: months, unit: months === 1 ? 'month' : 'months' };
+    } else if (weeks >= 1) {
+      return { value: weeks, unit: weeks === 1 ? 'week' : 'weeks' };
+    } else {
+      return { value: Math.max(days, 0), unit: days === 1 ? 'day' : 'days' };
     }
   };
 
