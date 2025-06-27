@@ -9,7 +9,7 @@ import { useSystem } from '@/contexts/SystemContext';
 import { SystemType } from '@/types';
 import { Zap, Battery, Car, Plus, Edit, Trash2, Calendar, List, Home } from 'lucide-react';
 import SystemForm from './SystemForm';
-import { format } from 'date-fns';
+import { format, differenceInDays, differenceInWeeks, differenceInMonths, differenceInYears } from 'date-fns';
 
 const SystemManager: React.FC = () => {
   const { getCurrentHouseSystems, deleteSystem, currentHouse, systems, houses } = useSystem();
@@ -40,6 +40,34 @@ const SystemManager: React.FC = () => {
   const getHouseName = (houseId: string) => {
     const house = houses.find(h => h.id === houseId);
     return house?.name || 'Unknown House';
+  };
+
+  const getTimeActive = () => {
+    if (systems.length === 0) return { value: 0, unit: 'days' };
+
+    // Find the oldest system install date
+    const oldestDate = systems.reduce((oldest, system) => {
+      const systemDate = system.installDate;
+      return systemDate < oldest ? systemDate : oldest;
+    }, systems[0].installDate);
+
+    const now = new Date();
+    const days = differenceInDays(now, oldestDate);
+    const weeks = differenceInWeeks(now, oldestDate);
+    const months = differenceInMonths(now, oldestDate);
+    const years = differenceInYears(now, oldestDate);
+
+    // Return appropriate unit based on time elapsed
+    // Only show years if it's actually been 1+ years
+    if (years >= 1) {
+      return { value: years, unit: years === 1 ? 'year' : 'years' };
+    } else if (months >= 1) {
+      return { value: months, unit: months === 1 ? 'month' : 'months' };
+    } else if (weeks >= 1) {
+      return { value: weeks, unit: weeks === 1 ? 'week' : 'weeks' };
+    } else {
+      return { value: Math.max(days, 0), unit: days === 1 ? 'day' : 'days' };
+    }
   };
 
   const openEditDialog = (system: SystemType) => {
@@ -74,6 +102,7 @@ const SystemManager: React.FC = () => {
     }, {} as Record<number, SystemType[]>);
 
     const years = Object.keys(systemsByYear).map(Number).sort((a, b) => b - a);
+    const timeActive = getTimeActive();
 
     if (systems.length === 0) {
       return (
@@ -174,10 +203,16 @@ const SystemManager: React.FC = () => {
 
         {/* Summary Stats */}
         <div className="mt-6 pt-4 border-t">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-primary">{systems.length}</div>
               <div className="text-xs text-muted-foreground">Total Systems</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-primary">{timeActive.value}</div>
+              <div className="text-xs text-muted-foreground">
+                {timeActive.unit.charAt(0).toUpperCase() + timeActive.unit.slice(1)} Active
+              </div>
             </div>
             <div>
               <div className="text-2xl font-bold text-primary">{years.length}</div>
