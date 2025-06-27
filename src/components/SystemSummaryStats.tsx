@@ -31,7 +31,7 @@ const SystemSummaryStats: React.FC<SystemSummaryStatsProps> = ({
         </div>
         <div>
           <div className="text-2xl font-bold text-primary">{years.length}</div>
-          <div className="text-xs text-muted-foreground">Years Active</div>
+          <div className="text-xs text-muted-foreground">Years Tracked</div>
         </div>
         <div>
           <div className="text-2xl font-bold text-primary">{houses.length}</div>
