@@ -18,7 +18,7 @@ const SystemSummaryStats: React.FC<SystemSummaryStatsProps> = ({
 
   return (
     <div className="mt-6 pt-4 border-t">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+      <div className="grid grid-cols-3 gap-4 text-center">
         <div>
           <div className="text-2xl font-bold text-primary">{systems.length}</div>
           <div className="text-xs text-muted-foreground">Total Systems</div>
@@ -28,10 +28,6 @@ const SystemSummaryStats: React.FC<SystemSummaryStatsProps> = ({
           <div className="text-xs text-muted-foreground">
             {timeActive.unit.charAt(0).toUpperCase() + timeActive.unit.slice(1)} Active
           </div>
-        </div>
-        <div>
-          <div className="text-2xl font-bold text-primary">{years.length}</div>
-          <div className="text-xs text-muted-foreground">Years Tracked</div>
         </div>
         <div>
           <div className="text-2xl font-bold text-primary">{houses.length}</div>
