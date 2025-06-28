@@ -1,12 +1,8 @@
 
 import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import PostcodeSearch from './PostcodeSearch';
-import AddressResults from './AddressResults';
-import ManualAddressForm from './ManualAddressForm';
-import AddressError from './AddressError';
-import LocationDetector from './LocationDetector';
+import AddressSearchSection from './AddressSearchSection';
+import AddressManualSection from './AddressManualSection';
 import { useAddressLookup } from '@/hooks/useAddressLookup';
 import { parseAddressIntoFields, updateAddressFromFields } from '@/utils/addressParser';
 
@@ -78,14 +74,9 @@ const AddressLookupForm: React.FC<AddressLookupFormProps> = ({
   };
 
   const handleLocationDetected = (detectedAddress: string) => {
-    // Parse the detected address into fields
     const parsedFields = parseAddressIntoFields(detectedAddress);
     setAddressFields(parsedFields);
-    
-    // Set the full address
     setFormData(prev => ({ ...prev, address: detectedAddress }));
-    
-    // Show manual entry form so user can edit the parsed fields
     setShowManualEntry(true);
     setError(null);
   };
@@ -108,67 +99,33 @@ const AddressLookupForm: React.FC<AddressLookupFormProps> = ({
       </Label>
       
       {!showManualEntry && !formData.address && (
-        <div className="space-y-3 mt-2">
-          <LocationDetector
-            onLocationDetected={handleLocationDetected}
-            isMobile={isMobile}
-          />
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or search by postcode</span>
-            </div>
-          </div>
-          
-          <PostcodeSearch
-            searchPostcode={searchPostcode}
-            setSearchPostcode={setSearchPostcode}
-            onSearch={searchAddresses}
-            loading={loadingAddresses}
-            isMobile={isMobile}
-            hasError={hasError}
-          />
-
-          {hasError && (
-            <p className="text-sm text-red-500">{errors.address}</p>
-          )}
-
-          {error && <AddressError error={error} isMobile={isMobile} />}
-          
-          <AddressResults
-            addresses={addresses}
-            onSelectAddress={selectAddress}
-            isMobile={isMobile}
-          />
-          
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => setShowManualEntry(true)}
-            className={`w-full ${isMobile ? 'text-sm h-10' : 'text-sm'}`}
-          >
-            Enter address manually
-          </Button>
-        </div>
+        <AddressSearchSection
+          searchPostcode={searchPostcode}
+          setSearchPostcode={setSearchPostcode}
+          addresses={addresses}
+          loadingAddresses={loadingAddresses}
+          error={error}
+          onSearch={searchAddresses}
+          onSelectAddress={selectAddress}
+          onLocationDetected={handleLocationDetected}
+          onManualEntry={() => setShowManualEntry(true)}
+          isMobile={isMobile}
+          hasError={hasError}
+          errorMessage={errors.address}
+        />
       )}
       
       {(showManualEntry || formData.address) && !addresses.length && (
-        <div className="mt-2">
-          <ManualAddressForm
-            addressFields={addressFields}
-            onFieldChange={handleFieldChange}
-            onReset={resetAddressForm}
-            showResetButton={!showManualEntry}
-            className={hasError ? 'border-red-500' : className}
-            isMobile={isMobile}
-          />
-          {hasError && (
-            <p className="text-sm text-red-500 mt-1">{errors.address}</p>
-          )}
-        </div>
+        <AddressManualSection
+          addressFields={addressFields}
+          onFieldChange={handleFieldChange}
+          onReset={resetAddressForm}
+          showResetButton={!showManualEntry}
+          className={className}
+          isMobile={isMobile}
+          hasError={hasError}
+          errorMessage={errors.address}
+        />
       )}
     </div>
   );
