@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import PostcodeSearch from './address/PostcodeSearch';
 import AddressResults from './address/AddressResults';
 import ManualAddressForm from './address/ManualAddressForm';
 import AddressError from './address/AddressError';
+import LocationDetector from './address/LocationDetector';
 
 interface AddressResult {
   formatted_address: string;
@@ -122,6 +122,11 @@ const AddressLookup: React.FC<AddressLookupProps> = ({
     updateAddressFromFields(newFields);
   };
 
+  const handleLocationDetected = (detectedAddress: string) => {
+    setFormData(prev => ({ ...prev, address: detectedAddress }));
+    setError(null);
+  };
+
   const resetAddressForm = () => {
     setSearchPostcode('');
     setAddresses([]);
@@ -141,6 +146,20 @@ const AddressLookup: React.FC<AddressLookupProps> = ({
       
       {!showManualEntry && !formData.address && (
         <div className="space-y-3 mt-2">
+          <LocationDetector
+            onLocationDetected={handleLocationDetected}
+            isMobile={isMobile}
+          />
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or search by postcode</span>
+            </div>
+          </div>
+          
           <PostcodeSearch
             searchPostcode={searchPostcode}
             setSearchPostcode={setSearchPostcode}
