@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import AddressSearchSection from './AddressSearchSection';
 import AddressManualSection from './AddressManualSection';
 import { useAddressLookup } from '@/hooks/useAddressLookup';
-import { parseAddressIntoFields, updateAddressFromFields } from '@/utils/addressParser';
+import { parseAddressIntoFields, parseSelectedAddressIntoFields, updateAddressFromFields } from '@/utils/addressParser';
 
 interface AddressResult {
   formatted_address: string;
@@ -61,7 +61,11 @@ const AddressLookupForm: React.FC<AddressLookupFormProps> = ({
   } = useAddressLookup();
 
   const selectAddress = (address: AddressResult) => {
+    // Parse the selected address into individual fields
+    const parsedFields = parseSelectedAddressIntoFields(address);
+    setAddressFields(parsedFields);
     setFormData(prev => ({ ...prev, address: address.formatted_address }));
+    setShowManualEntry(true);
     clearResults();
     setError(null);
   };
@@ -81,13 +85,17 @@ const AddressLookupForm: React.FC<AddressLookupFormProps> = ({
     setError(null);
   };
 
-  const resetAddressForm = () => {
+  const clearAddressForm = () => {
     setSearchPostcode('');
     clearResults();
     setShowManualEntry(false);
     setAddressFields({ houseNumber: '', street: '', postcode: '', city: '' });
     setFormData(prev => ({ ...prev, address: '' }));
     setError(null);
+  };
+
+  const resetAddressForm = () => {
+    clearAddressForm();
   };
 
   const hasError = showErrors && !!errors.address;
@@ -120,7 +128,9 @@ const AddressLookupForm: React.FC<AddressLookupFormProps> = ({
           addressFields={addressFields}
           onFieldChange={handleFieldChange}
           onReset={resetAddressForm}
+          onClear={clearAddressForm}
           showResetButton={!showManualEntry}
+          showClearButton={true}
           className={className}
           isMobile={isMobile}
           hasError={hasError}

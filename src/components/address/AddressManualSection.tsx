@@ -13,7 +13,9 @@ interface AddressManualSectionProps {
   addressFields: AddressFields;
   onFieldChange: (field: keyof AddressFields, value: string) => void;
   onReset: () => void;
+  onClear?: () => void;
   showResetButton?: boolean;
+  showClearButton?: boolean;
   className?: string;
   isMobile?: boolean;
   hasError?: boolean;
@@ -24,7 +26,9 @@ const AddressManualSection: React.FC<AddressManualSectionProps> = ({
   addressFields,
   onFieldChange,
   onReset,
+  onClear,
   showResetButton = false,
+  showClearButton = false,
   className = '',
   isMobile = false,
   hasError = false,
@@ -36,7 +40,9 @@ const AddressManualSection: React.FC<AddressManualSectionProps> = ({
         addressFields={addressFields}
         onFieldChange={onFieldChange}
         onReset={onReset}
+        onClear={onClear}
         showResetButton={showResetButton}
+        showClearButton={showClearButton}
         className={hasError ? 'border-red-500' : className}
         isMobile={isMobile}
       />

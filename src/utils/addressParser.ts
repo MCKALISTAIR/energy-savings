@@ -32,13 +32,22 @@ export const parseAddressIntoFields = (detectedAddress: string): AddressFields =
 
   // Street is typically the first part
   if (parts.length > 0) {
-    street = parts[0];
+    const firstPart = parts[0];
     
     // Try to extract house number from the beginning of street
-    const houseNumberMatch = street.match(/^(\d+[A-Z]?)\s+(.+)/i);
+    const houseNumberMatch = firstPart.match(/^(\d+[A-Z]?|[A-Za-z\s]+\s\d+[A-Z]?)\s+(.+)/i);
     if (houseNumberMatch) {
       houseNumber = houseNumberMatch[1];
       street = houseNumberMatch[2];
+    } else {
+      // If no clear house number pattern, check if first part is just a number
+      const numberOnlyMatch = firstPart.match(/^(\d+[A-Z]?)$/i);
+      if (numberOnlyMatch && parts.length > 1) {
+        houseNumber = numberOnlyMatch[1];
+        street = parts[1];
+      } else {
+        street = firstPart;
+      }
     }
   }
 
@@ -54,4 +63,18 @@ export const updateAddressFromFields = (fields: AddressFields): string => {
   ].filter(part => part.trim());
   
   return addressParts.join(', ');
+};
+
+export const parseSelectedAddressIntoFields = (address: any): AddressFields => {
+  const houseNumber = [
+    address.building_number,
+    address.building_name,
+    address.sub_building_name
+  ].filter(Boolean).join(' ') || '';
+  
+  const street = address.thoroughfare || '';
+  const city = address.post_town || '';
+  const postcode = address.postcode || '';
+  
+  return { houseNumber, street, postcode, city };
 };

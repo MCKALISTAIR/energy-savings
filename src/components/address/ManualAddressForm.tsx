@@ -3,6 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 interface AddressFields {
   houseNumber: string;
@@ -15,7 +16,9 @@ interface ManualAddressFormProps {
   addressFields: AddressFields;
   onFieldChange: (field: keyof AddressFields, value: string) => void;
   onReset?: () => void;
+  onClear?: () => void;
   showResetButton?: boolean;
+  showClearButton?: boolean;
   className?: string;
   isMobile?: boolean;
 }
@@ -24,7 +27,9 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
   addressFields,
   onFieldChange,
   onReset,
+  onClear,
   showResetButton = false,
+  showClearButton = false,
   className = '',
   isMobile = false
 }) => {
@@ -86,16 +91,30 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
         />
       </div>
       
-      {showResetButton && onReset && (
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onReset}
-          className={`w-full ${isMobile ? 'text-sm h-10' : 'text-sm'}`}
-        >
-          Use postcode lookup instead
-        </Button>
-      )}
+      <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
+        {showClearButton && onClear && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClear}
+            className={`${isMobile ? 'w-full text-sm h-10' : 'flex-1 text-sm'}`}
+          >
+            <X className="w-4 h-4 mr-2" />
+            Clear address
+          </Button>
+        )}
+        
+        {showResetButton && onReset && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onReset}
+            className={`${isMobile ? 'w-full text-sm h-10' : 'flex-1 text-sm'}`}
+          >
+            Use postcode lookup instead
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
