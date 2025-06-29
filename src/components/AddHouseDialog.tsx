@@ -71,15 +71,15 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className={isMobile ? 'w-[95vw] max-w-[95vw] h-[90vh] max-h-[90vh] m-2' : 'max-w-2xl'}>
-        <DialogHeader>
+      <DialogContent className={isMobile ? 'w-[95vw] max-w-[95vw] h-[90vh] max-h-[90vh] m-2 p-4' : 'max-w-2xl p-8'}>
+        <DialogHeader className={isMobile ? 'mb-4' : 'mb-6'}>
           <DialogTitle className={isMobile ? 'text-lg' : 'text-xl'}>Add New House</DialogTitle>
           <DialogDescription className={isMobile ? 'text-sm' : ''}>
             Add a new house to your account. You can search by postcode or enter the address manually.
           </DialogDescription>
         </DialogHeader>
-        <div className={`space-y-4 ${isMobile ? 'overflow-y-auto flex-1' : ''}`}>
-          <div>
+        <div className={`space-y-6 ${isMobile ? 'overflow-y-auto flex-1 px-1' : 'px-2'}`}>
+          <div className="space-y-2">
             <Label htmlFor="house-name" className={isMobile ? 'text-sm' : ''}>
               House Name <span className="text-red-500">*</span>
             </Label>
@@ -95,7 +95,7 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
             )}
           </div>
           
-          <div>
+          <div className="space-y-2">
             <AddressLookup 
               formData={formData} 
               setFormData={(newFormData) => {
@@ -115,12 +115,14 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
             />
           </div>
           
-          <Button 
-            onClick={handleAddHouse} 
-            className={`w-full ${isMobile ? 'h-12 text-base' : ''}`}
-          >
-            Add House
-          </Button>
+          <div className={isMobile ? 'pt-4' : 'pt-6'}>
+            <Button 
+              onClick={handleAddHouse} 
+              className={`w-full ${isMobile ? 'h-12 text-base' : ''}`}
+            >
+              Add House
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

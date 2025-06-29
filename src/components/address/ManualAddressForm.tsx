@@ -37,9 +37,9 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
   const errorClass = hasError ? 'border-red-500' : '';
 
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-3">
-        <div>
+    <div className="space-y-4 p-1">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
           <Label htmlFor="house-number" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
             House Number/Name
           </Label>
@@ -51,7 +51,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
             className={`${errorClass} ${isMobile ? 'h-10 text-base' : ''}`}
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="postcode-manual" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
             Postcode
           </Label>
@@ -65,7 +65,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
         </div>
       </div>
       
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="street" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
           Street
         </Label>
@@ -78,7 +78,7 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
         />
       </div>
       
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="city" className={`text-xs text-muted-foreground ${isMobile ? 'text-xs' : ''}`}>
           City/Town
         </Label>
@@ -91,30 +91,32 @@ const ManualAddressForm: React.FC<ManualAddressFormProps> = ({
         />
       </div>
       
-      <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
-        {showClearButton && onClear && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClear}
-            className={`${isMobile ? 'w-full text-sm h-10' : 'flex-1 text-sm'}`}
-          >
-            <X className="w-4 h-4 mr-2" />
-            Clear address
-          </Button>
-        )}
-        
-        {showResetButton && onReset && (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onReset}
-            className={`${isMobile ? 'w-full text-sm h-10' : 'flex-1 text-sm'}`}
-          >
-            Use postcode lookup instead
-          </Button>
-        )}
-      </div>
+      {(showClearButton || showResetButton) && (
+        <div className={`flex gap-2 pt-2 ${isMobile ? 'flex-col' : ''}`}>
+          {showClearButton && onClear && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClear}
+              className={`${isMobile ? 'w-full text-sm h-10' : 'flex-1 text-sm'}`}
+            >
+              <X className="w-4 h-4 mr-2" />
+              Clear address
+            </Button>
+          )}
+          
+          {showResetButton && onReset && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onReset}
+              className={`${isMobile ? 'w-full text-sm h-10' : 'flex-1 text-sm'}`}
+            >
+              Use postcode lookup instead
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

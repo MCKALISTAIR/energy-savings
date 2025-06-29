@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -84,12 +85,12 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className={isMobile ? 'w-[95vw] max-w-[95vw] h-[80vh] max-h-[80vh] m-2' : ''}>
-        <DialogHeader>
+      <DialogContent className={isMobile ? 'w-[95vw] max-w-[95vw] h-[80vh] max-h-[80vh] m-2 p-4' : 'p-8'}>
+        <DialogHeader className={isMobile ? 'mb-4' : 'mb-6'}>
           <DialogTitle className={isMobile ? 'text-lg' : 'text-xl'}>Edit House</DialogTitle>
         </DialogHeader>
-        <div className={`space-y-4 ${isMobile ? 'overflow-y-auto flex-1' : ''}`}>
-          <div>
+        <div className={`space-y-6 ${isMobile ? 'overflow-y-auto flex-1 px-1' : 'px-2'}`}>
+          <div className="space-y-2">
             <Label htmlFor="edit-house-name" className={isMobile ? 'text-sm' : ''}>
               House Name <span className="text-red-500">*</span>
             </Label>
@@ -103,7 +104,7 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
               <p className="text-sm text-red-500 mt-1">{errors.name}</p>
             )}
           </div>
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="edit-house-address" className={isMobile ? 'text-sm' : ''}>
               Address <span className="text-red-500">*</span>
             </Label>
@@ -117,7 +118,7 @@ const EditHouseDialog: React.FC<EditHouseDialogProps> = ({
               <p className="text-sm text-red-500 mt-1">{errors.address}</p>
             )}
           </div>
-          <div className={`flex gap-2 ${isMobile ? 'flex-col' : ''}`}>
+          <div className={`flex gap-2 ${isMobile ? 'flex-col pt-4' : 'pt-6'}`}>
             <Button 
               onClick={handleEditHouse} 
               className={`${isMobile ? 'w-full h-12 text-base' : 'flex-1'}`}
