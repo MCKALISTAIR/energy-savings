@@ -40,9 +40,9 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
               {systemTypes.map((type) => (
                 <Badge
                   key={type}
-                  className={`cursor-pointer transition-all ${
+                  className={`cursor-pointer transition-all hover:font-bold hover:[&_svg]:fill-current ${
                     activeSystemFilter === type 
-                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm' 
+                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm font-bold [&_svg]:fill-current' 
                       : getSystemColor(type) + ' opacity-70'
                   }`}
                   onClick={() => onSystemFilterClick(type)}
@@ -63,10 +63,10 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
               {years.map((year) => (
                 <Badge
                   key={year}
-                  className={`cursor-pointer transition-all ${
+                  className={`cursor-pointer transition-all hover:font-bold ${
                     activeYearFilter === year 
-                      ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-sm' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20 hover:text-foreground opacity-70'
+                      ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-sm font-bold' 
+                      : 'bg-muted text-muted-foreground opacity-70'
                   }`}
                   onClick={() => onYearFilterClick(year)}
                 >
@@ -84,7 +84,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           {activeSystemFilter && (
             <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
               <span className="text-sm text-muted-foreground">System Type:</span>
-              <Badge className={getSystemColor(activeSystemFilter)}>
+              <Badge className={getSystemColor(activeSystemFilter) + ' font-bold [&_svg]:fill-current'}>
                 {getSystemIcon(activeSystemFilter)}
                 <span className="ml-1 capitalize">{getFilterDisplayName(activeSystemFilter)} Systems</span>
               </Badge>
@@ -92,7 +92,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClearSystemFilter}
-                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive"
+                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive hover:font-bold"
                 aria-label="Clear system filter"
               >
                 <X className="w-3 h-3" />
@@ -103,14 +103,14 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           {activeYearFilter && (
             <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
               <span className="text-sm text-muted-foreground">Year:</span>
-              <Badge className="bg-primary text-primary-foreground">
+              <Badge className="bg-primary text-primary-foreground font-bold">
                 {activeYearFilter}
               </Badge>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onClearYearFilter}
-                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive"
+                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive hover:font-bold"
                 aria-label="Clear year filter"
               >
                 <X className="w-3 h-3" />
