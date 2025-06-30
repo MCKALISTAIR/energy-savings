@@ -40,14 +40,16 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
               {systemTypes.map((type) => (
                 <Badge
                   key={type}
-                  className={`cursor-pointer transition-all hover:font-bold hover:[&>svg]:fill-current ${
+                  className={`cursor-pointer transition-all group ${
                     activeSystemFilter === type 
-                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm font-bold [&>svg]:fill-current' 
-                      : getSystemColor(type) + ' opacity-70'
+                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm font-bold' 
+                      : getSystemColor(type) + ' opacity-70 hover:font-bold'
                   }`}
                   onClick={() => onSystemFilterClick(type)}
                 >
-                  {getSystemIcon(type)}
+                  <span className={activeSystemFilter === type ? '[&>svg]:fill-current' : 'group-hover:[&>svg]:fill-current'}>
+                    {getSystemIcon(type)}
+                  </span>
                   <span className="ml-1 capitalize">{getFilterDisplayName(type)}</span>
                 </Badge>
               ))}
@@ -84,8 +86,10 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           {activeSystemFilter && (
             <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
               <span className="text-sm text-muted-foreground">System Type:</span>
-              <Badge className={getSystemColor(activeSystemFilter) + ' font-bold [&>svg]:fill-current'}>
-                {getSystemIcon(activeSystemFilter)}
+              <Badge className={getSystemColor(activeSystemFilter) + ' font-bold'}>
+                <span className="[&>svg]:fill-current">
+                  {getSystemIcon(activeSystemFilter)}
+                </span>
                 <span className="ml-1 capitalize">{getFilterDisplayName(activeSystemFilter)} Systems</span>
               </Badge>
               <Button
