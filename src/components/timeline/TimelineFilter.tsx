@@ -40,9 +40,9 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
               {systemTypes.map((type) => (
                 <Badge
                   key={type}
-                  className={`cursor-pointer transition-all hover:font-bold hover:[&_svg]:fill-current ${
+                  className={`cursor-pointer transition-all hover:font-bold hover:[&>svg]:fill-current ${
                     activeSystemFilter === type 
-                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm font-bold [&_svg]:fill-current' 
+                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm font-bold [&>svg]:fill-current' 
                       : getSystemColor(type) + ' opacity-70'
                   }`}
                   onClick={() => onSystemFilterClick(type)}
@@ -84,7 +84,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           {activeSystemFilter && (
             <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
               <span className="text-sm text-muted-foreground">System Type:</span>
-              <Badge className={getSystemColor(activeSystemFilter) + ' font-bold [&_svg]:fill-current'}>
+              <Badge className={getSystemColor(activeSystemFilter) + ' font-bold [&>svg]:fill-current'}>
                 {getSystemIcon(activeSystemFilter)}
                 <span className="ml-1 capitalize">{getFilterDisplayName(activeSystemFilter)} Systems</span>
               </Badge>
