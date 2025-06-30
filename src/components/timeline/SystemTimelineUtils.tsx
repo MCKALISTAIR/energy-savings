@@ -1,4 +1,3 @@
-
 import { Zap, Battery, Car, Thermometer } from 'lucide-react';
 import { differenceInDays, differenceInWeeks, differenceInMonths, differenceInYears } from 'date-fns';
 import { System } from '@/hooks/useSystems';
@@ -15,11 +14,11 @@ export const getSystemIcon = (type: string) => {
 
 export const getSystemColor = (type: string) => {
   switch (type) {
-    case 'solar': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    case 'battery': return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'ev': return 'bg-green-100 text-green-800 border-green-200';
-    case 'heat_pump': return 'bg-purple-100 text-purple-800 border-purple-200';
-    default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    case 'solar': return 'bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-200 hover:text-yellow-900';
+    case 'battery': return 'bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 hover:text-blue-900';
+    case 'ev': return 'bg-green-100 text-green-800 border-green-200 hover:bg-green-200 hover:text-green-900';
+    case 'heat_pump': return 'bg-purple-100 text-purple-800 border-purple-200 hover:bg-purple-200 hover:text-purple-900';
+    default: return 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:text-gray-900';
   }
 };
 

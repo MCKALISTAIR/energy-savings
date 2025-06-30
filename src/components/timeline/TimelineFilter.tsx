@@ -42,8 +42,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                   key={type}
                   className={`cursor-pointer transition-all ${
                     activeSystemFilter === type 
-                      ? getSystemColor(type) + ' ring-2 ring-primary' 
-                      : getSystemColor(type) + ' opacity-60 hover:opacity-100'
+                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm' 
+                      : getSystemColor(type) + ' opacity-70'
                   }`}
                   onClick={() => onSystemFilterClick(type)}
                 >
@@ -65,8 +65,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                   key={year}
                   className={`cursor-pointer transition-all ${
                     activeYearFilter === year 
-                      ? 'bg-primary text-primary-foreground ring-2 ring-primary' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-sm' 
+                      : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20 hover:text-foreground opacity-70'
                   }`}
                   onClick={() => onYearFilterClick(year)}
                 >
@@ -92,7 +92,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClearSystemFilter}
-                className="h-6 w-6 p-0 ml-2"
+                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive"
+                aria-label="Clear system filter"
               >
                 <X className="w-3 h-3" />
               </Button>
@@ -109,7 +110,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={onClearYearFilter}
-                className="h-6 w-6 p-0 ml-2"
+                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive"
+                aria-label="Clear year filter"
               >
                 <X className="w-3 h-3" />
               </Button>
