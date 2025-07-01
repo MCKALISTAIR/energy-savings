@@ -53,11 +53,17 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
   const allYears = [...new Set(systems.map(system => new Date(system.install_date).getFullYear()))].sort((a, b) => b - a);
 
   const handleSystemFilterToggle = (systemType: string) => {
-    setActiveSystemFilters(prev => 
-      prev.includes(systemType) 
+    console.log('Filter toggle clicked for:', systemType);
+    console.log('Current active filters:', activeSystemFilters);
+    
+    setActiveSystemFilters(prev => {
+      const newFilters = prev.includes(systemType) 
         ? prev.filter(type => type !== systemType)
-        : [...prev, systemType]
-    );
+        : [...prev, systemType];
+      
+      console.log('New active filters:', newFilters);
+      return newFilters;
+    });
   };
 
   const handleYearFilterClick = (year: number) => {
@@ -65,7 +71,12 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
   };
 
   const clearSystemFilter = (systemType: string) => {
-    setActiveSystemFilters(prev => prev.filter(type => type !== systemType));
+    console.log('Clearing system filter:', systemType);
+    setActiveSystemFilters(prev => {
+      const newFilters = prev.filter(type => type !== systemType);
+      console.log('Filters after clearing:', newFilters);
+      return newFilters;
+    });
   };
 
   const clearYearFilter = () => {
