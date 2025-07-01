@@ -46,8 +46,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                     key={type}
                     className={`cursor-pointer transition-all ${
                       isActive 
-                        ? `${colorClasses} ring-2 ring-primary shadow-sm font-bold [&>svg]:stroke-none [&>svg]:fill-current` 
-                        : `${colorClasses} opacity-70 hover:${colorClasses} hover:font-bold hover:[&>svg]:stroke-none hover:[&>svg]:fill-current`
+                        ? `${colorClasses} ring-2 ring-primary shadow-sm font-bold [&>svg]:stroke-none [&>svg]:fill-current hover:${colorClasses}` 
+                        : `${colorClasses} opacity-70 hover:opacity-100 hover:font-bold hover:[&>svg]:stroke-none hover:[&>svg]:fill-current hover:${colorClasses}`
                     }`}
                     onClick={() => onSystemFilterToggle(type)}
                   >
@@ -71,7 +71,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                   className={`cursor-pointer transition-all hover:font-bold ${
                     activeYearFilter === year 
                       ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-sm font-bold hover:bg-primary' 
-                      : 'bg-muted text-muted-foreground opacity-70 hover:bg-muted'
+                      : 'bg-muted text-muted-foreground opacity-70 hover:opacity-100 hover:bg-muted'
                   }`}
                   onClick={() => onYearFilterClick(year)}
                 >
@@ -88,7 +88,9 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
         <div className="space-y-2">
           {activeSystemFilters.length > 0 && (
             <div className="p-3 bg-muted/50 rounded-lg border">
-              <div className="text-sm text-muted-foreground mb-2">System Types:</div>
+              <div className="text-sm text-muted-foreground mb-2">
+                Active System Filters ({activeSystemFilters.length}):
+              </div>
               <div className="flex flex-wrap gap-2">
                 {activeSystemFilters.map((systemType) => (
                   <div key={systemType} className="flex items-center gap-1">
