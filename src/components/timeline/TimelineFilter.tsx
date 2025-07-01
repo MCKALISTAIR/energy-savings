@@ -37,22 +37,25 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           <div>
             <div className="text-sm text-muted-foreground mb-2">Filter by System Type:</div>
             <div className="flex flex-wrap gap-2">
-              {systemTypes.map((type) => (
-                <Badge
-                  key={type}
-                  className={`cursor-pointer transition-all group ${
-                    activeSystemFilter === type 
-                      ? getSystemColor(type) + ' ring-2 ring-primary shadow-sm font-bold' 
-                      : getSystemColor(type) + ' opacity-70 hover:font-bold'
-                  }`}
-                  onClick={() => onSystemFilterClick(type)}
-                >
-                  <span className={activeSystemFilter === type ? '[&>svg]:fill-current' : 'group-hover:[&>svg]:fill-current'}>
+              {systemTypes.map((type) => {
+                const colorClasses = getSystemColor(type);
+                const isActive = activeSystemFilter === type;
+                
+                return (
+                  <Badge
+                    key={type}
+                    className={`cursor-pointer transition-all ${
+                      isActive 
+                        ? `${colorClasses} ring-2 ring-primary shadow-sm font-bold [&>svg]:stroke-none [&>svg]:fill-current` 
+                        : `${colorClasses} opacity-70 hover:${colorClasses} hover:font-bold hover:[&>svg]:stroke-none hover:[&>svg]:fill-current`
+                    }`}
+                    onClick={() => onSystemFilterClick(type)}
+                  >
                     {getSystemIcon(type)}
-                  </span>
-                  <span className="ml-1 capitalize">{getFilterDisplayName(type)}</span>
-                </Badge>
-              ))}
+                    <span className="ml-1 capitalize">{getFilterDisplayName(type)}</span>
+                  </Badge>
+                );
+              })}
             </div>
           </div>
         )}
@@ -67,8 +70,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                   key={year}
                   className={`cursor-pointer transition-all hover:font-bold ${
                     activeYearFilter === year 
-                      ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-sm font-bold' 
-                      : 'bg-muted text-muted-foreground opacity-70'
+                      ? 'bg-primary text-primary-foreground ring-2 ring-primary shadow-sm font-bold hover:bg-primary' 
+                      : 'bg-muted text-muted-foreground opacity-70 hover:bg-muted'
                   }`}
                   onClick={() => onYearFilterClick(year)}
                 >
@@ -86,10 +89,8 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           {activeSystemFilter && (
             <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
               <span className="text-sm text-muted-foreground">System Type:</span>
-              <Badge className={getSystemColor(activeSystemFilter) + ' font-bold'}>
-                <span className="[&>svg]:fill-current">
-                  {getSystemIcon(activeSystemFilter)}
-                </span>
+              <Badge className={`${getSystemColor(activeSystemFilter)} font-bold [&>svg]:stroke-none [&>svg]:fill-current`}>
+                {getSystemIcon(activeSystemFilter)}
                 <span className="ml-1 capitalize">{getFilterDisplayName(activeSystemFilter)} Systems</span>
               </Badge>
               <Button
@@ -107,7 +108,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
           {activeYearFilter && (
             <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
               <span className="text-sm text-muted-foreground">Year:</span>
-              <Badge className="bg-primary text-primary-foreground font-bold">
+              <Badge className="bg-primary text-primary-foreground font-bold hover:bg-primary">
                 {activeYearFilter}
               </Badge>
               <Button
