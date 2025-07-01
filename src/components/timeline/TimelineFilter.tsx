@@ -8,20 +8,20 @@ import { getSystemIcon, getSystemColor, getFilterDisplayName } from './SystemTim
 interface TimelineFilterProps {
   systemTypes: string[];
   years: number[];
-  activeSystemFilter: string | null;
+  activeSystemFilters: string[];
   activeYearFilter: number | null;
-  onSystemFilterClick: (systemType: string) => void;
+  onSystemFilterToggle: (systemType: string) => void;
   onYearFilterClick: (year: number) => void;
-  onClearSystemFilter: () => void;
+  onClearSystemFilter: (systemType: string) => void;
   onClearYearFilter: () => void;
 }
 
 export const TimelineFilter: React.FC<TimelineFilterProps> = ({
   systemTypes,
   years,
-  activeSystemFilter,
+  activeSystemFilters,
   activeYearFilter,
-  onSystemFilterClick,
+  onSystemFilterToggle,
   onYearFilterClick,
   onClearSystemFilter,
   onClearYearFilter
@@ -39,7 +39,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
             <div className="flex flex-wrap gap-2">
               {systemTypes.map((type) => {
                 const colorClasses = getSystemColor(type);
-                const isActive = activeSystemFilter === type;
+                const isActive = activeSystemFilters.includes(type);
                 
                 return (
                   <Badge
@@ -49,7 +49,7 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
                         ? `${colorClasses} ring-2 ring-primary shadow-sm font-bold [&>svg]:stroke-none [&>svg]:fill-current` 
                         : `${colorClasses} opacity-70 hover:${colorClasses} hover:font-bold hover:[&>svg]:stroke-none hover:[&>svg]:fill-current`
                     }`}
-                    onClick={() => onSystemFilterClick(type)}
+                    onClick={() => onSystemFilterToggle(type)}
                   >
                     {getSystemIcon(type)}
                     <span className="ml-1 capitalize">{getFilterDisplayName(type)}</span>
@@ -84,24 +84,30 @@ export const TimelineFilter: React.FC<TimelineFilterProps> = ({
       </div>
 
       {/* Active Filters Display */}
-      {(activeSystemFilter || activeYearFilter) && (
+      {(activeSystemFilters.length > 0 || activeYearFilter) && (
         <div className="space-y-2">
-          {activeSystemFilter && (
-            <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
-              <span className="text-sm text-muted-foreground">System Type:</span>
-              <Badge className={`${getSystemColor(activeSystemFilter)} font-bold [&>svg]:stroke-none [&>svg]:fill-current`}>
-                {getSystemIcon(activeSystemFilter)}
-                <span className="ml-1 capitalize">{getFilterDisplayName(activeSystemFilter)} Systems</span>
-              </Badge>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClearSystemFilter}
-                className="h-6 w-6 p-0 ml-2 hover:bg-destructive/10 hover:text-destructive hover:font-bold"
-                aria-label="Clear system filter"
-              >
-                <X className="w-3 h-3" />
-              </Button>
+          {activeSystemFilters.length > 0 && (
+            <div className="p-3 bg-muted/50 rounded-lg border">
+              <div className="text-sm text-muted-foreground mb-2">System Types:</div>
+              <div className="flex flex-wrap gap-2">
+                {activeSystemFilters.map((systemType) => (
+                  <div key={systemType} className="flex items-center gap-1">
+                    <Badge className={`${getSystemColor(systemType)} font-bold [&>svg]:stroke-none [&>svg]:fill-current`}>
+                      {getSystemIcon(systemType)}
+                      <span className="ml-1 capitalize">{getFilterDisplayName(systemType)}</span>
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onClearSystemFilter(systemType)}
+                      className="h-6 w-6 p-0 hover:bg-destructive/10 hover:text-destructive hover:font-bold"
+                      aria-label={`Clear ${systemType} filter`}
+                    >
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           

@@ -13,14 +13,16 @@ interface SystemTimelineProps {
 }
 
 const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
-  const [activeSystemFilter, setActiveSystemFilter] = useState<string | null>(null);
+  const [activeSystemFilters, setActiveSystemFilters] = useState<string[]>([]);
   const [activeYearFilter, setActiveYearFilter] = useState<number | null>(null);
 
   // Filter systems based on active filters
   let filteredSystems = systems;
   
-  if (activeSystemFilter) {
-    filteredSystems = filteredSystems.filter(system => system.type === activeSystemFilter);
+  if (activeSystemFilters.length > 0) {
+    filteredSystems = filteredSystems.filter(system => 
+      activeSystemFilters.includes(system.type)
+    );
   }
   
   if (activeYearFilter) {
@@ -50,16 +52,20 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
   const systemTypes = [...new Set(systems.map(system => system.type))];
   const allYears = [...new Set(systems.map(system => new Date(system.install_date).getFullYear()))].sort((a, b) => b - a);
 
-  const handleSystemFilterClick = (systemType: string) => {
-    setActiveSystemFilter(activeSystemFilter === systemType ? null : systemType);
+  const handleSystemFilterToggle = (systemType: string) => {
+    setActiveSystemFilters(prev => 
+      prev.includes(systemType) 
+        ? prev.filter(type => type !== systemType)
+        : [...prev, systemType]
+    );
   };
 
   const handleYearFilterClick = (year: number) => {
     setActiveYearFilter(activeYearFilter === year ? null : year);
   };
 
-  const clearSystemFilter = () => {
-    setActiveSystemFilter(null);
+  const clearSystemFilter = (systemType: string) => {
+    setActiveSystemFilters(prev => prev.filter(type => type !== systemType));
   };
 
   const clearYearFilter = () => {
@@ -93,9 +99,9 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
           <TimelineFilter
             systemTypes={systemTypes}
             years={allYears}
-            activeSystemFilter={activeSystemFilter}
+            activeSystemFilters={activeSystemFilters}
             activeYearFilter={activeYearFilter}
-            onSystemFilterClick={handleSystemFilterClick}
+            onSystemFilterToggle={handleSystemFilterToggle}
             onYearFilterClick={handleYearFilterClick}
             onClearSystemFilter={clearSystemFilter}
             onClearYearFilter={clearYearFilter}
@@ -144,7 +150,7 @@ const SystemTimeline: React.FC<SystemTimelineProps> = ({ systems, houses }) => {
         <TimelineStats
           systems={filteredSystems}
           houses={houses}
-          activeSystemFilter={activeSystemFilter}
+          activeSystemFilter={activeSystemFilters.length === 1 ? activeSystemFilters[0] : null}
           activeYearFilter={activeYearFilter}
         />
       </CardContent>
