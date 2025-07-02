@@ -8,16 +8,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Car, Fuel, Wrench, Leaf } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
+import { EnergyPricesConfig } from '@/components/dashboard/types';
 
 interface EVCalculatorProps {
   onUpdate: (data: SavingsData['ev']) => void;
+  energyPrices?: EnergyPricesConfig;
 }
 
-const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
+const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) => {
   const [milesPerYear, setMilesPerYear] = useState<string>('10000'); // UK average lower
   const [currentMPG, setCurrentMPG] = useState<string>('40'); // UK cars more efficient
-  const [petrolPrice, setPetrolPrice] = useState<string>('1.45'); // UK petrol price per litre
-  const [electricityRate, setElectricityRate] = useState<string>('0.30'); // UK electricity rate
+  const [petrolPrice, setPetrolPrice] = useState<string>(energyPrices?.petrol.toString() || '1.45'); // UK petrol price per litre
+  const [electricityRate, setElectricityRate] = useState<string>(energyPrices?.electricity.toString() || '0.30'); // UK electricity rate
   const [evType, setEVType] = useState<string>('mid-range');
   const [results, setResults] = useState<SavingsData['ev']>({
     vehicleCost: 0,
@@ -87,9 +89,17 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate }) => {
     onUpdate(newResults);
   };
 
+  // Update form values when energyPrices change
+  useEffect(() => {
+    if (energyPrices) {
+      setPetrolPrice(energyPrices.petrol.toString());
+      setElectricityRate(energyPrices.electricity.toString());
+    }
+  }, [energyPrices]);
+
   useEffect(() => {
     calculateSavings();
-  }, [milesPerYear, currentMPG, petrolPrice, electricityRate, evType]);
+  }, [milesPerYear, currentMPG, petrolPrice, electricityRate, evType, energyPrices]);
 
   const getEVDescription = () => {
     const descriptions: { [key: string]: string } = {

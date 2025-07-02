@@ -8,12 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Sun, PoundSterling, Calendar, TrendingUp } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
+import { EnergyPricesConfig } from '@/components/dashboard/types';
 
 interface SolarCalculatorProps {
   onUpdate: (data: SavingsData['solar']) => void;
+  energyPrices?: EnergyPricesConfig;
 }
 
-const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
+const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrices }) => {
   const [homeSize, setHomeSize] = useState<string>('185'); // m² instead of sq ft
   const [monthlyBill, setMonthlyBill] = useState<string>('120');
   const [sunlightHours, setSunlightHours] = useState<string>('3.5'); // UK average
@@ -50,8 +52,9 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
     // Monthly energy production (kWh)
     const monthlyProduction = estimatedSystemSize * sunlightHoursNum * 30 * locationMultiplier;
     
-    // UK electricity rate (average £0.30 per kWh)
-    const monthlyEnergyValue = monthlyProduction * 0.30;
+    // Use custom electricity rate or default
+    const electricityRate = energyPrices?.electricity || 0.30;
+    const monthlyEnergyValue = monthlyProduction * electricityRate;
     
     // Monthly savings (typically 60-80% of bill can be offset in UK)
     const offsetPercentage = Math.min(0.75, monthlyEnergyValue / monthlyBillNum);
@@ -77,7 +80,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate }) => {
 
   useEffect(() => {
     calculateSavings();
-  }, [homeSize, monthlyBill, sunlightHours, location]);
+  }, [homeSize, monthlyBill, sunlightHours, location, energyPrices]);
 
   return (
     <div className="grid md:grid-cols-2 gap-6">

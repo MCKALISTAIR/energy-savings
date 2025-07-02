@@ -13,6 +13,14 @@ export interface EnvironmentalConfig {
   showCarsEquivalent?: boolean;
 }
 
+export interface EnergyPricesConfig {
+  electricity: number; // £/kWh
+  petrol: number; // £/litre
+  gas: number; // £/kWh
+  oil: number; // £/kWh
+  lpg: number; // £/kWh
+}
+
 export interface DashboardConfig {
   impactTimeframe: number;
   solarROIPeriod: number;
@@ -26,6 +34,10 @@ export interface DashboardConfig {
   showEnvironmentalImpact: boolean;
   // New environmental configuration
   environmentalConfig: EnvironmentalConfig;
+  // Energy pricing configuration
+  enableCustomPricing: boolean;
+  customEnergyPrices: EnergyPricesConfig;
+  priceChangeMode: 'apply-now' | 'historical-adjustment';
 }
 
 export interface DashboardSettingsProps {

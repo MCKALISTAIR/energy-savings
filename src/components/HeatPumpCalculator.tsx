@@ -9,12 +9,14 @@ import { Progress } from '@/components/ui/progress';
 import { Thermometer, PoundSterling, Calendar, TrendingUp } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 import { formatCurrency } from '@/utils/currency';
+import { EnergyPricesConfig } from '@/components/dashboard/types';
 
 interface HeatPumpCalculatorProps {
   onUpdate: (data: SavingsData['heatPump']) => void;
+  energyPrices?: EnergyPricesConfig;
 }
 
-const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate }) => {
+const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energyPrices }) => {
   const [homeSize, setHomeSize] = useState<string>('185'); // m² instead of sq ft
   const [currentHeatingType, setCurrentHeatingType] = useState<string>('gas');
   const [monthlyHeatingBill, setMonthlyHeatingBill] = useState<string>('80');
@@ -48,18 +50,19 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate }) => 
 
     const efficiency = efficiencyMultipliers[heatPumpType] || 3.2;
 
-    // Current heating costs per unit (UK averages)
+    // Current heating costs per unit (use custom prices if available)
     const heatingCosts: { [key: string]: number } = {
-      'gas': 0.06, // £0.06 per kWh
-      'oil': 0.09, // £0.09 per kWh
-      'electric': 0.30, // £0.30 per kWh
-      'lpg': 0.08 // £0.08 per kWh
+      'gas': energyPrices?.gas || 0.06,
+      'oil': energyPrices?.oil || 0.09,
+      'electric': energyPrices?.electricity || 0.30,
+      'lpg': energyPrices?.lpg || 0.08
     };
 
     const currentCostPerKwh = heatingCosts[currentHeatingType] || 0.06;
     
-    // Heat pump electricity cost (£0.30 per kWh but with efficiency)
-    const heatPumpCostPerKwh = 0.30 / efficiency;
+    // Heat pump electricity cost (use custom price if available)
+    const electricityRate = energyPrices?.electricity || 0.30;
+    const heatPumpCostPerKwh = electricityRate / efficiency;
     
     // Calculate monthly savings
     const currentMonthlyKwh = monthlyBillNum / currentCostPerKwh;
@@ -85,7 +88,7 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate }) => 
 
   useEffect(() => {
     calculateSavings();
-  }, [homeSize, currentHeatingType, monthlyHeatingBill, heatPumpType]);
+  }, [homeSize, currentHeatingType, monthlyHeatingBill, heatPumpType, energyPrices]);
 
   return (
     <div className="grid md:grid-cols-2 gap-6">

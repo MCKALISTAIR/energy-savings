@@ -66,19 +66,31 @@ const TabContent: React.FC<TabContentProps> = ({
       </TabsContent>
 
       <TabsContent value="solar" className="animate-fade-in">
-        <SolarCalculator onUpdate={updateSolarData} />
+        <SolarCalculator 
+          onUpdate={updateSolarData} 
+          energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
+        />
       </TabsContent>
 
       <TabsContent value="battery" className="animate-fade-in">
-        <BatteryCalculator onUpdate={updateBatteryData} />
+        <BatteryCalculator 
+          onUpdate={updateBatteryData} 
+          energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
+        />
       </TabsContent>
 
       <TabsContent value="ev" className="animate-fade-in">
-        <EVCalculator onUpdate={updateEVData} />
+        <EVCalculator 
+          onUpdate={updateEVData} 
+          energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
+        />
       </TabsContent>
 
       <TabsContent value="heatpump" className="animate-fade-in">
-        <HeatPumpCalculator onUpdate={updateHeatPumpData} />
+        <HeatPumpCalculator 
+          onUpdate={updateHeatPumpData} 
+          energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
+        />
       </TabsContent>
 
       <TabsContent value="smartmeter" className="animate-fade-in">

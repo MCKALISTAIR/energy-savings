@@ -8,12 +8,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Battery, Zap, Shield, TrendingUp } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
+import { EnergyPricesConfig } from '@/components/dashboard/types';
 
 interface BatteryCalculatorProps {
   onUpdate: (data: SavingsData['battery']) => void;
+  energyPrices?: EnergyPricesConfig;
 }
 
-const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
+const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyPrices }) => {
   const [monthlyBill, setMonthlyBill] = useState<string>('120');
   const [peakUsage, setPeakUsage] = useState<string>('25');
   const [outageFrequency, setOutageFrequency] = useState<string>('low');
@@ -35,7 +37,8 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
     const systemCost = batterySizeNum * costPerKWh + 2500; // Base installation cost
 
     // Peak hour savings (Economy 7 and time-of-use tariffs)
-    const peakRateDiff = 0.20; // Difference between peak and off-peak rates in UK
+    const electricityRate = energyPrices?.electricity || 0.30;
+    const peakRateDiff = electricityRate * 0.67; // Peak rates typically 67% higher than base rate
     const dailyPeakSavings = Math.min(peakUsageNum, batterySizeNum) * peakRateDiff;
     const monthlyPeakSavings = dailyPeakSavings * 30;
 
@@ -64,7 +67,7 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate }) => {
 
   useEffect(() => {
     calculateSavings();
-  }, [monthlyBill, peakUsage, outageFrequency, batterySize]);
+  }, [monthlyBill, peakUsage, outageFrequency, batterySize, energyPrices]);
 
   const getOutageValue = () => {
     const values: { [key: string]: string } = {
