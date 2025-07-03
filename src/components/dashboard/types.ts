@@ -38,6 +38,10 @@ export interface DashboardConfig {
   enableCustomPricing: boolean;
   customEnergyPrices: EnergyPricesConfig;
   priceChangeMode: 'apply-now' | 'historical-adjustment';
+  // Annual price rise configuration
+  enableAnnualPriceRise: boolean;
+  annualPriceRisePercentage: number; // Can be negative for price drops
+  priceRiseDate: string; // Format: "MM-DD" e.g., "01-01" for January 1st
 }
 
 export interface DashboardSettingsProps {

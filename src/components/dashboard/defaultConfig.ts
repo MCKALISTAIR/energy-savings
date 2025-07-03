@@ -26,4 +26,7 @@ export const getDefaultConfig = (): DashboardConfig => ({
     lpg: 0.08, // UK average £/kWh
   },
   priceChangeMode: 'apply-now',
+  enableAnnualPriceRise: false,
+  annualPriceRisePercentage: 3.0, // Default 3% annual increase
+  priceRiseDate: '01-01', // January 1st
 });
