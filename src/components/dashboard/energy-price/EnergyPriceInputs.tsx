@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DashboardConfig } from '../types';
@@ -12,13 +12,33 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
   config, 
   onConfigChange 
 }) => {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handlePriceChange = (energyType: keyof typeof config.customEnergyPrices, value: string) => {
-    const numValue = parseFloat(value) || 0;
+    const numValue = parseFloat(value);
+    
+    // Clear previous error for this field
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[energyType];
+      return newErrors;
+    });
+    
+    // Validate the value
+    if (value !== '' && (isNaN(numValue) || numValue < 0)) {
+      setErrors(prev => ({
+        ...prev,
+        [energyType]: 'Value cannot be negative'
+      }));
+      return; // Don't update config with invalid value
+    }
+    
+    // Update config with valid value
     onConfigChange({
       ...config,
       customEnergyPrices: {
         ...config.customEnergyPrices,
-        [energyType]: numValue,
+        [energyType]: numValue || 0,
       },
     });
   };
@@ -35,7 +55,11 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           value={config.customEnergyPrices.electricity}
           onChange={(e) => handlePriceChange('electricity', e.target.value)}
           placeholder="0.30"
+          className={errors.electricity ? "border-destructive" : ""}
         />
+        {errors.electricity && (
+          <p className="text-sm text-destructive">{errors.electricity}</p>
+        )}
       </div>
       
       <div className="space-y-2">
@@ -48,7 +72,11 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           value={config.customEnergyPrices.petrol}
           onChange={(e) => handlePriceChange('petrol', e.target.value)}
           placeholder="1.45"
+          className={errors.petrol ? "border-destructive" : ""}
         />
+        {errors.petrol && (
+          <p className="text-sm text-destructive">{errors.petrol}</p>
+        )}
       </div>
       
       <div className="space-y-2">
@@ -61,7 +89,11 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           value={config.customEnergyPrices.gas}
           onChange={(e) => handlePriceChange('gas', e.target.value)}
           placeholder="0.06"
+          className={errors.gas ? "border-destructive" : ""}
         />
+        {errors.gas && (
+          <p className="text-sm text-destructive">{errors.gas}</p>
+        )}
       </div>
       
       <div className="space-y-2">
@@ -74,7 +106,11 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           value={config.customEnergyPrices.gasStandingCharge}
           onChange={(e) => handlePriceChange('gasStandingCharge', e.target.value)}
           placeholder="0.30"
+          className={errors.gasStandingCharge ? "border-destructive" : ""}
         />
+        {errors.gasStandingCharge && (
+          <p className="text-sm text-destructive">{errors.gasStandingCharge}</p>
+        )}
       </div>
       
       <div className="space-y-2">
@@ -87,7 +123,11 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           value={config.customEnergyPrices.oil}
           onChange={(e) => handlePriceChange('oil', e.target.value)}
           placeholder="0.09"
+          className={errors.oil ? "border-destructive" : ""}
         />
+        {errors.oil && (
+          <p className="text-sm text-destructive">{errors.oil}</p>
+        )}
       </div>
       
       <div className="space-y-2">
@@ -100,7 +140,11 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           value={config.customEnergyPrices.lpg}
           onChange={(e) => handlePriceChange('lpg', e.target.value)}
           placeholder="0.08"
+          className={errors.lpg ? "border-destructive" : ""}
         />
+        {errors.lpg && (
+          <p className="text-sm text-destructive">{errors.lpg}</p>
+        )}
       </div>
     </div>
   );
