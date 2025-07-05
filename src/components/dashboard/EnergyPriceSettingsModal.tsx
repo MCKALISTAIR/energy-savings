@@ -53,7 +53,7 @@ const EnergyPriceSettingsModal: React.FC<EnergyPriceSettingsModalProps> = ({
           Energy Price Settings
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[85vh] border-border/50">
+      <DialogContent className="max-w-3xl max-h-[85vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <PoundSterling className="w-5 h-5" />
