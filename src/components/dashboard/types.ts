@@ -17,6 +17,7 @@ export interface EnergyPricesConfig {
   electricity: number; // £/kWh
   petrol: number; // £/litre
   gas: number; // £/kWh
+  gasStandingCharge: number; // £/day
   oil: number; // £/kWh
   lpg: number; // £/kWh
 }

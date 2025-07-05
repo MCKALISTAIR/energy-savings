@@ -22,6 +22,7 @@ export const getDefaultConfig = (): DashboardConfig => ({
     electricity: 0.30, // UK average £/kWh
     petrol: 1.45, // UK average £/litre
     gas: 0.06, // UK average £/kWh
+    gasStandingCharge: 0.30, // UK average £/day
     oil: 0.09, // UK average £/kWh
     lpg: 0.08, // UK average £/kWh
   },

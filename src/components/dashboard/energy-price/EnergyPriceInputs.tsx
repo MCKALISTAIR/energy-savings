@@ -62,6 +62,18 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
       </div>
       
       <div className="space-y-2">
+        <Label htmlFor="gas-standing-charge">Gas Standing Charge (£/day)</Label>
+        <Input
+          id="gas-standing-charge"
+          type="number"
+          step="0.01"
+          value={config.customEnergyPrices.gasStandingCharge}
+          onChange={(e) => handlePriceChange('gasStandingCharge', e.target.value)}
+          placeholder="0.30"
+        />
+      </div>
+      
+      <div className="space-y-2">
         <Label htmlFor="oil-price">Oil Rate (£/kWh)</Label>
         <Input
           id="oil-price"
