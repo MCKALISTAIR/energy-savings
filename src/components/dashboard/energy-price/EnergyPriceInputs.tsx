@@ -31,6 +31,7 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           id="electricity-price"
           type="number"
           step="0.01"
+          min="0"
           value={config.customEnergyPrices.electricity}
           onChange={(e) => handlePriceChange('electricity', e.target.value)}
           placeholder="0.30"
@@ -43,6 +44,7 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           id="petrol-price"
           type="number"
           step="0.01"
+          min="0"
           value={config.customEnergyPrices.petrol}
           onChange={(e) => handlePriceChange('petrol', e.target.value)}
           placeholder="1.45"
@@ -55,6 +57,7 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           id="gas-price"
           type="number"
           step="0.01"
+          min="0"
           value={config.customEnergyPrices.gas}
           onChange={(e) => handlePriceChange('gas', e.target.value)}
           placeholder="0.06"
@@ -67,6 +70,7 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           id="gas-standing-charge"
           type="number"
           step="0.01"
+          min="0"
           value={config.customEnergyPrices.gasStandingCharge}
           onChange={(e) => handlePriceChange('gasStandingCharge', e.target.value)}
           placeholder="0.30"
@@ -79,6 +83,7 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           id="oil-price"
           type="number"
           step="0.01"
+          min="0"
           value={config.customEnergyPrices.oil}
           onChange={(e) => handlePriceChange('oil', e.target.value)}
           placeholder="0.09"
@@ -91,6 +96,7 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           id="lpg-price"
           type="number"
           step="0.01"
+          min="0"
           value={config.customEnergyPrices.lpg}
           onChange={(e) => handlePriceChange('lpg', e.target.value)}
           placeholder="0.08"
