@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -13,6 +13,54 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
   config, 
   onConfigChange 
 }) => {
+  const [dateError, setDateError] = useState<string>('');
+
+  const validateDate = (dateString: string): boolean => {
+    // Check format DD-MM
+    const dateRegex = /^(\d{2})-(\d{2})$/;
+    const match = dateString.match(dateRegex);
+    
+    if (!match) {
+      setDateError('Invalid format. Use DD-MM');
+      return false;
+    }
+    
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    
+    // Validate day range
+    if (day < 1 || day > 31) {
+      setDateError('Day must be between 01-31');
+      return false;
+    }
+    
+    // Validate month range
+    if (month < 1 || month > 12) {
+      setDateError('Month must be between 01-12');
+      return false;
+    }
+    
+    setDateError('');
+    return true;
+  };
+
+  const handleDateChange = (value: string) => {
+    if (value === '') {
+      setDateError('');
+      onConfigChange({
+        ...config,
+        priceRiseDate: value,
+      });
+      return;
+    }
+    
+    if (validateDate(value)) {
+      onConfigChange({
+        ...config,
+        priceRiseDate: value,
+      });
+    }
+  };
   return (
     <div className="space-y-4 border-t pt-4">
       <div className="flex items-center justify-between">
@@ -62,15 +110,14 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
               id="price-rise-date"
               type="text"
               value={config.priceRiseDate}
-              onChange={(e) => 
-                onConfigChange({
-                  ...config,
-                  priceRiseDate: e.target.value,
-                })
-              }
+              onChange={(e) => handleDateChange(e.target.value)}
               placeholder="01-01"
               pattern="[0-9]{2}-[0-9]{2}"
+              className={dateError ? "border-destructive" : ""}
             />
+            {dateError && (
+              <p className="text-sm text-destructive">{dateError}</p>
+            )}
             <p className="text-xs text-muted-foreground">
               Format: DD-MM (e.g., 01-01 for January 1st)
             </p>
