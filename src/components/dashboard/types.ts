@@ -42,7 +42,7 @@ export interface DashboardConfig {
   // Annual price rise configuration
   enableAnnualPriceRise: boolean;
   annualPriceRisePercentage: number; // Can be negative for price drops
-  priceRiseDate: string; // Format: "MM-DD" e.g., "01-01" for January 1st
+  priceRiseDate: string; // Format: "DD-MM" e.g., "01-01" for January 1st
   // High price warning threshold
   highPriceWarningThreshold: number; // £/kWh threshold for electricity and gas
 }

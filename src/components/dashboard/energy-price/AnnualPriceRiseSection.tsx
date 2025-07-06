@@ -72,7 +72,7 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
               pattern="[0-9]{2}-[0-9]{2}"
             />
             <p className="text-xs text-muted-foreground">
-              Format: MM-DD (e.g., 01-01 for January 1st)
+              Format: DD-MM (e.g., 01-01 for January 1st)
             </p>
           </div>
         </div>
