@@ -13,15 +13,21 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
   onConfigChange 
 }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [warnings, setWarnings] = useState<Record<string, string>>({});
 
   const handlePriceChange = (energyType: keyof typeof config.customEnergyPrices, value: string) => {
     const numValue = parseFloat(value);
     
-    // Clear previous error for this field
+    // Clear previous error and warning for this field
     setErrors(prev => {
       const newErrors = { ...prev };
       delete newErrors[energyType];
       return newErrors;
+    });
+    setWarnings(prev => {
+      const newWarnings = { ...prev };
+      delete newWarnings[energyType];
+      return newWarnings;
     });
     
     // Validate the value
@@ -31,6 +37,16 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
         [energyType]: 'Value cannot be negative'
       }));
       return; // Don't update config with invalid value
+    }
+    
+    // Check for high price warning (electricity and gas only)
+    if (value !== '' && !isNaN(numValue) && numValue >= 0 && 
+        (energyType === 'electricity' || energyType === 'gas') && 
+        numValue > config.highPriceWarningThreshold) {
+      setWarnings(prev => ({
+        ...prev,
+        [energyType]: `This price looks high (>£${config.highPriceWarningThreshold}/kWh). Are you sure this is correct?`
+      }));
     }
     
     // Update config with valid value
@@ -59,6 +75,9 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
         />
         {errors.electricity && (
           <p className="text-sm text-destructive">{errors.electricity}</p>
+        )}
+        {warnings.electricity && (
+          <p className="text-sm text-amber-600">{warnings.electricity}</p>
         )}
       </div>
       
@@ -93,6 +112,9 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
         />
         {errors.gas && (
           <p className="text-sm text-destructive">{errors.gas}</p>
+        )}
+        {warnings.gas && (
+          <p className="text-sm text-amber-600">{warnings.gas}</p>
         )}
       </div>
       
