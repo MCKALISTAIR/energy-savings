@@ -46,20 +46,19 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
   };
 
   const handleDateChange = (value: string) => {
+    // Always update the config to allow typing
+    onConfigChange({
+      ...config,
+      priceRiseDate: value,
+    });
+    
+    // Only validate if it looks like a complete date
     if (value === '') {
       setDateError('');
-      onConfigChange({
-        ...config,
-        priceRiseDate: value,
-      });
-      return;
-    }
-    
-    if (validateDate(value)) {
-      onConfigChange({
-        ...config,
-        priceRiseDate: value,
-      });
+    } else if (value.length >= 5) {
+      validateDate(value);
+    } else {
+      setDateError('');
     }
   };
 
