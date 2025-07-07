@@ -67,7 +67,7 @@ const EnergyPriceSettingsModal: React.FC<EnergyPriceSettingsModalProps> = ({
         </DialogHeader>
         
         <ScrollArea className="max-h-[65vh] pr-6">
-          <div className="space-y-6 pr-2">
+          <div className="space-y-6 px-2 pr-4">
             <div className="text-sm text-muted-foreground">
               Customize energy prices for more accurate savings calculations across all your renewable energy systems.
             </div>
