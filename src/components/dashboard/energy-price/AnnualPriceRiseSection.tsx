@@ -8,13 +8,26 @@ import { DashboardConfig } from '../types';
 interface AnnualPriceRiseSectionProps {
   config: DashboardConfig;
   onConfigChange: (config: DashboardConfig) => void;
+  onValidationChange?: (errors: {[key: string]: string}) => void;
 }
 
 const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({ 
   config, 
-  onConfigChange 
+  onConfigChange,
+  onValidationChange
 }) => {
   const [dateError, setDateError] = useState<string>('');
+
+  const updateValidationErrors = (error: string) => {
+    setDateError(error);
+    if (onValidationChange) {
+      if (error) {
+        onValidationChange({ priceRiseDate: `Annual change date: ${error}` });
+      } else {
+        onValidationChange({});
+      }
+    }
+  };
 
   const validateDate = (dateString: string): boolean => {
     // Check format DD-MM
@@ -22,7 +35,7 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
     const match = dateString.match(dateRegex);
     
     if (!match) {
-      setDateError('Invalid format. Use DD-MM');
+      updateValidationErrors('Invalid format. Use DD-MM');
       return false;
     }
     
@@ -31,17 +44,17 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
     
     // Validate day range
     if (day < 1 || day > 31) {
-      setDateError('Day must be between 01-31');
+      updateValidationErrors('Day must be between 01-31');
       return false;
     }
     
     // Validate month range
     if (month < 1 || month > 12) {
-      setDateError('Month must be between 01-12');
+      updateValidationErrors('Month must be between 01-12');
       return false;
     }
     
-    setDateError('');
+    updateValidationErrors('');
     return true;
   };
 
@@ -54,11 +67,11 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
     
     // Only validate if it looks like a complete date
     if (value === '') {
-      setDateError('');
+      updateValidationErrors('');
     } else if (value.length >= 5) {
       validateDate(value);
     } else {
-      setDateError('');
+      updateValidationErrors('');
     }
   };
 
@@ -70,7 +83,7 @@ const AnnualPriceRiseSection: React.FC<AnnualPriceRiseSectionProps> = ({
   };
 
   const clearDate = () => {
-    setDateError('');
+    updateValidationErrors('');
     onConfigChange({
       ...config,
       priceRiseDate: '',

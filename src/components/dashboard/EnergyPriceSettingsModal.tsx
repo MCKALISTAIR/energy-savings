@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PoundSterling } from 'lucide-react';
 import { DashboardConfig } from './types';
 import EnergyPriceToggle from './energy-price/EnergyPriceToggle';
@@ -21,11 +22,15 @@ const EnergyPriceSettingsModal: React.FC<EnergyPriceSettingsModalProps> = ({
 }) => {
   const [localConfig, setLocalConfig] = useState<DashboardConfig>(config);
   const [isOpen, setIsOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
 
   // Sync local config with prop changes
   useEffect(() => {
     setLocalConfig(config);
   }, [config]);
+
+  const hasValidationErrors = Object.keys(validationErrors).length > 0;
+  const errorMessage = hasValidationErrors ? Object.values(validationErrors)[0] : '';
 
   const handleSave = () => {
     onConfigChange(localConfig);
@@ -87,9 +92,10 @@ const EnergyPriceSettingsModal: React.FC<EnergyPriceSettingsModalProps> = ({
                 <AnnualPriceRiseSection 
                   config={localConfig} 
                   onConfigChange={setLocalConfig} 
+                  onValidationChange={setValidationErrors}
                 />
 
-                <EnergyPriceActions 
+                <EnergyPriceActions
                   config={localConfig} 
                   onConfigChange={setLocalConfig} 
                 />
@@ -100,9 +106,26 @@ const EnergyPriceSettingsModal: React.FC<EnergyPriceSettingsModalProps> = ({
               <Button variant="outline" onClick={handleCancel}>
                 Cancel
               </Button>
-              <Button onClick={handleSave}>
-                Save Changes
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <Button 
+                        onClick={handleSave} 
+                        disabled={hasValidationErrors}
+                        className={hasValidationErrors ? "opacity-50 cursor-not-allowed" : ""}
+                      >
+                        Save Changes
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  {hasValidationErrors && (
+                    <TooltipContent>
+                      <p>{errorMessage}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </ScrollArea>
