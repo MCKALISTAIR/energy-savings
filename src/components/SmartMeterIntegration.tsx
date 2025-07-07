@@ -178,11 +178,11 @@ const SmartMeterIntegration = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
               {energySuppliers.map((supplier) => (
                 <div
                   key={supplier.id}
-                  className={`relative p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                  className={`relative p-4 border rounded-lg cursor-pointer transition-all duration-200 hover-scale ${
                     supplier.available 
                       ? 'border-gray-200 hover:border-primary hover:shadow-md' 
                       : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
@@ -208,7 +208,7 @@ const SmartMeterIntegration = () => {
         </Card>
 
         {/* Info Section */}
-        <Card>
+        <Card className="animate-fade-in">
           <CardHeader>
             <CardTitle>What you'll get with smart meter integration</CardTitle>
           </CardHeader>
@@ -255,53 +255,54 @@ const SmartMeterIntegration = () => {
     );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Header with Back Button */}
-      <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => setSelectedSupplier(null)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Suppliers
-        </Button>
-      </div>
+  if (selectedSupplier === 'octopus' && !isConnected) {
+    return (
+      <div className="space-y-6">
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setSelectedSupplier(null)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Suppliers
+          </Button>
+        </div>
 
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Octopus Energy Integration</h2>
-        <p className="text-gray-600">
-          Connect your Octopus Energy smart meter to get real-time energy usage data and personalized insights
-        </p>
-      </div>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Octopus Energy Integration</h2>
+          <p className="text-gray-600">
+            Connect your Octopus Energy smart meter to get real-time energy usage data
+          </p>
+        </div>
 
-      {/* Connection Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            {isConnected ? (
-              <>
-                <Wifi className="w-5 h-5 text-green-500" />
-                Connected to Octopus Energy
-              </>
-            ) : (
-              <>
-                <WifiOff className="w-5 h-5 text-gray-400" />
-                Smart Meter Not Connected
-              </>
-            )}
-          </CardTitle>
-          <CardDescription>
-            {isConnected 
-              ? "Your Octopus Energy smart meter is connected and providing real-time data"
-              : "Connect your Octopus Energy smart meter to unlock personalized energy insights"
-            }
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {!isConnected ? (
+        {/* Selected Supplier Display */}
+        <Card className="animate-fade-in">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-primary/5 border-primary">
+              <div className="flex items-center space-x-3">
+                <div className="w-4 h-4 rounded-full bg-pink-500" />
+                <h3 className="font-medium text-gray-900">Octopus Energy</h3>
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* API Key Form */}
+        <Card className="animate-fade-in">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <WifiOff className="w-5 h-5 text-gray-400" />
+              Connect Your Smart Meter
+            </CardTitle>
+            <CardDescription>
+              Enter your API key to connect your smart meter and start receiving real-time data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <div className="space-y-4">
               <Alert>
                 <AlertCircle className="h-4 w-4" />
@@ -311,20 +312,18 @@ const SmartMeterIntegration = () => {
                 </AlertDescription>
               </Alert>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="api-key">Octopus Energy API Key</Label>
-                  <Input 
-                    id="api-key"
-                    type="password"
-                    placeholder="sk_live_..."
-                    value={connectionForm.apiKey}
-                    onChange={(e) => setConnectionForm(prev => ({ ...prev, apiKey: e.target.value }))}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    You can find your API key in your Octopus Energy account dashboard
-                  </p>
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="api-key">Octopus Energy API Key</Label>
+                <Input 
+                  id="api-key"
+                  type="password"
+                  placeholder="sk_live_..."
+                  value={connectionForm.apiKey}
+                  onChange={(e) => setConnectionForm(prev => ({ ...prev, apiKey: e.target.value }))}
+                />
+                <p className="text-xs text-muted-foreground">
+                  You can find your API key in your Octopus Energy account dashboard
+                </p>
               </div>
 
               <Button onClick={handleConnect} className="w-full" disabled={loading}>
@@ -332,27 +331,61 @@ const SmartMeterIntegration = () => {
                 Connect Octopus Energy Smart Meter
               </Button>
             </div>
-          ) : (
-            <div className="space-y-4">
-              <Alert>
-                <CheckCircle2 className="h-4 w-4" />
-                <AlertDescription>
-                  Octopus Energy smart meter connected successfully! Data is being updated every 30 minutes.
-                </AlertDescription>
-              </Alert>
-              
-              {account && (
-                <div className="text-sm text-muted-foreground">
-                  <p>Account: {account.number}</p>
-                  <p>API Key: {connectionForm.apiKey.substring(0, 8)}...</p>
-                </div>
-              )}
-              
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Octopus Energy Integration</h2>
+        <p className="text-gray-600">
+          Your smart meter is connected and providing real-time energy data
+        </p>
+      </div>
+
+      {/* Connection Status */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Wifi className="w-5 h-5 text-green-500" />
+            Connected to Octopus Energy
+          </CardTitle>
+          <CardDescription>
+            Your Octopus Energy smart meter is connected and providing real-time data
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <Alert>
+              <CheckCircle2 className="h-4 w-4" />
+              <AlertDescription>
+                Octopus Energy smart meter connected successfully! Data is being updated every 30 minutes.
+              </AlertDescription>
+            </Alert>
+            
+            {account && (
+              <div className="text-sm text-muted-foreground">
+                <p>Account: {account.number}</p>
+                <p>API Key: {connectionForm.apiKey.substring(0, 8)}...</p>
+              </div>
+            )}
+            
+            <div className="flex gap-2">
               <Button onClick={handleDisconnect} variant="outline">
                 Disconnect
               </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => setSelectedSupplier(null)}
+                className="text-muted-foreground"
+              >
+                Change Supplier
+              </Button>
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
 
