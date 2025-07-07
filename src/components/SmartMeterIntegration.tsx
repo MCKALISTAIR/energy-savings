@@ -13,6 +13,7 @@ import BenefitsSection from './smart-meter/BenefitsSection';
 const SmartMeterIntegration = () => {
   const [selectedSupplier, setSelectedSupplier] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isReverseTransitioning, setIsReverseTransitioning] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionForm, setConnectionForm] = useState({
     apiKey: ''
@@ -156,6 +157,15 @@ const SmartMeterIntegration = () => {
     }, 900);
   };
 
+  const handleBackToSuppliers = () => {
+    setIsReverseTransitioning(true);
+    // Show reverse animation first
+    setTimeout(() => {
+      setSelectedSupplier(null);
+      setIsReverseTransitioning(false);
+    }, 900);
+  };
+
   const energySuppliers = [
     { id: 'octopus', name: 'Octopus Energy', available: true, color: 'bg-pink-500' },
     { id: 'british-gas', name: 'British Gas', available: false, color: 'bg-blue-500' },
@@ -175,7 +185,7 @@ const SmartMeterIntegration = () => {
         apiKey={connectionForm.apiKey}
         meterData={meterData}
         onDisconnect={handleDisconnect}
-        onChangeSupplier={() => setSelectedSupplier(null)}
+        onChangeSupplier={handleBackToSuppliers}
       />
     );
   }
@@ -194,12 +204,12 @@ const SmartMeterIntegration = () => {
       </div>
 
       {/* Back Button */}
-      {selectedSupplier && (
+      {selectedSupplier && !isReverseTransitioning && (
         <div className="flex items-center gap-4">
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={() => setSelectedSupplier(null)}
+            onClick={handleBackToSuppliers}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -212,34 +222,35 @@ const SmartMeterIntegration = () => {
       <Card>
         <CardHeader>
           <CardTitle>
-            {selectedSupplier === 'octopus' ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
+            {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
           </CardTitle>
           <CardDescription>
-            {selectedSupplier === 'octopus' 
+            {selectedSupplier === 'octopus' && !isReverseTransitioning
               ? 'You have selected Octopus Energy for smart meter integration'
               : 'Select your current energy supplier to set up smart meter integration'
             }
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {selectedSupplier === 'octopus' ? (
+          {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
             <SelectedSupplierDisplay
               supplierName="Octopus Energy"
               supplierColor="bg-pink-500"
-              onChangeSupplier={() => setSelectedSupplier(null)}
+              onChangeSupplier={handleBackToSuppliers}
             />
           ) : (
             <SupplierSelectionGrid
               suppliers={energySuppliers}
               isTransitioning={isTransitioning}
+              isReverseTransitioning={isReverseTransitioning}
               onSupplierSelect={handleSupplierSelect}
             />
           )}
         </CardContent>
       </Card>
 
-      {/* API Key Form - only show when Octopus is selected and not connected */}
-      {selectedSupplier === 'octopus' && !isConnected && (
+      {/* API Key Form - only show when Octopus is selected and not connected and not transitioning */}
+      {selectedSupplier === 'octopus' && !isConnected && !isReverseTransitioning && (
         <OctopusConnectionForm
           apiKey={connectionForm.apiKey}
           loading={loading}
@@ -248,8 +259,8 @@ const SmartMeterIntegration = () => {
         />
       )}
 
-      {/* Info Section - only show when no supplier is selected */}
-      {!selectedSupplier && <BenefitsSection />}
+      {/* Info Section - only show when no supplier is selected and not transitioning */}
+      {!selectedSupplier && !isReverseTransitioning && <BenefitsSection />}
     </div>
   );
 };

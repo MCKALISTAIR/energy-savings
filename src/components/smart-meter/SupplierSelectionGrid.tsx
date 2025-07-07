@@ -12,12 +12,14 @@ interface EnergySupplier {
 interface SupplierSelectionGridProps {
   suppliers: EnergySupplier[];
   isTransitioning: boolean;
+  isReverseTransitioning?: boolean;
   onSupplierSelect: (supplierId: string) => void;
 }
 
 const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
   suppliers,
   isTransitioning,
+  isReverseTransitioning = false,
   onSupplierSelect
 }) => {
   if (isTransitioning) {
@@ -46,6 +48,41 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
               {supplier.available && supplier.id === 'octopus' && (
                 <CheckCircle2 className="w-5 h-5 text-green-500 animate-scale-in" />
               )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (isReverseTransitioning) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {suppliers.map((supplier, index) => (
+          <div
+            key={supplier.id}
+            className={`relative p-4 border rounded-lg transition-all duration-500 ${
+              supplier.available && supplier.id === 'octopus'
+                ? 'border-primary bg-primary/5 scale-100 opacity-100'
+                : 'opacity-100 scale-100 translate-y-0'
+            } ${
+              supplier.available 
+                ? 'border-gray-200 hover:border-primary hover:shadow-md cursor-pointer' 
+                : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
+            }`}
+            style={{ 
+              transitionDelay: supplier.id === 'octopus' ? '200ms' : `${(suppliers.length - index) * 100}ms`
+            }}
+            onClick={() => supplier.available && onSupplierSelect(supplier.id)}
+          >
+            <div className="flex items-center space-x-3">
+              <div className={`w-4 h-4 rounded-full ${supplier.color}`} />
+              <div className="flex-1">
+                <h3 className="font-medium text-gray-900">{supplier.name}</h3>
+                {!supplier.available && (
+                  <Badge variant="secondary" className="mt-1">Coming Soon</Badge>
+                )}
+              </div>
             </div>
           </div>
         ))}
