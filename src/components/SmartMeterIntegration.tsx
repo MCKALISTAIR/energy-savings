@@ -149,11 +149,11 @@ const SmartMeterIntegration = () => {
 
   const handleSupplierSelect = (supplierId: string) => {
     setIsTransitioning(true);
-    // Small delay to allow transition animation to start
+    // Extended delay to allow full transition animation to complete
     setTimeout(() => {
       setSelectedSupplier(supplierId);
       setIsTransitioning(false);
-    }, 400);
+    }, 900);
   };
 
   const energySuppliers = [
