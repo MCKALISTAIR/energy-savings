@@ -153,6 +153,15 @@
   .icon-smart-meter-pulse {
     animation: smart-meter-pulse 2s ease-in-out;
   }
+
+  /* Hardware acceleration utilities */
+  .transform-gpu {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .backface-visibility-hidden {
+    backface-visibility: hidden;
+  }
 }
 
 @layer utilities {

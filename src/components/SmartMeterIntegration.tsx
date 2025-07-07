@@ -219,40 +219,40 @@ const SmartMeterIntegration = () => {
       )}
 
       {/* Supplier Selection */}
-      <Card className={`transition-all duration-700 ease-in-out ${
-        selectedSupplier === 'octopus' && !isReverseTransitioning 
-          ? 'min-h-[120px]' 
-          : isTransitioning 
-            ? 'min-h-[300px] md:min-h-[200px] lg:min-h-[150px]' 
-            : 'min-h-[300px] md:min-h-[200px] lg:min-h-[150px]'
-      }`}>
-        <CardHeader>
-          <CardTitle>
-            {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
-          </CardTitle>
-          <CardDescription>
-            {selectedSupplier === 'octopus' && !isReverseTransitioning
-              ? 'You have selected Octopus Energy for smart meter integration'
-              : 'Select your current energy supplier to set up smart meter integration'
-            }
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="transition-all duration-700 ease-in-out">
-          {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
-            <SelectedSupplierDisplay
-              supplierName="Octopus Energy"
-              supplierColor="bg-pink-500"
-              onChangeSupplier={handleBackToSuppliers}
-            />
-          ) : (
-            <SupplierSelectionGrid
-              suppliers={energySuppliers}
-              isTransitioning={isTransitioning}
-              isReverseTransitioning={isReverseTransitioning}
-              onSupplierSelect={handleSupplierSelect}
-            />
-          )}
-        </CardContent>
+      <Card className="will-change-transform backface-visibility-hidden">
+        <div className={`transition-transform duration-700 ease-in-out origin-top ${
+          selectedSupplier === 'octopus' && !isReverseTransitioning 
+            ? 'scale-y-[0.4] transform-gpu' 
+            : 'scale-y-100 transform-gpu'
+        }`}>
+          <CardHeader>
+            <CardTitle>
+              {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
+            </CardTitle>
+            <CardDescription>
+              {selectedSupplier === 'octopus' && !isReverseTransitioning
+                ? 'You have selected Octopus Energy for smart meter integration'
+                : 'Select your current energy supplier to set up smart meter integration'
+              }
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="transition-opacity duration-700 ease-in-out">
+            {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
+              <SelectedSupplierDisplay
+                supplierName="Octopus Energy"
+                supplierColor="bg-pink-500"
+                onChangeSupplier={handleBackToSuppliers}
+              />
+            ) : (
+              <SupplierSelectionGrid
+                suppliers={energySuppliers}
+                isTransitioning={isTransitioning}
+                isReverseTransitioning={isReverseTransitioning}
+                onSupplierSelect={handleSupplierSelect}
+              />
+            )}
+          </CardContent>
+        </div>
       </Card>
 
       {/* API Key Form - only show when Octopus is selected and not connected and not transitioning */}

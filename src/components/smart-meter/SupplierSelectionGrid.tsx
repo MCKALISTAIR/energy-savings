@@ -24,17 +24,18 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
 }) => {
   if (isTransitioning) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 will-change-transform">
         {suppliers.map((supplier, index) => (
           <div
             key={supplier.id}
-            className={`relative p-4 border rounded-lg transition-all duration-500 ${
+            className={`relative p-4 border rounded-lg transition-all duration-700 ease-in-out transform-gpu ${
               supplier.available && supplier.id === 'octopus'
-                ? 'border-primary bg-primary/5 scale-105 z-10'
-                : 'opacity-0 scale-95 translate-y-2'
+                ? 'border-primary bg-primary/5 scale-105 z-10 opacity-100'
+                : 'opacity-0'
             }`}
             style={{ 
-              transitionDelay: supplier.id === 'octopus' ? '0ms' : `${index * 50}ms`
+              transitionDelay: supplier.id === 'octopus' ? '0ms' : '100ms',
+              willChange: 'transform, opacity'
             }}
           >
             <div className="flex items-center space-x-3">
@@ -57,21 +58,18 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
 
   if (isReverseTransitioning) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 will-change-transform">
         {suppliers.map((supplier, index) => (
           <div
             key={supplier.id}
-            className={`relative p-4 border rounded-lg transition-all duration-500 ${
-              supplier.available && supplier.id === 'octopus'
-                ? 'border-primary bg-primary/5 scale-100 opacity-100'
-                : 'opacity-100 scale-100 translate-y-0'
-            } ${
+            className={`relative p-4 border rounded-lg transition-opacity duration-700 ease-in-out transform-gpu ${
               supplier.available 
-                ? 'border-gray-200 hover:border-primary hover:shadow-md cursor-pointer' 
+                ? 'border-gray-200 hover:border-primary hover:shadow-md cursor-pointer opacity-100' 
                 : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
             }`}
             style={{ 
-              transitionDelay: supplier.id === 'octopus' ? '200ms' : `${(suppliers.length - index) * 100}ms`
+              transitionDelay: `${index * 50}ms`,
+              willChange: 'opacity'
             }}
             onClick={() => supplier.available && onSupplierSelect(supplier.id)}
           >
