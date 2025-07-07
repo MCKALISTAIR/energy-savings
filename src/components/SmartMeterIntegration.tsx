@@ -197,9 +197,6 @@ const SmartMeterIntegration = () => {
                         <Badge variant="secondary" className="mt-1">Coming Soon</Badge>
                       )}
                     </div>
-                    {supplier.available && (
-                      <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    )}
                   </div>
                 </div>
               ))}
@@ -279,20 +276,28 @@ const SmartMeterIntegration = () => {
         </div>
 
         {/* Selected Supplier Display */}
-        <Card className="animate-fade-in">
+        <Card className="animate-scale-in">
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between p-4 border rounded-lg bg-primary/5 border-primary">
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-primary/5 border-primary transition-all duration-300">
               <div className="flex items-center space-x-3">
                 <div className="w-4 h-4 rounded-full bg-pink-500" />
                 <h3 className="font-medium text-gray-900">Octopus Energy</h3>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <CheckCircle2 className="w-5 h-5 text-green-500 animate-scale-in" />
               </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setSelectedSupplier(null)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Change
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* API Key Form */}
-        <Card className="animate-fade-in">
+        <Card className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <WifiOff className="w-5 h-5 text-gray-400" />
