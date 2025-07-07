@@ -29,11 +29,7 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
 }) => {
   return (
     <Card className="will-change-transform backface-visibility-hidden">
-      <div className={`transition-transform duration-700 ease-in-out origin-top ${
-        selectedSupplier === 'octopus' && !isReverseTransitioning 
-          ? 'scale-y-[0.4] transform-gpu' 
-          : 'scale-y-100 transform-gpu'
-      }`}>
+      <div className="transition-all duration-700 ease-in-out transform-gpu">
         <CardHeader>
           <CardTitle>
             {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
