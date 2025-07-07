@@ -219,7 +219,13 @@ const SmartMeterIntegration = () => {
       )}
 
       {/* Supplier Selection */}
-      <Card>
+      <Card className={`transition-all duration-700 ease-in-out ${
+        selectedSupplier === 'octopus' && !isReverseTransitioning 
+          ? 'min-h-[120px]' 
+          : isTransitioning 
+            ? 'min-h-[300px] md:min-h-[200px] lg:min-h-[150px]' 
+            : 'min-h-[300px] md:min-h-[200px] lg:min-h-[150px]'
+      }`}>
         <CardHeader>
           <CardTitle>
             {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
@@ -231,7 +237,7 @@ const SmartMeterIntegration = () => {
             }
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="transition-all duration-700 ease-in-out">
           {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
             <SelectedSupplierDisplay
               supplierName="Octopus Energy"
