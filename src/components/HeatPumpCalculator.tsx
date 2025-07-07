@@ -11,10 +11,10 @@ interface HeatPumpCalculatorProps {
 }
 
 const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energyPrices }) => {
-  const [homeSize, setHomeSize] = useState<string>('185'); // m² instead of sq ft
-  const [currentHeatingType, setCurrentHeatingType] = useState<string>('gas');
-  const [monthlyHeatingBill, setMonthlyHeatingBill] = useState<string>('80');
-  const [heatPumpType, setHeatPumpType] = useState<string>('air_source');
+  const [homeSize, setHomeSize] = useState<string>('');
+  const [currentHeatingType, setCurrentHeatingType] = useState<string>('');
+  const [monthlyHeatingBill, setMonthlyHeatingBill] = useState<string>('');
+  const [heatPumpType, setHeatPumpType] = useState<string>('');
 
   const { results, calculateSavings } = useHeatPumpCalculator({
     homeSize,

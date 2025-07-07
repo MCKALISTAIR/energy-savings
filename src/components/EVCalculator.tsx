@@ -12,11 +12,11 @@ interface EVCalculatorProps {
 }
 
 const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) => {
-  const [milesPerYear, setMilesPerYear] = useState<string>('10000'); // UK average lower
-  const [currentMPG, setCurrentMPG] = useState<string>('40'); // UK cars more efficient
-  const [petrolPrice, setPetrolPrice] = useState<string>(energyPrices?.petrol.toString() || '1.45'); // UK petrol price per litre
-  const [electricityRate, setElectricityRate] = useState<string>(energyPrices?.electricity.toString() || '0.30'); // UK electricity rate
-  const [evType, setEVType] = useState<string>('mid-range');
+  const [milesPerYear, setMilesPerYear] = useState<string>('');
+  const [currentMPG, setCurrentMPG] = useState<string>('');
+  const [petrolPrice, setPetrolPrice] = useState<string>('');
+  const [electricityRate, setElectricityRate] = useState<string>('');
+  const [evType, setEVType] = useState<string>('');
 
   const { results, calculateSavings } = useEVCalculator({
     milesPerYear,

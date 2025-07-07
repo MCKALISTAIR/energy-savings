@@ -64,9 +64,7 @@ export const useBatteryCalculator = ({
     onUpdate(newResults);
   };
 
-  useEffect(() => {
-    calculateSavings();
-  }, [monthlyBill, peakUsage, outageFrequency, batterySize, energyPrices]);
+  // Remove auto-calculation - users must click calculate button
 
   return { results, calculateSavings };
 };

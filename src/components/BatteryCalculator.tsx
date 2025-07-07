@@ -12,10 +12,10 @@ interface BatteryCalculatorProps {
 }
 
 const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyPrices }) => {
-  const [monthlyBill, setMonthlyBill] = useState<string>('120');
-  const [peakUsage, setPeakUsage] = useState<string>('25');
-  const [outageFrequency, setOutageFrequency] = useState<string>('low');
-  const [batterySize, setBatterySize] = useState<string>('13.5');
+  const [monthlyBill, setMonthlyBill] = useState<string>('');
+  const [peakUsage, setPeakUsage] = useState<string>('');
+  const [outageFrequency, setOutageFrequency] = useState<string>('');
+  const [batterySize, setBatterySize] = useState<string>('');
 
   const { results, calculateSavings } = useBatteryCalculator({
     monthlyBill,

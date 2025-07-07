@@ -89,9 +89,7 @@ export const useEVCalculator = ({
     onUpdate(newResults);
   };
 
-  useEffect(() => {
-    calculateSavings();
-  }, [milesPerYear, currentMPG, petrolPrice, electricityRate, evType, energyPrices]);
+  // Remove auto-calculation - users must click calculate button
 
   return { results, calculateSavings };
 };

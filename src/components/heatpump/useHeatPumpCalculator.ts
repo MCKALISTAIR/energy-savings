@@ -84,9 +84,7 @@ export const useHeatPumpCalculator = ({
     onUpdate(newResults);
   };
 
-  useEffect(() => {
-    calculateSavings();
-  }, [homeSize, currentHeatingType, monthlyHeatingBill, heatPumpType, energyPrices]);
+  // Remove auto-calculation - users must click calculate button
 
   return { results, calculateSavings };
 };

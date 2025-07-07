@@ -16,10 +16,10 @@ interface SolarCalculatorProps {
 }
 
 const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrices }) => {
-  const [homeSize, setHomeSize] = useState<string>('185'); // m² instead of sq ft
-  const [monthlyBill, setMonthlyBill] = useState<string>('120');
-  const [sunlightHours, setSunlightHours] = useState<string>('3.5'); // UK average
-  const [location, setLocation] = useState<string>('moderate');
+  const [homeSize, setHomeSize] = useState<string>('');
+  const [monthlyBill, setMonthlyBill] = useState<string>('');
+  const [sunlightHours, setSunlightHours] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
   const [results, setResults] = useState<SavingsData['solar']>({
     monthlyEnergyCost: 0,
     systemCost: 0,
@@ -78,9 +78,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
     onUpdate(newResults);
   };
 
-  useEffect(() => {
-    calculateSavings();
-  }, [homeSize, monthlyBill, sunlightHours, location, energyPrices]);
+  // Remove auto-calculation - users must click calculate button
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
