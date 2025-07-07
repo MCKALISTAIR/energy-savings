@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { Activity, Zap, Clock, TrendingUp, AlertCircle, CheckCircle2, Wifi, WifiOff, Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Activity, Zap, Clock, TrendingUp, AlertCircle, CheckCircle2, Wifi, WifiOff, Loader2, ArrowLeft } from 'lucide-react';
 import { useOctopusEnergy } from '@/hooks/useOctopusEnergy';
 import { useToast } from '@/hooks/use-toast';
 
 const SmartMeterIntegration = () => {
+  const [selectedSupplier, setSelectedSupplier] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionForm, setConnectionForm] = useState({
     apiKey: ''
@@ -145,11 +147,131 @@ const SmartMeterIntegration = () => {
     return () => clearInterval(interval);
   }, [isConnected, connectionForm.apiKey, account]);
 
+  const energySuppliers = [
+    { id: 'octopus', name: 'Octopus Energy', available: true, color: 'bg-pink-500' },
+    { id: 'british-gas', name: 'British Gas', available: false, color: 'bg-blue-500' },
+    { id: 'eon', name: 'E.ON', available: false, color: 'bg-green-500' },
+    { id: 'edf', name: 'EDF Energy', available: false, color: 'bg-orange-500' },
+    { id: 'scottishpower', name: 'ScottishPower', available: false, color: 'bg-purple-500' },
+    { id: 'sse', name: 'SSE', available: false, color: 'bg-red-500' },
+    { id: 'bulb', name: 'Bulb', available: false, color: 'bg-yellow-500' },
+    { id: 'shell', name: 'Shell Energy', available: false, color: 'bg-gray-500' },
+  ];
+
+  if (!selectedSupplier) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Smart Meter Integration</h2>
+          <p className="text-gray-600">
+            Select your energy supplier to connect your smart meter and get real-time energy data
+          </p>
+        </div>
+
+        {/* Supplier Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Choose Your Energy Supplier</CardTitle>
+            <CardDescription>
+              Select your current energy supplier to set up smart meter integration
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {energySuppliers.map((supplier) => (
+                <div
+                  key={supplier.id}
+                  className={`relative p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                    supplier.available 
+                      ? 'border-gray-200 hover:border-primary hover:shadow-md' 
+                      : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
+                  }`}
+                  onClick={() => supplier.available && setSelectedSupplier(supplier.id)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-4 h-4 rounded-full ${supplier.color}`} />
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900">{supplier.name}</h3>
+                      {!supplier.available && (
+                        <Badge variant="secondary" className="mt-1">Coming Soon</Badge>
+                      )}
+                    </div>
+                    {supplier.available && (
+                      <CheckCircle2 className="w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Info Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle>What you'll get with smart meter integration</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h4 className="font-semibold">Real-time insights:</h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    Live energy usage monitoring
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    Accurate cost calculations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    Historical usage patterns
+                  </li>
+                </ul>
+              </div>
+              <div className="space-y-3">
+                <h4 className="font-semibold">Personalized recommendations:</h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    Optimized solar panel sizing
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    Battery storage calculations
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    ROI based on actual usage
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header with Back Button */}
+      <div className="flex items-center gap-4">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => setSelectedSupplier(null)}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Suppliers
+        </Button>
+      </div>
+
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Smart Meter Integration</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Octopus Energy Integration</h2>
         <p className="text-gray-600">
           Connect your Octopus Energy smart meter to get real-time energy usage data and personalized insights
         </p>
