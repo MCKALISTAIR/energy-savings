@@ -13,11 +13,11 @@ serve(async (req) => {
   }
 
   try {
-    const { action, mpan, meterSerial } = await req.json()
+    const { action, mpan, meterSerial, apiKey } = await req.json()
     
-    const octopusApiKey = Deno.env.get('OCTOPUS_ENERGY_API_KEY')
+    const octopusApiKey = apiKey || Deno.env.get('OCTOPUS_ENERGY_API_KEY')
     if (!octopusApiKey) {
-      throw new Error('Octopus Energy API key not configured')
+      throw new Error('Octopus Energy API key not provided')
     }
 
     const baseUrl = 'https://api.octopus.energy/v1'

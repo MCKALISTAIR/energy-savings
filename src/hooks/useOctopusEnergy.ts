@@ -83,9 +83,9 @@ export const useOctopusEnergy = () => {
     }
   };
 
-  const getAccount = async () => {
+  const getAccount = async (apiKey?: string) => {
     try {
-      const data = await callOctopusApi('getAccount');
+      const data = await callOctopusApi('getAccount', { apiKey });
       setAccount(data);
       return data;
     } catch (error) {
@@ -94,9 +94,9 @@ export const useOctopusEnergy = () => {
     }
   };
 
-  const getConsumption = async (mpan: string, meterSerial: string) => {
+  const getConsumption = async (mpan: string, meterSerial: string, apiKey?: string) => {
     try {
-      const data = await callOctopusApi('getConsumption', { mpan, meterSerial });
+      const data = await callOctopusApi('getConsumption', { mpan, meterSerial, apiKey });
       setConsumptionData(data);
       return data;
     } catch (error) {
@@ -105,9 +105,9 @@ export const useOctopusEnergy = () => {
     }
   };
 
-  const getCurrentTariff = async (mpan: string) => {
+  const getCurrentTariff = async (mpan: string, apiKey?: string) => {
     try {
-      const data = await callOctopusApi('getCurrentTariff', { mpan });
+      const data = await callOctopusApi('getCurrentTariff', { mpan, apiKey });
       return data;
     } catch (error) {
       console.error('Failed to get tariff data:', error);

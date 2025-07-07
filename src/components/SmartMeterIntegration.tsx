@@ -13,8 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 const SmartMeterIntegration = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectionForm, setConnectionForm] = useState({
-    mpan: '',
-    meterSerial: ''
+    apiKey: ''
   });
   const [meterData, setMeterData] = useState({
     currentUsage: 0,
@@ -37,30 +36,44 @@ const SmartMeterIntegration = () => {
   const { toast } = useToast();
 
   const handleConnect = async () => {
-    if (!connectionForm.mpan || !connectionForm.meterSerial) {
+    if (!connectionForm.apiKey) {
       toast({
         title: "Missing Information",
-        description: "Please provide both MPAN and meter serial number",
+        description: "Please provide your Octopus Energy API key",
         variant: "destructive"
       });
       return;
     }
 
     try {
-      // Get account information
-      const accountData = await getAccount();
+      // Get account information with API key
+      const accountData = await getAccount(connectionForm.apiKey);
       if (!accountData) {
         throw new Error('Failed to retrieve account information');
       }
 
+      // Get the first property's meter details
+      const property = accountData.properties?.[0];
+      if (!property?.electricity_meter_points?.[0]) {
+        throw new Error('No electricity meter found on account');
+      }
+
+      const meterPoint = property.electricity_meter_points[0];
+      const mpan = meterPoint.mpan;
+      const meterSerial = meterPoint.meters?.[0]?.serial_number;
+
+      if (!meterSerial) {
+        throw new Error('No meter serial number found');
+      }
+
       // Get consumption data
-      const consumption = await getConsumption(connectionForm.mpan, connectionForm.meterSerial);
+      const consumption = await getConsumption(mpan, meterSerial, connectionForm.apiKey);
       if (!consumption) {
         throw new Error('Failed to retrieve consumption data');
       }
 
       // Get tariff information
-      const tariff = await getCurrentTariff(connectionForm.mpan);
+      const tariff = await getCurrentTariff(mpan, connectionForm.apiKey);
       
       setIsConnected(true);
       
@@ -102,28 +115,35 @@ const SmartMeterIntegration = () => {
 
   // Auto-update data every 30 minutes when connected
   useEffect(() => {
-    if (!isConnected || !connectionForm.mpan || !connectionForm.meterSerial) return;
+    if (!isConnected || !connectionForm.apiKey || !account) return;
 
     const interval = setInterval(async () => {
       try {
-        await getConsumption(connectionForm.mpan, connectionForm.meterSerial);
+        const property = account.properties?.[0];
+        const meterPoint = property?.electricity_meter_points?.[0];
+        const mpan = meterPoint?.mpan;
+        const meterSerial = meterPoint?.meters?.[0]?.serial_number;
         
-        const currentUsage = calculateCurrentUsage();
-        const dailyUsage = calculateDailyUsage();
-        
-        setMeterData(prev => ({
-          ...prev,
-          currentUsage,
-          dailyUsage,
-          dailyCost: dailyUsage * prev.tariffRate
-        }));
+        if (mpan && meterSerial) {
+          await getConsumption(mpan, meterSerial, connectionForm.apiKey);
+          
+          const currentUsage = calculateCurrentUsage();
+          const dailyUsage = calculateDailyUsage();
+          
+          setMeterData(prev => ({
+            ...prev,
+            currentUsage,
+            dailyUsage,
+            dailyCost: dailyUsage * prev.tariffRate
+          }));
+        }
       } catch (error) {
         console.error('Failed to update consumption data:', error);
       }
     }, 30 * 60 * 1000); // 30 minutes
 
     return () => clearInterval(interval);
-  }, [isConnected, connectionForm.mpan, connectionForm.meterSerial]);
+  }, [isConnected, connectionForm.apiKey, account]);
 
   return (
     <div className="space-y-6">
@@ -164,29 +184,24 @@ const SmartMeterIntegration = () => {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  To connect your smart meter, you'll need your MPAN number and meter serial number. 
-                  These can be found on your Octopus Energy app or your electricity bill.
+                  To connect your smart meter, you'll need your Octopus Energy API key. 
+                  This can be found in your Octopus Energy account dashboard under Developer settings.
                 </AlertDescription>
               </Alert>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="mpan">MPAN Number</Label>
+                  <Label htmlFor="api-key">Octopus Energy API Key</Label>
                   <Input 
-                    id="mpan"
-                    placeholder="13-digit MPAN number"
-                    value={connectionForm.mpan}
-                    onChange={(e) => setConnectionForm(prev => ({ ...prev, mpan: e.target.value }))}
+                    id="api-key"
+                    type="password"
+                    placeholder="sk_live_..."
+                    value={connectionForm.apiKey}
+                    onChange={(e) => setConnectionForm(prev => ({ ...prev, apiKey: e.target.value }))}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="meter-serial">Meter Serial Number</Label>
-                  <Input 
-                    id="meter-serial"
-                    placeholder="Meter serial number"
-                    value={connectionForm.meterSerial}
-                    onChange={(e) => setConnectionForm(prev => ({ ...prev, meterSerial: e.target.value }))}
-                  />
+                  <p className="text-xs text-muted-foreground">
+                    You can find your API key in your Octopus Energy account dashboard
+                  </p>
                 </div>
               </div>
 
@@ -207,7 +222,7 @@ const SmartMeterIntegration = () => {
               {account && (
                 <div className="text-sm text-muted-foreground">
                   <p>Account: {account.number}</p>
-                  <p>Connected to MPAN: {connectionForm.mpan}</p>
+                  <p>API Key: {connectionForm.apiKey.substring(0, 8)}...</p>
                 </div>
               )}
               
@@ -361,8 +376,7 @@ const SmartMeterIntegration = () => {
                 <ul className="space-y-1 text-sm">
                   <li>• Active Octopus Energy account</li>
                   <li>• Smart meter (SMETS1 or SMETS2)</li>
-                  <li>• MPAN number from your bill</li>
-                  <li>• Meter serial number</li>
+                  <li>• API key from account dashboard</li>
                 </ul>
               </div>
             </div>
