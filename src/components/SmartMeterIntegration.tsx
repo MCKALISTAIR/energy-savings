@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const SmartMeterIntegration = () => {
   const [selectedSupplier, setSelectedSupplier] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionForm, setConnectionForm] = useState({
     apiKey: ''
@@ -147,6 +148,15 @@ const SmartMeterIntegration = () => {
     return () => clearInterval(interval);
   }, [isConnected, connectionForm.apiKey, account]);
 
+  const handleSupplierSelect = (supplierId: string) => {
+    setIsTransitioning(true);
+    // Small delay to allow transition animation to start
+    setTimeout(() => {
+      setSelectedSupplier(supplierId);
+      setIsTransitioning(false);
+    }, 400);
+  };
+
   const energySuppliers = [
     { id: 'octopus', name: 'Octopus Energy', available: true, color: 'bg-pink-500' },
     { id: 'british-gas', name: 'British Gas', available: false, color: 'bg-blue-500' },
@@ -158,7 +168,7 @@ const SmartMeterIntegration = () => {
     { id: 'shell', name: 'Shell Energy', available: false, color: 'bg-gray-500' },
   ];
 
-  if (!selectedSupplier) {
+  if (!selectedSupplier && !isTransitioning) {
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -178,29 +188,62 @@ const SmartMeterIntegration = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
-              {energySuppliers.map((supplier) => (
-                <div
-                  key={supplier.id}
-                  className={`relative p-4 border rounded-lg cursor-pointer transition-all duration-200 hover-scale ${
-                    supplier.available 
-                      ? 'border-gray-200 hover:border-primary hover:shadow-md' 
-                      : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
-                  }`}
-                  onClick={() => supplier.available && setSelectedSupplier(supplier.id)}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-4 h-4 rounded-full ${supplier.color}`} />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{supplier.name}</h3>
-                      {!supplier.available && (
-                        <Badge variant="secondary" className="mt-1">Coming Soon</Badge>
+            {isTransitioning ? (
+              // Transitioning state - show grid with animations
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {energySuppliers.map((supplier, index) => (
+                  <div
+                    key={supplier.id}
+                    className={`relative p-4 border rounded-lg transition-all duration-500 ${
+                      supplier.available && supplier.id === 'octopus'
+                        ? 'border-primary bg-primary/5 scale-105 z-10'
+                        : 'opacity-0 scale-95 translate-y-2'
+                    }`}
+                    style={{ 
+                      transitionDelay: supplier.id === 'octopus' ? '0ms' : `${index * 50}ms`
+                    }}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-4 h-4 rounded-full ${supplier.color}`} />
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900">{supplier.name}</h3>
+                        {!supplier.available && (
+                          <Badge variant="secondary" className="mt-1">Coming Soon</Badge>
+                        )}
+                      </div>
+                      {supplier.available && supplier.id === 'octopus' && (
+                        <CheckCircle2 className="w-5 h-5 text-green-500 animate-scale-in" />
                       )}
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              // Normal grid state
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
+                {energySuppliers.map((supplier) => (
+                  <div
+                    key={supplier.id}
+                    className={`relative p-4 border rounded-lg cursor-pointer transition-all duration-200 hover-scale ${
+                      supplier.available 
+                        ? 'border-gray-200 hover:border-primary hover:shadow-md' 
+                        : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
+                    }`}
+                    onClick={() => supplier.available && handleSupplierSelect(supplier.id)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-4 h-4 rounded-full ${supplier.color}`} />
+                      <div className="flex-1">
+                        <h3 className="font-medium text-gray-900">{supplier.name}</h3>
+                        {!supplier.available && (
+                          <Badge variant="secondary" className="mt-1">Coming Soon</Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
