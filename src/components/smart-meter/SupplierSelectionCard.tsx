@@ -28,6 +28,8 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
   onChangeSupplier
 }) => {
   const isShowingSelected = selectedSupplier === 'octopus' && !isReverseTransitioning;
+  // Delay the height transition to happen after suppliers fade out
+  const shouldUseCompactHeight = isShowingSelected && !isTransitioning;
 
   return (
     <Card className="will-change-transform backface-visibility-hidden overflow-hidden">
@@ -44,11 +46,10 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent 
-          className={`relative transition-all duration-700 ease-in-out ${
-            isShowingSelected ? 'min-h-[120px]' : 'min-h-[300px]'
-          }`}
+          className="relative transition-all duration-700 ease-in-out"
           style={{
-            height: isShowingSelected ? '120px' : 'auto'
+            height: shouldUseCompactHeight ? '120px' : 'auto',
+            minHeight: shouldUseCompactHeight ? '120px' : '300px'
           }}
         >
           {/* Grid view */}
