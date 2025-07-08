@@ -29,35 +29,39 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
 }) => {
   return (
     <Card className="will-change-transform backface-visibility-hidden">
-      <div className="transition-all duration-700 ease-in-out transform-gpu">
-        <CardHeader>
-          <CardTitle>
-            {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
-          </CardTitle>
-          <CardDescription>
-            {selectedSupplier === 'octopus' && !isReverseTransitioning
-              ? 'You have selected Octopus Energy for smart meter integration'
-              : 'Select your current energy supplier to set up smart meter integration'
-            }
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="transition-opacity duration-700 ease-in-out">
-          {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
-            <SelectedSupplierDisplay
-              supplierName="Octopus Energy"
-              supplierColor="bg-pink-500"
-              onChangeSupplier={onChangeSupplier}
-            />
-          ) : (
+      <CardHeader>
+        <CardTitle>
+          {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
+        </CardTitle>
+        <CardDescription>
+          {selectedSupplier === 'octopus' && !isReverseTransitioning
+            ? 'You have selected Octopus Energy for smart meter integration'
+            : 'Select your current energy supplier to set up smart meter integration'
+          }
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
+          <SelectedSupplierDisplay
+            supplierName="Octopus Energy"
+            supplierColor="bg-pink-500"
+            onChangeSupplier={onChangeSupplier}
+          />
+        ) : (
+          <div className={`transition-transform duration-700 ease-in-out transform-gpu origin-top ${
+            isTransitioning 
+              ? 'scale-y-0 opacity-0' 
+              : 'scale-y-100 opacity-100'
+          }`}>
             <SupplierSelectionGrid
               suppliers={energySuppliers}
               isTransitioning={isTransitioning}
               isReverseTransitioning={isReverseTransitioning}
               onSupplierSelect={onSupplierSelect}
             />
-          )}
-        </CardContent>
-      </div>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };
