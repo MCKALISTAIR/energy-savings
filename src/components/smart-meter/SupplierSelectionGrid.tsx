@@ -63,14 +63,14 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
         {suppliers.map((supplier, index) => (
           <div
             key={supplier.id}
-            className={`relative p-4 border rounded-lg transition-opacity duration-700 ease-in-out transform-gpu ${
+            className={`relative p-4 border rounded-lg transform-gpu ${
               supplier.available 
-                ? 'border-gray-200 hover:border-primary hover:shadow-md cursor-pointer opacity-100' 
-                : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
+                ? 'border-gray-200 hover:border-primary hover:shadow-md cursor-pointer' 
+                : 'border-gray-100 bg-gray-50 cursor-not-allowed'
             }`}
             style={{ 
-              transitionDelay: `${index * 50}ms`,
-              willChange: 'opacity'
+              willChange: 'opacity',
+              animation: `supplier-fade-in 700ms ease-in-out ${index * 50}ms both`
             }}
             onClick={() => supplier.available && onSupplierSelect(supplier.id)}
           >
