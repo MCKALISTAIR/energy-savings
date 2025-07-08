@@ -27,24 +27,33 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
   onSupplierSelect,
   onChangeSupplier
 }) => {
+  const isShowingSelected = selectedSupplier === 'octopus' && !isReverseTransitioning;
+
   return (
     <Card className="will-change-transform backface-visibility-hidden overflow-hidden">
       <div className="transition-all duration-700 ease-in-out transform-gpu">
         <CardHeader>
           <CardTitle>
-            {selectedSupplier === 'octopus' && !isReverseTransitioning ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
+            {isShowingSelected ? 'Selected Energy Supplier' : 'Choose Your Energy Supplier'}
           </CardTitle>
           <CardDescription>
-            {selectedSupplier === 'octopus' && !isReverseTransitioning
+            {isShowingSelected
               ? 'You have selected Octopus Energy for smart meter integration'
               : 'Select your current energy supplier to set up smart meter integration'
             }
           </CardDescription>
         </CardHeader>
-        <CardContent className="relative">
+        <CardContent 
+          className={`relative transition-all duration-700 ease-in-out ${
+            isShowingSelected ? 'min-h-[120px]' : 'min-h-[300px]'
+          }`}
+          style={{
+            height: isShowingSelected ? '120px' : 'auto'
+          }}
+        >
           {/* Grid view */}
           <div className={`transition-all duration-700 ease-in-out ${
-            selectedSupplier === 'octopus' && !isReverseTransitioning 
+            isShowingSelected 
               ? 'opacity-0 transform scale-95 pointer-events-none absolute inset-0' 
               : 'opacity-100 transform scale-100'
           }`}>
@@ -57,16 +66,18 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
           </div>
           
           {/* Selected supplier view */}
-          <div className={`transition-all duration-700 ease-in-out ${
-            selectedSupplier === 'octopus' && !isReverseTransitioning
+          <div className={`transition-all duration-700 ease-in-out flex items-center ${
+            isShowingSelected
               ? 'opacity-100 transform scale-100 delay-350'
               : 'opacity-0 transform scale-95 pointer-events-none absolute inset-0'
           }`}>
-            <SelectedSupplierDisplay
-              supplierName="Octopus Energy"
-              supplierColor="bg-pink-500"
-              onChangeSupplier={onChangeSupplier}
-            />
+            <div className="w-full">
+              <SelectedSupplierDisplay
+                supplierName="Octopus Energy"
+                supplierColor="bg-pink-500"
+                onChangeSupplier={onChangeSupplier}
+              />
+            </div>
           </div>
         </CardContent>
       </div>
