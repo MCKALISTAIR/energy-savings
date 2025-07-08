@@ -99,8 +99,9 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
             <Input
               id="homeSize"
               type="number"
+              min="0"
               value={homeSize}
-              onChange={(e) => setHomeSize(e.target.value)}
+              onChange={(e) => setHomeSize(Math.max(0, parseFloat(e.target.value) || 0).toString())}
               placeholder="185"
             />
           </div>
@@ -110,8 +111,9 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
             <Input
               id="monthlyBill"
               type="number"
+              min="0"
               value={monthlyBill}
-              onChange={(e) => setMonthlyBill(e.target.value)}
+              onChange={(e) => setMonthlyBill(Math.max(0, parseFloat(e.target.value) || 0).toString())}
               placeholder="120"
             />
           </div>
@@ -122,8 +124,9 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
               id="sunlight"
               type="number"
               step="0.1"
+              min="0"
               value={sunlightHours}
-              onChange={(e) => setSunlightHours(e.target.value)}
+              onChange={(e) => setSunlightHours(Math.max(0, parseFloat(e.target.value) || 0).toString())}
               placeholder="3.5"
             />
           </div>
