@@ -28,7 +28,7 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
   onChangeSupplier
 }) => {
   return (
-    <Card className="will-change-transform backface-visibility-hidden">
+    <Card className="will-change-transform backface-visibility-hidden overflow-hidden">
       <div className="transition-all duration-700 ease-in-out transform-gpu">
         <CardHeader>
           <CardTitle>
@@ -41,21 +41,33 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
             }
           </CardDescription>
         </CardHeader>
-        <CardContent className="transition-opacity duration-700 ease-in-out">
-          {selectedSupplier === 'octopus' && !isReverseTransitioning ? (
-            <SelectedSupplierDisplay
-              supplierName="Octopus Energy"
-              supplierColor="bg-pink-500"
-              onChangeSupplier={onChangeSupplier}
-            />
-          ) : (
+        <CardContent className="relative">
+          {/* Grid view */}
+          <div className={`transition-all duration-700 ease-in-out ${
+            selectedSupplier === 'octopus' && !isReverseTransitioning 
+              ? 'opacity-0 transform scale-95 pointer-events-none absolute inset-0' 
+              : 'opacity-100 transform scale-100'
+          }`}>
             <SupplierSelectionGrid
               suppliers={energySuppliers}
               isTransitioning={isTransitioning}
               isReverseTransitioning={isReverseTransitioning}
               onSupplierSelect={onSupplierSelect}
             />
-          )}
+          </div>
+          
+          {/* Selected supplier view */}
+          <div className={`transition-all duration-700 ease-in-out ${
+            selectedSupplier === 'octopus' && !isReverseTransitioning
+              ? 'opacity-100 transform scale-100 delay-350'
+              : 'opacity-0 transform scale-95 pointer-events-none absolute inset-0'
+          }`}>
+            <SelectedSupplierDisplay
+              supplierName="Octopus Energy"
+              supplierColor="bg-pink-500"
+              onChangeSupplier={onChangeSupplier}
+            />
+          </div>
         </CardContent>
       </div>
     </Card>
