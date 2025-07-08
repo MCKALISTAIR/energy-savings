@@ -22,6 +22,7 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
   isReverseTransitioning = false,
   onSupplierSelect
 }) => {
+  // Don't render anything during transition to prevent flashing
   if (isTransitioning) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 will-change-transform">
@@ -31,10 +32,10 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
             className={`relative p-4 border rounded-lg transition-all duration-700 ease-in-out transform-gpu ${
               supplier.available && supplier.id === 'octopus'
                 ? 'border-primary bg-primary/5 scale-105 z-10 opacity-100'
-                : 'opacity-0'
+                : 'opacity-0 scale-95'
             }`}
             style={{ 
-              transitionDelay: supplier.id === 'octopus' ? '0ms' : '100ms',
+              transitionDelay: supplier.id === 'octopus' ? '0ms' : '50ms',
               willChange: 'transform, opacity'
             }}
           >
