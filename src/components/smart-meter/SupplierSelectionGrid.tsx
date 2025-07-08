@@ -90,8 +90,8 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
-      {suppliers.map((supplier) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {suppliers.map((supplier, index) => (
         <div
           key={supplier.id}
           className={`relative p-4 border rounded-lg cursor-pointer transition-all duration-200 hover-scale ${
@@ -99,6 +99,9 @@ const SupplierSelectionGrid: React.FC<SupplierSelectionGridProps> = ({
               ? 'border-gray-200 hover:border-primary hover:shadow-md' 
               : 'border-gray-100 bg-gray-50 cursor-not-allowed opacity-60'
           }`}
+          style={{
+            animation: `supplier-fade-in 700ms ease-in-out ${index * 50}ms both`
+          }}
           onClick={() => supplier.available && onSupplierSelect(supplier.id)}
         >
           <div className="flex items-center space-x-3">
