@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOctopusEnergy } from '@/hooks/useOctopusEnergy';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 export const useSmartMeterIntegration = () => {
@@ -7,6 +9,7 @@ export const useSmartMeterIntegration = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isReverseTransitioning, setIsReverseTransitioning] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
   const [connectionForm, setConnectionForm] = useState({
     apiKey: ''
   });
@@ -16,6 +19,13 @@ export const useSmartMeterIntegration = () => {
     dailyCost: 0,
     tariffRate: 0
   });
+
+  const { user } = useAuth();
+  const { 
+    selectedSupplier: savedSupplier, 
+    saveSelectedSupplier, 
+    clearSelectedSupplier 
+  } = useUserPreferences();
 
   const { 
     loading, 
@@ -29,6 +39,13 @@ export const useSmartMeterIntegration = () => {
   } = useOctopusEnergy();
 
   const { toast } = useToast();
+
+  // Load saved supplier preference when available
+  useEffect(() => {
+    if (savedSupplier && !selectedSupplier) {
+      setSelectedSupplier(savedSupplier);
+    }
+  }, [savedSupplier, selectedSupplier]);
 
   const handleConnect = async () => {
     if (!connectionForm.apiKey) {
@@ -108,22 +125,38 @@ export const useSmartMeterIntegration = () => {
     });
   };
 
-  const handleSupplierSelect = (supplierId: string) => {
+  const handleSupplierSelect = async (supplierId: string) => {
     setIsTransitioning(true);
     // Extended delay to allow full transition animation to complete
-    setTimeout(() => {
+    setTimeout(async () => {
       setSelectedSupplier(supplierId);
       setIsTransitioning(false);
+      
+      // Save to user preferences if authenticated, show guest prompt if not
+      if (user) {
+        await saveSelectedSupplier(supplierId);
+      } else {
+        setShowGuestPrompt(true);
+      }
     }, 900);
   };
 
-  const handleBackToSuppliers = () => {
+  const handleBackToSuppliers = async () => {
     setIsReverseTransitioning(true);
+    // Clear saved preference if user is authenticated
+    if (user) {
+      await clearSelectedSupplier();
+    }
     // Show reverse animation first
     setTimeout(() => {
       setSelectedSupplier(null);
       setIsReverseTransitioning(false);
+      setShowGuestPrompt(false);
     }, 900);
+  };
+
+  const handleDismissGuestPrompt = () => {
+    setShowGuestPrompt(false);
   };
 
   // Auto-update data every 30 minutes when connected
@@ -167,10 +200,12 @@ export const useSmartMeterIntegration = () => {
     meterData,
     loading,
     account,
+    showGuestPrompt,
     setConnectionForm,
     handleConnect,
     handleDisconnect,
     handleSupplierSelect,
-    handleBackToSuppliers
+    handleBackToSuppliers,
+    handleDismissGuestPrompt
   };
 };

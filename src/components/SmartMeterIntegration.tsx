@@ -6,6 +6,7 @@ import SupplierSelectionCard from './smart-meter/SupplierSelectionCard';
 import OctopusConnectionForm from './smart-meter/OctopusConnectionForm';
 import ConnectedMeterDisplay from './smart-meter/ConnectedMeterDisplay';
 import BenefitsSection from './smart-meter/BenefitsSection';
+import GuestSavePrompt from './smart-meter/GuestSavePrompt';
 
 const SmartMeterIntegration = () => {
   const {
@@ -17,11 +18,13 @@ const SmartMeterIntegration = () => {
     meterData,
     loading,
     account,
+    showGuestPrompt,
     setConnectionForm,
     handleConnect,
     handleDisconnect,
     handleSupplierSelect,
-    handleBackToSuppliers
+    handleBackToSuppliers,
+    handleDismissGuestPrompt
   } = useSmartMeterIntegration();
 
   const energySuppliers = [
@@ -70,6 +73,14 @@ const SmartMeterIntegration = () => {
         onSupplierSelect={handleSupplierSelect}
         onChangeSupplier={handleBackToSuppliers}
       />
+
+      {/* Guest Save Prompt - show when guest user selects a supplier */}
+      {showGuestPrompt && selectedSupplier && (
+        <GuestSavePrompt
+          supplierName={energySuppliers.find(s => s.id === selectedSupplier)?.name || selectedSupplier}
+          onDismiss={handleDismissGuestPrompt}
+        />
+      )}
 
       {/* API Key Form - only show when Octopus is selected and not connected and not transitioning */}
       {selectedSupplier === 'octopus' && !isConnected && !isReverseTransitioning && (
