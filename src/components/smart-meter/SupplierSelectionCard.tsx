@@ -28,8 +28,8 @@ const SupplierSelectionCard: React.FC<SupplierSelectionCardProps> = ({
   onChangeSupplier
 }) => {
   const isShowingSelected = selectedSupplier === 'octopus' && !isReverseTransitioning;
-  // Delay the height transition to happen after suppliers fade out
-  const shouldUseCompactHeight = isShowingSelected && !isTransitioning;
+  // Start height transition immediately when showing selected supplier
+  const shouldUseCompactHeight = isShowingSelected;
 
   return (
     <Card className="will-change-transform backface-visibility-hidden overflow-hidden">
