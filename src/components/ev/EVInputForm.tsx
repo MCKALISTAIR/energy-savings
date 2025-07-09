@@ -18,6 +18,10 @@ interface EVInputFormProps {
   setElectricityRate: (value: string) => void;
   evType: string;
   setEVType: (value: string) => void;
+  publicChargingFrequency: string;
+  setPublicChargingFrequency: (value: string) => void;
+  batteryCapacity: string;
+  setBatteryCapacity: (value: string) => void;
   onCalculate: () => void;
   onClear: () => void;
 }
@@ -33,6 +37,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setElectricityRate,
   evType,
   setEVType,
+  publicChargingFrequency,
+  setPublicChargingFrequency,
+  batteryCapacity,
+  setBatteryCapacity,
   onCalculate,
   onClear
 }) => {
@@ -132,6 +140,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                         petrolPrice.trim() !== '' && 
                         electricityRate.trim() !== '' && 
                         evType !== '' &&
+                        publicChargingFrequency.trim() !== '' &&
+                        batteryCapacity.trim() !== '' &&
                         Object.keys(errors).length === 0;
 
   // Generate tooltip message for missing fields
@@ -142,6 +152,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     if (petrolPrice.trim() === '') missingFields.push('Petrol Price');
     if (electricityRate.trim() === '') missingFields.push('Electricity Rate');
     if (evType === '') missingFields.push('EV Type');
+    if (publicChargingFrequency.trim() === '') missingFields.push('Public Charging Frequency');
+    if (batteryCapacity.trim() === '') missingFields.push('Battery Capacity');
     
     if (missingFields.length === 0 && Object.keys(errors).length > 0) {
       return 'Please fix the validation errors above';
@@ -262,6 +274,54 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               {errors.electricityRate}
             </div>
           )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="publicChargingFrequency">Public Charging per Month</Label>
+          <Input
+            id="publicChargingFrequency"
+            type="number"
+            min="0"
+            value={publicChargingFrequency}
+            onChange={(e) => handleNumericInput(e, 'publicChargingFrequency', setPublicChargingFrequency)}
+            onInput={(e) => handleInputValidation(e, 'publicChargingFrequency', setPublicChargingFrequency)}
+            onBlur={(e) => handleBlur(e, 'publicChargingFrequency', setPublicChargingFrequency)}
+            placeholder="4"
+            className={errors.publicChargingFrequency ? 'border-red-500' : ''}
+          />
+          {errors.publicChargingFrequency && (
+            <div className="flex items-center gap-1 text-sm text-red-500">
+              <AlertCircle className="w-4 h-4" />
+              {errors.publicChargingFrequency}
+            </div>
+          )}
+          <p className="text-xs text-muted-foreground">
+            How often you use public rapid charging stations per month
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="batteryCapacity">EV Battery Capacity (kWh)</Label>
+          <Input
+            id="batteryCapacity"
+            type="number"
+            min="0"
+            value={batteryCapacity}
+            onChange={(e) => handleNumericInput(e, 'batteryCapacity', setBatteryCapacity)}
+            onInput={(e) => handleInputValidation(e, 'batteryCapacity', setBatteryCapacity)}
+            onBlur={(e) => handleBlur(e, 'batteryCapacity', setBatteryCapacity)}
+            placeholder="75"
+            className={errors.batteryCapacity ? 'border-red-500' : ''}
+          />
+          {errors.batteryCapacity && (
+            <div className="flex items-center gap-1 text-sm text-red-500">
+              <AlertCircle className="w-4 h-4" />
+              {errors.batteryCapacity}
+            </div>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Total battery capacity of your electric vehicle
+          </p>
         </div>
 
         <div className="space-y-2">

@@ -25,6 +25,7 @@ export const getDefaultConfig = (): DashboardConfig => ({
     gasStandingCharge: 0.30, // UK average £/day
     oil: 0.09, // UK average £/kWh
     lpg: 0.08, // UK average £/kWh
+    publicCharging: 0.79, // UK average for public rapid charging £/kWh
   },
   priceChangeMode: 'apply-now',
   enableAnnualPriceRise: false,

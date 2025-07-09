@@ -20,6 +20,7 @@ export interface EnergyPricesConfig {
   gasStandingCharge: number; // £/day
   oil: number; // £/kWh
   lpg: number; // £/kWh
+  publicCharging: number; // £/kWh for public EV charging
 }
 
 export interface DashboardConfig {

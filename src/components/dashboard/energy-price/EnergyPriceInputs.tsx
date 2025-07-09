@@ -168,6 +168,26 @@ const EnergyPriceInputs: React.FC<EnergyPriceInputsProps> = ({
           <p className="text-sm text-destructive">{errors.lpg}</p>
         )}
       </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="public-charging-price">Public Charging Rate (£/kWh)</Label>
+        <Input
+          id="public-charging-price"
+          type="number"
+          step="0.01"
+          min="0"
+          value={config.customEnergyPrices.publicCharging}
+          onChange={(e) => handlePriceChange('publicCharging', e.target.value)}
+          placeholder="0.79"
+          className={errors.publicCharging ? "border-destructive" : ""}
+        />
+        {errors.publicCharging && (
+          <p className="text-sm text-destructive">{errors.publicCharging}</p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Typical UK rapid charging rate at public stations
+        </p>
+      </div>
     </div>
   );
 };
