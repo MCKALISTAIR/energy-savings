@@ -39,8 +39,33 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
     setValue: (value: string) => void
   ) => {
     const value = e.target.value;
-    
-    // Clear any existing error for this field
+    validateAndSetValue(value, fieldKey, setValue);
+  };
+
+  const handleInputValidation = (
+    e: React.FormEvent<HTMLInputElement>,
+    fieldKey: string,
+    setValue: (value: string) => void
+  ) => {
+    const value = e.currentTarget.value;
+    validateAndSetValue(value, fieldKey, setValue);
+  };
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement>,
+    fieldKey: string,
+    setValue: (value: string) => void
+  ) => {
+    const value = e.target.value;
+    validateAndSetValue(value, fieldKey, setValue);
+  };
+
+  const validateAndSetValue = (
+    value: string,
+    fieldKey: string,
+    setValue: (value: string) => void
+  ) => {
+    // Clear any existing error for this field first
     if (errors[fieldKey]) {
       setErrors(prev => {
         const newErrors = { ...prev };
@@ -50,11 +75,12 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
     }
 
     // Check for negative values
-    if (value.startsWith('-')) {
+    if (value.startsWith('-') || parseFloat(value) < 0) {
       setErrors(prev => ({
         ...prev,
         [fieldKey]: 'Negative values are not allowed'
       }));
+      setValue('0');
       return;
     }
 
@@ -64,6 +90,9 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
         ...prev,
         [fieldKey]: 'Only numbers are allowed'
       }));
+      // Remove invalid characters and keep only numbers and decimal points
+      const cleanValue = value.replace(/[^0-9.]/g, '');
+      setValue(cleanValue);
       return;
     }
 
@@ -75,10 +104,14 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
           ...prev,
           [fieldKey]: 'Only one decimal point allowed'
         }));
+        // Keep only the first decimal point
+        const cleanValue = parts[0] + '.' + parts.slice(1).join('');
+        setValue(cleanValue);
         return;
       }
     }
 
+    // If value is valid, ensure it's not negative
     const numericValue = value === '' ? '' : Math.max(0, parseFloat(value) || 0).toString();
     setValue(numericValue);
   };
@@ -107,6 +140,8 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
             min="0"
             value={homeSize}
             onChange={(e) => handleNumericInput(e, 'homeSize', setHomeSize)}
+            onInput={(e) => handleInputValidation(e, 'homeSize', setHomeSize)}
+            onBlur={(e) => handleBlur(e, 'homeSize', setHomeSize)}
             placeholder="185"
             className={errors.homeSize ? 'border-red-500' : ''}
           />
@@ -141,6 +176,8 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
             min="0"
             value={monthlyHeatingBill}
             onChange={(e) => handleNumericInput(e, 'monthlyBill', setMonthlyHeatingBill)}
+            onInput={(e) => handleInputValidation(e, 'monthlyBill', setMonthlyHeatingBill)}
+            onBlur={(e) => handleBlur(e, 'monthlyBill', setMonthlyHeatingBill)}
             placeholder="80"
             className={errors.monthlyBill ? 'border-red-500' : ''}
           />
