@@ -19,7 +19,7 @@ const GuestSavePrompt: React.FC<GuestSavePromptProps> = ({
   };
 
   return (
-    <div className="bg-blue-600 text-white p-4 rounded-lg mb-6 flex items-center justify-between">
+    <div className="bg-blue-500 text-white p-4 rounded-lg mb-6 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <Save className="w-5 h-5" />
         <span className="text-sm font-medium">
@@ -29,7 +29,7 @@ const GuestSavePrompt: React.FC<GuestSavePromptProps> = ({
       <div className="flex items-center gap-2">
         <Button 
           onClick={handleSignUp}
-          className="bg-white text-blue-600 hover:bg-gray-100 text-sm px-3 py-1 h-8 font-medium"
+          className="bg-white text-blue-500 hover:bg-gray-100 text-sm px-3 py-1 h-8 font-medium"
         >
           Create Account
         </Button>
@@ -38,7 +38,7 @@ const GuestSavePrompt: React.FC<GuestSavePromptProps> = ({
             variant="ghost" 
             size="sm"
             onClick={onDismiss}
-            className="text-white hover:bg-blue-700 text-sm px-3 py-1 h-8"
+            className="text-white hover:bg-blue-600 text-sm px-3 py-1 h-8"
           >
             Continue as Guest
           </Button>
