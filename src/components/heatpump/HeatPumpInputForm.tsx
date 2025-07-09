@@ -46,8 +46,9 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
           <Input
             id="homeSize"
             type="number"
+            min="0"
             value={homeSize}
-            onChange={(e) => setHomeSize(e.target.value)}
+            onChange={(e) => setHomeSize(Math.max(0, parseFloat(e.target.value) || 0).toString())}
             placeholder="185"
           />
         </div>
@@ -72,8 +73,9 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
           <Input
             id="monthlyBill"
             type="number"
+            min="0"
             value={monthlyHeatingBill}
-            onChange={(e) => setMonthlyHeatingBill(e.target.value)}
+            onChange={(e) => setMonthlyHeatingBill(Math.max(0, parseFloat(e.target.value) || 0).toString())}
             placeholder="80"
           />
         </div>
