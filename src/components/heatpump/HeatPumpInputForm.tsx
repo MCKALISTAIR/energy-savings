@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Thermometer, AlertCircle } from 'lucide-react';
+import { Thermometer, AlertCircle, X } from 'lucide-react';
 
 interface HeatPumpInputFormProps {
   homeSize: string;
@@ -16,6 +16,7 @@ interface HeatPumpInputFormProps {
   heatPumpType: string;
   setHeatPumpType: (value: string) => void;
   onCalculate: () => void;
+  onClear: () => void;
 }
 
 const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
@@ -27,7 +28,8 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
   setMonthlyHeatingBill,
   heatPumpType,
   setHeatPumpType,
-  onCalculate
+  onCalculate,
+  onClear
 }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -79,6 +81,11 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
 
     const numericValue = value === '' ? '' : Math.max(0, parseFloat(value) || 0).toString();
     setValue(numericValue);
+  };
+
+  const handleClear = () => {
+    setErrors({});
+    onClear();
   };
   return (
     <Card className="hover-scale">
@@ -159,9 +166,20 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
           </Select>
         </div>
 
-        <Button onClick={onCalculate} className="w-full">
-          Recalculate Savings
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={onCalculate} className="flex-1">
+            Recalculate Savings
+          </Button>
+          <Button 
+            onClick={handleClear} 
+            variant="outline" 
+            size="icon"
+            className="hover-scale"
+            title="Clear all fields"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

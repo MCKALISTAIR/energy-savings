@@ -25,6 +25,13 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
     onUpdate
   });
 
+  const clearForm = () => {
+    setHomeSize('');
+    setCurrentHeatingType('');
+    setMonthlyHeatingBill('');
+    setHeatPumpType('');
+  };
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <HeatPumpInputForm
@@ -37,6 +44,7 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
         heatPumpType={heatPumpType}
         setHeatPumpType={setHeatPumpType}
         onCalculate={calculateSavings}
+        onClear={clearForm}
       />
 
       <HeatPumpResults results={results} />
