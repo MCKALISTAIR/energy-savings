@@ -28,6 +28,14 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     onUpdate
   });
 
+  const clearForm = () => {
+    setMilesPerYear('');
+    setCurrentMPG('');
+    setPetrolPrice('');
+    setElectricityRate('');
+    setEVType('');
+  };
+
   // Update form values when energyPrices change
   useEffect(() => {
     if (energyPrices) {
@@ -50,6 +58,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
         evType={evType}
         setEVType={setEVType}
         onCalculate={calculateSavings}
+        onClear={clearForm}
       />
 
       <EVResults 

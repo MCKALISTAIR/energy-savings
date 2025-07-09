@@ -26,6 +26,13 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyP
     onUpdate
   });
 
+  const clearForm = () => {
+    setMonthlyBill('');
+    setPeakUsage('');
+    setOutageFrequency('');
+    setBatterySize('');
+  };
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <BatteryInputForm
@@ -38,6 +45,7 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyP
         batterySize={batterySize}
         setBatterySize={setBatterySize}
         onCalculate={calculateSavings}
+        onClear={clearForm}
       />
 
       <BatteryResults
