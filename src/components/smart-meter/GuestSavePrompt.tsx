@@ -1,7 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface GuestSavePromptProps {
@@ -20,30 +19,34 @@ const GuestSavePrompt: React.FC<GuestSavePromptProps> = ({
   };
 
   return (
-    <Card className="border-primary/20 bg-primary/5">
-      <CardHeader className="pb-3">
-        <div className="flex items-center space-x-2">
-          <Save className="w-5 h-5 text-primary" />
-          <CardTitle className="text-lg">Save Your Selection</CardTitle>
-        </div>
-        <CardDescription>
-          You've selected {supplierName}. Create an account to save your energy supplier selection and access more features.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="flex items-center space-x-3">
-          <Button onClick={handleSignUp} className="flex-1">
-            <User className="w-4 h-4 mr-2" />
-            Sign Up & Save
+    <div className="bg-blue-600 text-white p-4 rounded-lg mb-6 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <Save className="w-5 h-5" />
+        <span className="text-sm font-medium">
+          Save your energy supplier selection ({supplierName}) to access it anytime
+        </span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button 
+          onClick={handleSignUp}
+          variant="secondary"
+          size="sm"
+          className="bg-white text-blue-600 hover:bg-gray-100 font-medium"
+        >
+          Create Account
+        </Button>
+        {onDismiss && (
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={onDismiss}
+            className="text-white hover:bg-blue-700"
+          >
+            Continue as Guest
           </Button>
-          {onDismiss && (
-            <Button variant="ghost" onClick={onDismiss}>
-              Continue as Guest
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+        )}
+      </div>
+    </div>
   );
 };
 
