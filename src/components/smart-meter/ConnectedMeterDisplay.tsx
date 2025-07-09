@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { CheckCircle2, Wifi } from 'lucide-react';
-import MeterDataCards from './MeterDataCards';
+import EnhancedMeterDataCards from './EnhancedMeterDataCards';
 import BenefitsSection from './BenefitsSection';
 import OctopusInfoSection from './OctopusInfoSection';
 
@@ -23,16 +23,22 @@ interface ConnectedMeterDisplayProps {
   account: Account | null;
   apiKey: string;
   meterData: MeterData;
+  gasData?: MeterData;
   onDisconnect: () => void;
   onChangeSupplier: () => void;
+  onRefresh?: () => void;
+  loading?: boolean;
 }
 
 const ConnectedMeterDisplay: React.FC<ConnectedMeterDisplayProps> = ({
   account,
   apiKey,
   meterData,
+  gasData,
   onDisconnect,
-  onChangeSupplier
+  onChangeSupplier,
+  onRefresh,
+  loading
 }) => {
   return (
     <div className="space-y-6">
@@ -87,7 +93,12 @@ const ConnectedMeterDisplay: React.FC<ConnectedMeterDisplayProps> = ({
       </Card>
 
       {/* Live Data Display */}
-      <MeterDataCards meterData={meterData} />
+      <EnhancedMeterDataCards 
+        electricityData={meterData} 
+        gasData={gasData}
+        onRefresh={onRefresh}
+        loading={loading}
+      />
 
       <Separator />
 

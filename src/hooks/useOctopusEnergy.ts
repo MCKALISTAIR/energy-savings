@@ -1,7 +1,8 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface OctopusAccount {
   number: string;
@@ -51,14 +52,23 @@ export const useOctopusEnergy = () => {
   const [loading, setLoading] = useState(false);
   const [account, setAccount] = useState<OctopusAccount | null>(null);
   const [consumptionData, setConsumptionData] = useState<ConsumptionData | null>(null);
+  const [gasConsumptionData, setGasConsumptionData] = useState<ConsumptionData | null>(null);
+  const [electricityTariff, setElectricityTariff] = useState<any>(null);
+  const [gasTariff, setGasTariff] = useState<any>(null);
+  const [storedData, setStoredData] = useState<any>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const callOctopusApi = async (action: string, params: any = {}) => {
     try {
       setLoading(true);
       
       const { data, error } = await supabase.functions.invoke('octopus-energy', {
-        body: { action, ...params }
+        body: { 
+          action, 
+          userId: user?.id,
+          ...params 
+        }
       });
 
       if (error) {
@@ -94,56 +104,170 @@ export const useOctopusEnergy = () => {
     }
   };
 
-  const getConsumption = async (mpan: string, meterSerial: string, apiKey?: string) => {
+  const getElectricityConsumption = async (mpan: string, meterSerial: string, apiKey?: string, periodFrom?: string, periodTo?: string) => {
     try {
-      const data = await callOctopusApi('getConsumption', { mpan, meterSerial, apiKey });
+      const data = await callOctopusApi('getElectricityConsumption', { mpan, meterSerial, apiKey, periodFrom, periodTo });
       setConsumptionData(data);
       return data;
     } catch (error) {
-      console.error('Failed to get consumption data:', error);
+      console.error('Failed to get electricity consumption data:', error);
       return null;
     }
   };
 
-  const getCurrentTariff = async (mpan: string, apiKey?: string) => {
+  const getGasConsumption = async (mprn: string, meterSerial: string, apiKey?: string, periodFrom?: string, periodTo?: string) => {
     try {
-      const data = await callOctopusApi('getCurrentTariff', { mpan, apiKey });
+      const data = await callOctopusApi('getGasConsumption', { mprn, meterSerial, apiKey, periodFrom, periodTo });
+      setGasConsumptionData(data);
       return data;
     } catch (error) {
-      console.error('Failed to get tariff data:', error);
+      console.error('Failed to get gas consumption data:', error);
       return null;
     }
   };
 
-  const calculateCurrentUsage = () => {
-    if (!consumptionData?.results.length) return 0;
-    
-    // Get the most recent consumption reading (in kWh for 30-minute period)
-    const latestReading = consumptionData.results[0];
-    // Convert to kW (multiply by 2 since it's a 30-minute reading)
-    return latestReading.consumption * 2;
+  const getElectricityTariff = async (mpan: string, apiKey?: string) => {
+    try {
+      const data = await callOctopusApi('getElectricityTariff', { mpan, apiKey });
+      setElectricityTariff(data);
+      return data;
+    } catch (error) {
+      console.error('Failed to get electricity tariff data:', error);
+      return null;
+    }
   };
 
-  const calculateDailyUsage = () => {
-    if (!consumptionData?.results.length) return 0;
+  const getGasTariff = async (mprn: string, apiKey?: string) => {
+    try {
+      const data = await callOctopusApi('getGasTariff', { mprn, apiKey });
+      setGasTariff(data);
+      return data;
+    } catch (error) {
+      console.error('Failed to get gas tariff data:', error);
+      return null;
+    }
+  };
+
+  const syncAllData = async (apiKey?: string) => {
+    try {
+      const data = await callOctopusApi('syncAllData', { apiKey });
+      if (data.account) setAccount(data.account);
+      toast({
+        title: "Data Sync Complete",
+        description: `Synced electricity and gas consumption data successfully`,
+      });
+      return data;
+    } catch (error) {
+      console.error('Failed to sync all data:', error);
+      return null;
+    }
+  };
+
+  const getStoredConsumptionData = async (meterType: 'electricity' | 'gas' = 'electricity', days: number = 7) => {
+    if (!user) return null;
+    
+    try {
+      const fromDate = new Date();
+      fromDate.setDate(fromDate.getDate() - days);
+      
+      const { data, error } = await supabase
+        .from('smart_meter_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('meter_type', meterType)
+        .gte('interval_start', fromDate.toISOString())
+        .order('interval_start', { ascending: false });
+      
+      if (error) throw error;
+      setStoredData(data);
+      return data;
+    } catch (error) {
+      console.error('Failed to get stored consumption data:', error);
+      return null;
+    }
+  };
+
+  const getCurrentTariffRates = async (fuelType: 'electricity' | 'gas' = 'electricity') => {
+    if (!user) return null;
+    
+    try {
+      const { data, error } = await supabase
+        .from('tariff_rates')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('fuel_type', fuelType)
+        .is('valid_to', null)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Failed to get current tariff rates:', error);
+      return null;
+    }
+  };
+
+  const calculateCurrentUsage = (meterType: 'electricity' | 'gas' = 'electricity') => {
+    const data = meterType === 'electricity' ? consumptionData : gasConsumptionData;
+    if (!data?.results.length) return 0;
+    
+    // Get the most recent consumption reading (in kWh for 30-minute period)
+    const latestReading = data.results[0];
+    // Convert to kW (multiply by 2 since it's a 30-minute reading for electricity)
+    return meterType === 'electricity' ? latestReading.consumption * 2 : latestReading.consumption;
+  };
+
+  const calculateDailyUsage = (meterType: 'electricity' | 'gas' = 'electricity') => {
+    const data = meterType === 'electricity' ? consumptionData : gasConsumptionData;
+    if (!data?.results.length) return 0;
     
     // Get today's readings (last 48 half-hour periods)
     const today = new Date().toISOString().split('T')[0];
-    const todayReadings = consumptionData.results.filter(reading => 
+    const todayReadings = data.results.filter(reading => 
       reading.interval_start.startsWith(today)
     );
     
     return todayReadings.reduce((total, reading) => total + reading.consumption, 0);
   };
 
+  const calculateDailyCost = async (meterType: 'electricity' | 'gas' = 'electricity') => {
+    const dailyUsage = calculateDailyUsage(meterType);
+    const tariff = await getCurrentTariffRates(meterType);
+    
+    if (!tariff || !dailyUsage) return 0;
+    
+    const unitCost = dailyUsage * tariff.unit_rate;
+    const standingCharge = tariff.standing_charge;
+    
+    return unitCost + standingCharge;
+  };
+
+  // Load stored data on mount
+  useEffect(() => {
+    if (user) {
+      getStoredConsumptionData('electricity');
+      getStoredConsumptionData('gas');
+    }
+  }, [user]);
+
   return {
     loading,
     account,
     consumptionData,
+    gasConsumptionData,
+    electricityTariff,
+    gasTariff,
+    storedData,
     getAccount,
-    getConsumption,
-    getCurrentTariff,
+    getElectricityConsumption,
+    getGasConsumption,
+    getElectricityTariff,
+    getGasTariff,
+    syncAllData,
+    getStoredConsumptionData,
+    getCurrentTariffRates,
     calculateCurrentUsage,
-    calculateDailyUsage
+    calculateDailyUsage,
+    calculateDailyCost
   };
 };

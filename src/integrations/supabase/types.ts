@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      energy_insights: {
+        Row: {
+          created_at: string
+          data: Json
+          fuel_type: string
+          id: string
+          insight_type: string
+          period_end: string
+          period_start: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          fuel_type: string
+          id?: string
+          insight_type: string
+          period_end: string
+          period_start: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          fuel_type?: string
+          id?: string
+          insight_type?: string
+          period_end?: string
+          period_start?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       houses: {
         Row: {
           address: string
@@ -36,6 +72,51 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      smart_meter_data: {
+        Row: {
+          consumption: number
+          cost: number | null
+          created_at: string
+          id: string
+          interval_end: string
+          interval_start: string
+          meter_serial: string
+          meter_type: string
+          mpan: string | null
+          mprn: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consumption: number
+          cost?: number | null
+          created_at?: string
+          id?: string
+          interval_end: string
+          interval_start: string
+          meter_serial: string
+          meter_type: string
+          mpan?: string | null
+          mprn?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consumption?: number
+          cost?: number | null
+          created_at?: string
+          id?: string
+          interval_end?: string
+          interval_start?: string
+          meter_serial?: string
+          meter_type?: string
+          mpan?: string | null
+          mprn?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -91,24 +172,75 @@ export type Database = {
           },
         ]
       }
-      user_preferences: {
+      tariff_rates: {
         Row: {
           created_at: string
+          fuel_type: string
           id: string
+          standing_charge: number
+          tariff_code: string
+          unit_rate: number
+          updated_at: string
+          user_id: string
+          valid_from: string
+          valid_to: string | null
+        }
+        Insert: {
+          created_at?: string
+          fuel_type: string
+          id?: string
+          standing_charge: number
+          tariff_code: string
+          unit_rate: number
+          updated_at?: string
+          user_id: string
+          valid_from: string
+          valid_to?: string | null
+        }
+        Update: {
+          created_at?: string
+          fuel_type?: string
+          id?: string
+          standing_charge?: number
+          tariff_code?: string
+          unit_rate?: number
+          updated_at?: string
+          user_id?: string
+          valid_from?: string
+          valid_to?: string | null
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          auto_sync_enabled: boolean | null
+          created_at: string
+          id: string
+          last_sync_at: string | null
+          octopus_account_number: string | null
+          octopus_api_key: string | null
           selected_energy_supplier: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          auto_sync_enabled?: boolean | null
           created_at?: string
           id?: string
+          last_sync_at?: string | null
+          octopus_account_number?: string | null
+          octopus_api_key?: string | null
           selected_energy_supplier?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          auto_sync_enabled?: boolean | null
           created_at?: string
           id?: string
+          last_sync_at?: string | null
+          octopus_account_number?: string | null
+          octopus_api_key?: string | null
           selected_energy_supplier?: string | null
           updated_at?: string
           user_id?: string

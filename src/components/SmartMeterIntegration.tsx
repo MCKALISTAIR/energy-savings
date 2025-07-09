@@ -16,6 +16,7 @@ const SmartMeterIntegration = () => {
     isConnected,
     connectionForm,
     meterData,
+    gasData,
     loading,
     account,
     showGuestPrompt,
@@ -24,7 +25,8 @@ const SmartMeterIntegration = () => {
     handleDisconnect,
     handleSupplierSelect,
     handleBackToSuppliers,
-    handleDismissGuestPrompt
+    handleDismissGuestPrompt,
+    refreshMeterData
   } = useSmartMeterIntegration();
 
   const energySuppliers = [
@@ -45,8 +47,11 @@ const SmartMeterIntegration = () => {
         account={account}
         apiKey={connectionForm.apiKey}
         meterData={meterData}
+        gasData={gasData}
         onDisconnect={handleDisconnect}
         onChangeSupplier={handleBackToSuppliers}
+        onRefresh={refreshMeterData}
+        loading={loading}
       />
     );
   }

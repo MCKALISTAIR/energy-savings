@@ -19,6 +19,12 @@ export const useSmartMeterIntegration = () => {
     dailyCost: 0,
     tariffRate: 0
   });
+  const [gasData, setGasData] = useState({
+    currentUsage: 0,
+    dailyUsage: 0,
+    dailyCost: 0,
+    tariffRate: 0
+  });
 
   const { user } = useAuth();
   const { 
@@ -31,11 +37,17 @@ export const useSmartMeterIntegration = () => {
     loading, 
     account, 
     consumptionData,
+    gasConsumptionData,
     getAccount, 
-    getConsumption, 
-    getCurrentTariff,
+    getElectricityConsumption,
+    getGasConsumption,
+    getElectricityTariff,
+    getGasTariff,
+    syncAllData,
+    getCurrentTariffRates,
     calculateCurrentUsage,
-    calculateDailyUsage
+    calculateDailyUsage,
+    calculateDailyCost
   } = useOctopusEnergy();
 
   const { toast } = useToast();
@@ -64,41 +76,39 @@ export const useSmartMeterIntegration = () => {
         throw new Error('Failed to retrieve account information');
       }
 
-      // Get the first property's meter details
-      const property = accountData.properties?.[0];
-      if (!property?.electricity_meter_points?.[0]) {
-        throw new Error('No electricity meter found on account');
+      // Use the enhanced sync function to get all data
+      const syncResult = await syncAllData(connectionForm.apiKey);
+      if (!syncResult) {
+        throw new Error('Failed to sync meter data');
       }
-
-      const meterPoint = property.electricity_meter_points[0];
-      const mpan = meterPoint.mpan;
-      const meterSerial = meterPoint.meters?.[0]?.serial_number;
-
-      if (!meterSerial) {
-        throw new Error('No meter serial number found');
-      }
-
-      // Get consumption data
-      const consumption = await getConsumption(mpan, meterSerial, connectionForm.apiKey);
-      if (!consumption) {
-        throw new Error('Failed to retrieve consumption data');
-      }
-
-      // Get tariff information
-      const tariff = await getCurrentTariff(mpan, connectionForm.apiKey);
       
       setIsConnected(true);
       
-      // Update meter data with real values
-      const currentUsage = calculateCurrentUsage();
-      const dailyUsage = calculateDailyUsage();
+      // Update electricity meter data
+      const electricityUsage = calculateCurrentUsage('electricity');
+      const electricityDailyUsage = calculateDailyUsage('electricity');
+      const electricityTariff = await getCurrentTariffRates('electricity');
       
       setMeterData({
-        currentUsage,
-        dailyUsage,
-        dailyCost: dailyUsage * 0.28, // Default rate, should be from tariff
-        tariffRate: 0.28 // Should be extracted from tariff data
+        currentUsage: electricityUsage,
+        dailyUsage: electricityDailyUsage,
+        dailyCost: await calculateDailyCost('electricity') || 0,
+        tariffRate: electricityTariff?.unit_rate || 0.28
       });
+      
+      // Update gas meter data if available
+      const gasUsage = calculateCurrentUsage('gas');
+      const gasDailyUsage = calculateDailyUsage('gas');
+      const gasTariff = await getCurrentTariffRates('gas');
+      
+      if (gasUsage > 0 || gasDailyUsage > 0) {
+        setGasData({
+          currentUsage: gasUsage,
+          dailyUsage: gasDailyUsage,
+          dailyCost: await calculateDailyCost('gas') || 0,
+          tariffRate: gasTariff?.unit_rate || 0.06
+        });
+      }
 
       toast({
         title: "Connected Successfully",
@@ -118,6 +128,12 @@ export const useSmartMeterIntegration = () => {
   const handleDisconnect = () => {
     setIsConnected(false);
     setMeterData({
+      currentUsage: 0,
+      dailyUsage: 0,
+      dailyCost: 0,
+      tariffRate: 0
+    });
+    setGasData({
       currentUsage: 0,
       dailyUsage: 0,
       dailyCost: 0,
@@ -159,37 +175,57 @@ export const useSmartMeterIntegration = () => {
     setShowGuestPrompt(false);
   };
 
+  const refreshMeterData = async () => {
+    if (!isConnected || !connectionForm.apiKey) return;
+    
+    try {
+      await syncAllData(connectionForm.apiKey);
+      
+      // Update electricity data
+      const electricityUsage = calculateCurrentUsage('electricity');
+      const electricityDailyUsage = calculateDailyUsage('electricity');
+      
+      setMeterData(prev => ({
+        ...prev,
+        currentUsage: electricityUsage,
+        dailyUsage: electricityDailyUsage,
+        dailyCost: electricityDailyUsage * prev.tariffRate
+      }));
+      
+      // Update gas data if available
+      const gasUsage = calculateCurrentUsage('gas');
+      const gasDailyUsage = calculateDailyUsage('gas');
+      
+      if (gasUsage > 0 || gasDailyUsage > 0) {
+        setGasData(prev => ({
+          ...prev,
+          currentUsage: gasUsage,
+          dailyUsage: gasDailyUsage,
+          dailyCost: gasDailyUsage * prev.tariffRate
+        }));
+      }
+      
+      toast({
+        title: "Data Updated",
+        description: "Smart meter data refreshed successfully",
+      });
+    } catch (error) {
+      console.error('Failed to refresh meter data:', error);
+      toast({
+        title: "Refresh Failed",
+        description: "Failed to update smart meter data",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Auto-update data every 30 minutes when connected
   useEffect(() => {
-    if (!isConnected || !connectionForm.apiKey || !account) return;
+    if (!isConnected || !connectionForm.apiKey) return;
 
-    const interval = setInterval(async () => {
-      try {
-        const property = account.properties?.[0];
-        const meterPoint = property?.electricity_meter_points?.[0];
-        const mpan = meterPoint?.mpan;
-        const meterSerial = meterPoint?.meters?.[0]?.serial_number;
-        
-        if (mpan && meterSerial) {
-          await getConsumption(mpan, meterSerial, connectionForm.apiKey);
-          
-          const currentUsage = calculateCurrentUsage();
-          const dailyUsage = calculateDailyUsage();
-          
-          setMeterData(prev => ({
-            ...prev,
-            currentUsage,
-            dailyUsage,
-            dailyCost: dailyUsage * prev.tariffRate
-          }));
-        }
-      } catch (error) {
-        console.error('Failed to update consumption data:', error);
-      }
-    }, 30 * 60 * 1000); // 30 minutes
-
+    const interval = setInterval(refreshMeterData, 30 * 60 * 1000); // 30 minutes
     return () => clearInterval(interval);
-  }, [isConnected, connectionForm.apiKey, account]);
+  }, [isConnected, connectionForm.apiKey]);
 
   return {
     selectedSupplier,
@@ -198,6 +234,7 @@ export const useSmartMeterIntegration = () => {
     isConnected,
     connectionForm,
     meterData,
+    gasData,
     loading,
     account,
     showGuestPrompt,
@@ -206,6 +243,7 @@ export const useSmartMeterIntegration = () => {
     handleDisconnect,
     handleSupplierSelect,
     handleBackToSuppliers,
-    handleDismissGuestPrompt
+    handleDismissGuestPrompt,
+    refreshMeterData
   };
 };
