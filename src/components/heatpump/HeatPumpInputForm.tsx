@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Thermometer, AlertCircle, X } from 'lucide-react';
 
 interface HeatPumpInputFormProps {
@@ -120,6 +121,34 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
     setErrors({});
     onClear();
   };
+
+  // Check if form is complete
+  const isFormComplete = homeSize.trim() !== '' && 
+                        currentHeatingType !== '' && 
+                        monthlyHeatingBill.trim() !== '' && 
+                        heatPumpType !== '' &&
+                        Object.keys(errors).length === 0;
+
+  // Generate tooltip message for missing fields
+  const getMissingFieldsMessage = () => {
+    const missingFields = [];
+    if (homeSize.trim() === '') missingFields.push('Home Size');
+    if (currentHeatingType === '') missingFields.push('Current Heating Type');
+    if (monthlyHeatingBill.trim() === '') missingFields.push('Monthly Heating Bill');
+    if (heatPumpType === '') missingFields.push('Heat Pump Type');
+    
+    if (missingFields.length === 0 && Object.keys(errors).length > 0) {
+      return 'Please fix the validation errors above';
+    }
+    
+    if (missingFields.length === 1) {
+      return `Please fill out: ${missingFields[0]}`;
+    } else if (missingFields.length > 1) {
+      return `Please fill out: ${missingFields.slice(0, -1).join(', ')} and ${missingFields[missingFields.length - 1]}`;
+    }
+    
+    return '';
+  };
   return (
     <Card className="hover-scale">
       <CardHeader>
@@ -204,9 +233,26 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
         </div>
 
         <div className="flex gap-2">
-          <Button onClick={onCalculate} className="flex-1">
-            Recalculate Savings
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild className="flex-1">
+                <div>
+                  <Button 
+                    onClick={onCalculate} 
+                    className="w-full" 
+                    disabled={!isFormComplete}
+                  >
+                    Recalculate Savings
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              {!isFormComplete && (
+                <TooltipContent>
+                  <p>{getMissingFieldsMessage()}</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
           <Button 
             onClick={handleClear} 
             variant="outline" 
