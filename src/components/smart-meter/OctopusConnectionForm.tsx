@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Loader2, WifiOff, CheckCircle, ExternalLink } from 'lucide-react';
+import { AlertCircle, Loader2, WifiOff, CheckCircle, ExternalLink, X } from 'lucide-react';
 import { useOctopusEnergy } from '@/hooks/useOctopusEnergy';
 
 interface OctopusConnectionFormProps {
@@ -26,6 +26,12 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
 
   const handleApiKeyChange = (value: string) => {
     onApiKeyChange(value);
+    setValidationState('idle');
+    setValidationError('');
+  };
+
+  const handleClearApiKey = () => {
+    onApiKeyChange('');
     setValidationState('idle');
     setValidationError('');
   };
@@ -96,9 +102,20 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
                 value={apiKey}
                 onChange={(e) => handleApiKeyChange(e.target.value)}
                 onBlur={handleValidateKey}
-                className={validationState === 'invalid' ? 'border-destructive' : ''}
+                className={validationState === 'invalid' ? 'border-destructive pr-16' : 'pr-16'}
               />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
+                {apiKey && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearApiKey}
+                    className="h-6 w-6 p-0 hover:bg-muted"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
                 {getValidationIcon()}
               </div>
             </div>
