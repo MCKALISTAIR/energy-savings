@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Loader2, WifiOff } from 'lucide-react';
+import { AlertCircle, Loader2, WifiOff, CheckCircle, ExternalLink } from 'lucide-react';
+import { useOctopusEnergy } from '@/hooks/useOctopusEnergy';
 
 interface OctopusConnectionFormProps {
   apiKey: string;
@@ -19,6 +20,43 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
   onApiKeyChange,
   onConnect
 }) => {
+  const [validationState, setValidationState] = useState<'idle' | 'validating' | 'valid' | 'invalid'>('idle');
+  const [validationError, setValidationError] = useState<string>('');
+  const { validateApiKey } = useOctopusEnergy();
+
+  const handleApiKeyChange = (value: string) => {
+    onApiKeyChange(value);
+    setValidationState('idle');
+    setValidationError('');
+  };
+
+  const handleValidateKey = async () => {
+    if (!apiKey.trim()) return;
+    
+    setValidationState('validating');
+    const result = await validateApiKey(apiKey);
+    
+    if (result.success && result.data?.valid) {
+      setValidationState('valid');
+    } else {
+      setValidationState('invalid');
+      setValidationError(result.error || 'Invalid API key');
+    }
+  };
+
+  const getValidationIcon = () => {
+    switch (validationState) {
+      case 'validating':
+        return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
+      case 'valid':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'invalid':
+        return <AlertCircle className="h-4 w-4 text-destructive" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Card className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
       <CardHeader>
@@ -37,27 +75,70 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
             <AlertDescription>
               To connect your smart meter, you'll need your Octopus Energy API key. 
               This can be found in your Octopus Energy account dashboard under Developer settings.
+              <a 
+                href="https://octopus.energy/dashboard/new/accounts/personal-details/api-access" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 ml-2 text-primary hover:underline"
+              >
+                Get API Key <ExternalLink className="h-3 w-3" />
+              </a>
             </AlertDescription>
           </Alert>
 
           <div className="space-y-2">
             <Label htmlFor="api-key">Octopus Energy API Key</Label>
-            <Input 
-              id="api-key"
-              type="password"
-              placeholder="sk_live_..."
-              value={apiKey}
-              onChange={(e) => onApiKeyChange(e.target.value)}
-            />
+            <div className="relative">
+              <Input 
+                id="api-key"
+                type="password"
+                placeholder="sk_live_..."
+                value={apiKey}
+                onChange={(e) => handleApiKeyChange(e.target.value)}
+                onBlur={handleValidateKey}
+                className={validationState === 'invalid' ? 'border-destructive' : ''}
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                {getValidationIcon()}
+              </div>
+            </div>
+            
+            {validationState === 'invalid' && validationError && (
+              <p className="text-xs text-destructive">
+                {validationError}
+              </p>
+            )}
+            
+            {validationState === 'valid' && (
+              <p className="text-xs text-green-600">
+                API key is valid and account found
+              </p>
+            )}
+            
             <p className="text-xs text-muted-foreground">
               You can find your API key in your Octopus Energy account dashboard
             </p>
           </div>
 
-          <Button onClick={onConnect} className="w-full" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Connect Octopus Energy Smart Meter
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleValidateKey} 
+              variant="outline" 
+              disabled={!apiKey.trim() || validationState === 'validating'}
+              className="flex-1"
+            >
+              {validationState === 'validating' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Validate Key
+            </Button>
+            <Button 
+              onClick={onConnect} 
+              disabled={loading || !apiKey.trim() || validationState === 'invalid'}
+              className="flex-2"
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Connect Smart Meter
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

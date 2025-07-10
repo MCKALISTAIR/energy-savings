@@ -93,6 +93,35 @@ export const useOctopusEnergy = () => {
     }
   };
 
+  const validateApiKey = async (apiKey: string) => {
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase.functions.invoke('octopus-energy', {
+        body: { 
+          action: 'validateApiKey',
+          apiKey,
+          userId: user?.id
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return { success: data.success, data: data.data, error: data.error };
+    } catch (error) {
+      console.error('API key validation error:', error);
+      return { 
+        success: false, 
+        error: error.message || "Failed to validate API key",
+        data: null 
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getAccount = async (apiKey?: string) => {
     try {
       const data = await callOctopusApi('getAccount', { apiKey });
@@ -258,6 +287,7 @@ export const useOctopusEnergy = () => {
     electricityTariff,
     gasTariff,
     storedData,
+    validateApiKey,
     getAccount,
     getElectricityConsumption,
     getGasConsumption,

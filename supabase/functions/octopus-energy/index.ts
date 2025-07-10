@@ -35,6 +35,53 @@ serve(async (req) => {
     console.log(`Processing ${action} request for user ${userId}`)
 
     switch (action) {
+      case 'validateApiKey':
+        // Validate API key by making a simple account request
+        response = await fetch(`${baseUrl}/accounts/`, {
+          headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        
+        if (!response.ok) {
+          let errorMessage = 'Invalid API key'
+          if (response.status === 401) {
+            errorMessage = 'Invalid API key. Please check your Octopus Energy API key.'
+          } else if (response.status === 403) {
+            errorMessage = 'API key does not have sufficient permissions.'
+          } else if (response.status === 404) {
+            errorMessage = 'No account found with this API key.'
+          } else if (response.status === 429) {
+            errorMessage = 'Too many requests. Please try again later.'
+          }
+          
+          return new Response(
+            JSON.stringify({ 
+              success: false, 
+              error: errorMessage,
+              status: response.status
+            }),
+            { 
+              status: response.status,
+              headers: { 
+                ...corsHeaders, 
+                'Content-Type': 'application/json' 
+              } 
+            }
+          )
+        }
+        
+        data = await response.json()
+        
+        // Return validation result with basic account info
+        processedData = {
+          valid: true,
+          accountExists: data.results?.length > 0,
+          accountNumber: data.results?.[0]?.number
+        }
+        break
+
       case 'getAccount':
         // Get account information
         response = await fetch(`${baseUrl}/accounts/`, {

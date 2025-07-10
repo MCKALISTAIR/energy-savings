@@ -30,6 +30,7 @@ export const useSmartMeterData = () => {
   const { 
     loading, 
     account, 
+    validateApiKey,
     syncAllData,
     getCurrentTariffRates,
     calculateCurrentUsage,
@@ -38,6 +39,15 @@ export const useSmartMeterData = () => {
   } = useOctopusEnergy();
 
   const connectMeter = async (apiKey: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to connect your smart meter",
+        variant: "destructive"
+      });
+      return false;
+    }
+
     if (!apiKey) {
       toast({
         title: "Missing Information",
@@ -48,6 +58,27 @@ export const useSmartMeterData = () => {
     }
 
     try {
+      // First validate the API key
+      const validation = await validateApiKey(apiKey);
+      
+      if (!validation.success) {
+        toast({
+          title: "Invalid API Key",
+          description: validation.error || "Please check your Octopus Energy API key",
+          variant: "destructive"
+        });
+        return false;
+      }
+
+      if (!validation.data?.accountExists) {
+        toast({
+          title: "No Account Found",
+          description: "No Octopus Energy account found with this API key",
+          variant: "destructive"
+        });
+        return false;
+      }
+      
       // Use the enhanced sync function to get all data
       const syncResult = await syncAllData(apiKey);
       if (!syncResult) {
@@ -58,8 +89,8 @@ export const useSmartMeterData = () => {
       await updateMeterData();
       
       toast({
-        title: "Connected Successfully",
-        description: "Your Octopus Energy smart meter is now connected!",
+        title: "Smart Meter Connected",
+        description: `Successfully connected to account ${validation.data.accountNumber}`,
       });
       
       return true;
