@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, WifiOff, CheckCircle, ExternalLink, X } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useOctopusEnergy } from '@/hooks/useOctopusEnergy';
 
 interface OctopusConnectionFormProps {
@@ -47,6 +48,13 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
     } else {
       setValidationState('invalid');
       setValidationError(result.error || 'Invalid API key');
+    }
+  };
+
+  const handleBlur = () => {
+    // Only validate if there's an API key and we're not currently validating
+    if (apiKey.trim() && validationState !== 'validating') {
+      handleValidateKey();
     }
   };
 
@@ -101,7 +109,7 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
                 placeholder="sk_live_..."
                 value={apiKey}
                 onChange={(e) => handleApiKeyChange(e.target.value)}
-                onBlur={handleValidateKey}
+                onBlur={handleBlur}
                 className={validationState === 'invalid' ? 'border-destructive pr-16' : 'pr-16'}
               />
               <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
@@ -147,14 +155,27 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
               {validationState === 'validating' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Validate Key
             </Button>
-            <Button 
-              onClick={onConnect} 
-              disabled={loading || !apiKey.trim() || validationState === 'invalid'}
-              className="flex-2"
-            >
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Connect Smart Meter
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex-2">
+                    <Button 
+                      onClick={onConnect} 
+                      disabled={loading || !apiKey.trim() || validationState !== 'valid'}
+                      className="w-full"
+                    >
+                      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Connect Smart Meter
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {validationState !== 'valid' && (
+                  <TooltipContent>
+                    <p>Please validate your API key first</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </CardContent>
