@@ -160,7 +160,7 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
                 <TooltipTrigger asChild>
                   <div className="flex-2">
                     <Button 
-                      onClick={onConnect} 
+                      onClick={validationState === 'valid' ? onConnect : undefined}
                       disabled={loading || !apiKey.trim() || validationState !== 'valid'}
                       className="w-full"
                     >

@@ -50,7 +50,8 @@ export const useSmartMeterIntegration = () => {
   }, [isConnected, connectionForm.apiKey]);
 
   const handleConnect = async () => {
-    const success = await connectMeter(connectionForm.apiKey);
+    // Skip validation since it's already been done in the form
+    const success = await connectMeter(connectionForm.apiKey, true);
     return success;
   };
 

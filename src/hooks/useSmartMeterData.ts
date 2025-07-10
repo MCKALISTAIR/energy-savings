@@ -38,7 +38,7 @@ export const useSmartMeterData = () => {
     calculateDailyCost
   } = useOctopusEnergy();
 
-  const connectMeter = async (apiKey: string) => {
+  const connectMeter = async (apiKey: string, skipValidation = false) => {
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -58,25 +58,29 @@ export const useSmartMeterData = () => {
     }
 
     try {
-      // First validate the API key
-      const validation = await validateApiKey(apiKey);
+      let validation;
       
-      if (!validation.success) {
-        toast({
-          title: "Invalid API Key",
-          description: validation.error || "Please check your Octopus Energy API key",
-          variant: "destructive"
-        });
-        return false;
-      }
+      // Skip validation if already validated in the form
+      if (!skipValidation) {
+        validation = await validateApiKey(apiKey);
+        
+        if (!validation.success) {
+          toast({
+            title: "Invalid API Key",
+            description: validation.error || "Please check your Octopus Energy API key",
+            variant: "destructive"
+          });
+          return false;
+        }
 
-      if (!validation.data?.accountExists) {
-        toast({
-          title: "No Account Found",
-          description: "No Octopus Energy account found with this API key",
-          variant: "destructive"
-        });
-        return false;
+        if (!validation.data?.accountExists) {
+          toast({
+            title: "No Account Found",
+            description: "No Octopus Energy account found with this API key",
+            variant: "destructive"
+          });
+          return false;
+        }
       }
       
       // Use the enhanced sync function to get all data
@@ -89,8 +93,10 @@ export const useSmartMeterData = () => {
       await updateMeterData();
       
       toast({
-        title: "Smart Meter Connected",
-        description: `Successfully connected to account ${validation.data.accountNumber}`,
+        title: "✅ Smart Meter Connected",
+        description: validation?.data?.accountNumber 
+          ? `Successfully connected to account ${validation.data.accountNumber}` 
+          : "Successfully connected to your Octopus Energy account",
       });
       
       return true;
