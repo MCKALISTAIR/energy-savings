@@ -109,7 +109,12 @@ export const useOctopusEnergy = () => {
         throw error;
       }
 
-      return { success: data.success, data: data.data, error: data.error };
+      // Return both success and error cases with the actual error message from API
+      return { 
+        success: data.success, 
+        data: data.data, 
+        error: data.error || null 
+      };
     } catch (error) {
       console.error('API key validation error:', error);
       return { 

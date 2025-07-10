@@ -41,13 +41,17 @@ const OctopusConnectionForm: React.FC<OctopusConnectionFormProps> = ({
     if (!apiKey.trim()) return;
     
     setValidationState('validating');
+    setValidationError('');
+    
     const result = await validateApiKey(apiKey);
     
     if (result.success && result.data?.valid) {
       setValidationState('valid');
+      setValidationError('');
     } else {
       setValidationState('invalid');
-      setValidationError(result.error || 'Invalid API key');
+      // Display the specific error message from the API
+      setValidationError(result.error || 'API key validation failed');
     }
   };
 
