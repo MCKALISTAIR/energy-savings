@@ -8,6 +8,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AuthHeader from '@/components/auth/AuthHeader';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailAuthForm from '@/components/auth/EmailAuthForm';
+import AccountLinkingPrompt from '@/components/auth/AccountLinkingPrompt';
+import { useAccountLinking } from '@/hooks/useAccountLinking';
 
 const Auth: React.FC = () => {
   const { signIn, signUp, user } = useAuth();
@@ -16,6 +18,14 @@ const Auth: React.FC = () => {
   
   // Check if user came from calculator
   const cameFromCalculator = location.state?.from === '/calculator';
+  
+  // Account linking functionality
+  const {
+    linkingState,
+    handleLinkAccount,
+    handleCreateSeparateAccount,
+    closeLinkingPrompt
+  } = useAccountLinking();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -170,6 +180,18 @@ const Auth: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Account Linking Prompt */}
+        <AccountLinkingPrompt
+          isOpen={linkingState.showPrompt}
+          onClose={closeLinkingPrompt}
+          email={linkingState.email}
+          existingMethod={linkingState.existingMethod}
+          newMethod={linkingState.newMethod}
+          onLinkAccount={handleLinkAccount}
+          onCreateNew={handleCreateSeparateAccount}
+          loading={loading}
+        />
       </div>
     </div>
   );

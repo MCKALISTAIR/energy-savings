@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import PersonalInfoSection from './PersonalInfoSection';
 import PreferencesSection from './PreferencesSection';
 import LoginMethodSection from './LoginMethodSection';
+import AccountLinkingSection from './AccountLinkingSection';
 import PasswordChangeSection from './PasswordChangeSection';
 import { useProfileForm } from '@/hooks/useProfileForm';
 
@@ -59,8 +60,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ isOpen, onClose }) => {
               onCurrencyChange={setCurrency}
             />
 
-            {/* Login Method */}
-            <LoginMethodSection isGoogleUser={isGoogleUser} />
+            {/* Login Methods */}
+            <LoginMethodSection user={user} />
+
+            {/* Account Linking */}
+            <AccountLinkingSection user={user} />
 
             {/* Password Change (only for email users) */}
             {!isGoogleUser && (

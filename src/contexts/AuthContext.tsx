@@ -9,6 +9,8 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  linkIdentity: (provider: 'google') => Promise<{ error: any }>;
+  unlinkIdentity: (identity: any) => Promise<{ error: any }>;
   loading: boolean;
 }
 
@@ -76,6 +78,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await supabase.auth.signOut();
   };
 
+  const linkIdentity = async (provider: 'google') => {
+    const redirectUrl = `${window.location.origin}/`;
+    
+    const { error } = await supabase.auth.linkIdentity({
+      provider,
+      options: {
+        redirectTo: redirectUrl
+      }
+    });
+    return { error };
+  };
+
+  const unlinkIdentity = async (identity: any) => {
+    const { error } = await supabase.auth.unlinkIdentity(identity);
+    return { error };
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -83,6 +102,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       signUp,
       signIn,
       signOut,
+      linkIdentity,
+      unlinkIdentity,
       loading,
     }}>
       {children}
