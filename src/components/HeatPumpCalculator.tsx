@@ -15,12 +15,14 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
   const [currentHeatingType, setCurrentHeatingType] = useState<string>('');
   const [monthlyHeatingBill, setMonthlyHeatingBill] = useState<string>('');
   const [heatPumpType, setHeatPumpType] = useState<string>('');
+  const [quotePrice, setQuotePrice] = useState<string>('');
 
   const { results, calculateSavings } = useHeatPumpCalculator({
     homeSize,
     currentHeatingType,
     monthlyHeatingBill,
     heatPumpType,
+    quotePrice,
     energyPrices,
     onUpdate
   });
@@ -30,6 +32,7 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
     setCurrentHeatingType('');
     setMonthlyHeatingBill('');
     setHeatPumpType('');
+    setQuotePrice('');
   };
 
   return (
@@ -43,6 +46,8 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
         setMonthlyHeatingBill={setMonthlyHeatingBill}
         heatPumpType={heatPumpType}
         setHeatPumpType={setHeatPumpType}
+        quotePrice={quotePrice}
+        setQuotePrice={setQuotePrice}
         onCalculate={calculateSavings}
         onClear={clearForm}
       />

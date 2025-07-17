@@ -16,6 +16,8 @@ interface HeatPumpInputFormProps {
   setMonthlyHeatingBill: (value: string) => void;
   heatPumpType: string;
   setHeatPumpType: (value: string) => void;
+  quotePrice: string;
+  setQuotePrice: (value: string) => void;
   onCalculate: () => void;
   onClear: () => void;
 }
@@ -29,6 +31,8 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
   setMonthlyHeatingBill,
   heatPumpType,
   setHeatPumpType,
+  quotePrice,
+  setQuotePrice,
   onCalculate,
   onClear
 }) => {
@@ -230,6 +234,30 @@ const HeatPumpInputForm: React.FC<HeatPumpInputFormProps> = ({
               <SelectItem value="hybrid">Hybrid Heat Pump</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="quotePrice">Quote Price (£) - Optional</Label>
+          <Input
+            id="quotePrice"
+            type="number"
+            min="0"
+            value={quotePrice}
+            onChange={(e) => handleNumericInput(e, 'quotePrice', setQuotePrice)}
+            onInput={(e) => handleInputValidation(e, 'quotePrice', setQuotePrice)}
+            onBlur={(e) => handleBlur(e, 'quotePrice', setQuotePrice)}
+            placeholder="12500"
+            className={errors.quotePrice ? 'border-red-500' : ''}
+          />
+          {errors.quotePrice && (
+            <div className="flex items-center gap-1 text-sm text-red-500">
+              <AlertCircle className="w-4 h-4" />
+              {errors.quotePrice}
+            </div>
+          )}
+          <p className="text-sm text-muted-foreground">
+            Leave empty to use estimated costs based on home size and heat pump type
+          </p>
         </div>
 
         <div className="flex gap-2">

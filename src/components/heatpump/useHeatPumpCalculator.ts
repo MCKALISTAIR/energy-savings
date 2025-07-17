@@ -7,6 +7,7 @@ interface UseHeatPumpCalculatorProps {
   currentHeatingType: string;
   monthlyHeatingBill: string;
   heatPumpType: string;
+  quotePrice: string;
   energyPrices?: EnergyPricesConfig;
   onUpdate: (data: SavingsData['heatPump']) => void;
 }
@@ -16,6 +17,7 @@ export const useHeatPumpCalculator = ({
   currentHeatingType,
   monthlyHeatingBill,
   heatPumpType,
+  quotePrice,
   energyPrices,
   onUpdate
 }: UseHeatPumpCalculatorProps) => {
@@ -29,15 +31,21 @@ export const useHeatPumpCalculator = ({
   const calculateSavings = () => {
     const homeSizeNum = parseFloat(homeSize) || 0;
     const monthlyBillNum = parseFloat(monthlyHeatingBill) || 0;
+    const quotePriceNum = parseFloat(quotePrice) || 0;
 
-    // System cost based on type and home size (UK prices)
-    const systemCosts: { [key: string]: number } = {
-      'air_source': 8000 + (homeSizeNum * 35), // £8k base + £35/m²
-      'ground_source': 12000 + (homeSizeNum * 45), // £12k base + £45/m²
-      'hybrid': 6000 + (homeSizeNum * 25) // £6k base + £25/m²
-    };
-
-    const systemCost = systemCosts[heatPumpType] || systemCosts['air_source'];
+    // Use quote price if provided, otherwise calculate based on type and home size
+    let systemCost: number;
+    if (quotePriceNum > 0) {
+      systemCost = quotePriceNum;
+    } else {
+      // System cost based on type and home size (UK prices)
+      const systemCosts: { [key: string]: number } = {
+        'air_source': 8000 + (homeSizeNum * 35), // £8k base + £35/m²
+        'ground_source': 12000 + (homeSizeNum * 45), // £12k base + £45/m²
+        'hybrid': 6000 + (homeSizeNum * 25) // £6k base + £25/m²
+      };
+      systemCost = systemCosts[heatPumpType] || systemCosts['air_source'];
+    }
 
     // Efficiency multipliers for different heat pump types
     const efficiencyMultipliers: { [key: string]: number } = {
