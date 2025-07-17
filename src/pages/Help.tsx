@@ -1,12 +1,15 @@
 
-import React from 'react';
-import { ArrowLeft, Calculator, Battery, Car, Thermometer, Lightbulb, Home, BarChart3, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Calculator, Battery, Car, Thermometer, Lightbulb, Home, BarChart3, Settings, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import FeedbackModal from '@/components/FeedbackModal';
 
 const Help: React.FC = () => {
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -260,8 +263,32 @@ const Help: React.FC = () => {
                   </p>
                 </div>
               </div>
+
+              <Separator className="my-6" />
+
+              {/* Feedback Section */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                <div className="text-center">
+                  <h3 className="font-semibold text-lg mb-2">Have feedback or feature requests?</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Help us improve the calculator by sharing your thoughts, suggestions, or reporting any issues you've encountered.
+                  </p>
+                  <Button 
+                    onClick={() => setFeedbackModalOpen(true)}
+                    className="gap-2"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Send Feedback
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
+
+          <FeedbackModal 
+            open={feedbackModalOpen} 
+            onOpenChange={setFeedbackModalOpen}
+          />
         </div>
 
         {/* Back to Calculator */}
