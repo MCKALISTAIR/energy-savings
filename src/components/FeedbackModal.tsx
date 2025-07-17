@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MessageSquare, Send, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FeedbackModalProps {
   open: boolean;
@@ -36,12 +37,25 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ open, onOpenChange }) => 
     setIsSubmitting(true);
     
     try {
-      // Simulate API call - replace with actual feedback submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call the edge function to send feedback email
+      const { data, error } = await supabase.functions.invoke('send-feedback', {
+        body: {
+          feedbackType,
+          email: email.trim() || undefined,
+          subject: subject.trim() || undefined,
+          message: message.trim()
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to send feedback');
+      }
       
       toast({
         title: "Feedback Submitted",
-        description: "Thank you for your feedback! We'll review it and get back to you if needed.",
+        description: email ? 
+          "Thank you for your feedback! We'll review it and get back to you if needed." :
+          "Thank you for your feedback! We've received it and will review it.",
       });
       
       // Reset form
