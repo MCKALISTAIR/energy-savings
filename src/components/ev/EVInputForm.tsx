@@ -16,6 +16,8 @@ interface EVInputFormProps {
   setPetrolPrice: (value: string) => void;
   electricityRate: string;
   setElectricityRate: (value: string) => void;
+  electricityUnit: 'pounds' | 'pence';
+  setElectricityUnit: (value: 'pounds' | 'pence') => void;
   evType: string;
   setEVType: (value: string) => void;
   publicChargingFrequency: string;
@@ -35,6 +37,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setPetrolPrice,
   electricityRate,
   setElectricityRate,
+  electricityUnit,
+  setElectricityUnit,
   evType,
   setEVType,
   publicChargingFrequency,
@@ -162,6 +166,23 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
         return newErrors;
       });
     }
+  };
+
+  const toggleElectricityUnit = () => {
+    if (electricityRate.trim() !== '') {
+      if (electricityUnit === 'pence') {
+        // Convert from pence to pounds
+        const penceValue = parseFloat(electricityRate);
+        const poundsValue = (penceValue / 100).toFixed(3);
+        setElectricityRate(poundsValue);
+      } else {
+        // Convert from pounds to pence
+        const poundsValue = parseFloat(electricityRate);
+        const penceValue = (poundsValue * 100).toFixed(1);
+        setElectricityRate(penceValue);
+      }
+    }
+    setElectricityUnit(electricityUnit === 'pence' ? 'pounds' : 'pence');
   };
 
   const handleClear = () => {
@@ -363,17 +384,30 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="electricityRate">Electricity Rate (£/kWh)</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="electricityRate">
+              Electricity Rate ({electricityUnit === 'pence' ? 'p/kWh' : '£/kWh'})
+            </Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={toggleElectricityUnit}
+              className="text-xs h-7"
+            >
+              Switch to {electricityUnit === 'pence' ? '£' : 'p'}
+            </Button>
+          </div>
           <Input
             id="electricityRate"
             type="number"
-            step="0.01"
+            step={electricityUnit === 'pence' ? '0.1' : '0.001'}
             min="0"
             value={electricityRate}
             onChange={(e) => handleNumericInput(e, 'electricityRate', setElectricityRate)}
             onInput={(e) => handleInputValidation(e, 'electricityRate', setElectricityRate)}
             onBlur={(e) => handleBlur(e, 'electricityRate', setElectricityRate)}
-            placeholder="0.30"
+            placeholder={electricityUnit === 'pence' ? '30' : '0.30'}
             className={errors.electricityRate ? 'border-red-500' : ''}
           />
           {errors.electricityRate && (
@@ -382,6 +416,9 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               {errors.electricityRate}
             </div>
           )}
+          <p className="text-xs text-muted-foreground">
+            Your home electricity rate - typical UK rate is around {electricityUnit === 'pence' ? '30p' : '£0.30'} per kWh
+          </p>
         </div>
 
         <div className="space-y-2">

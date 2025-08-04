@@ -16,15 +16,21 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
   const [currentMPG, setCurrentMPG] = useState<string>('');
   const [petrolPrice, setPetrolPrice] = useState<string>('');
   const [electricityRate, setElectricityRate] = useState<string>('');
+  const [electricityUnit, setElectricityUnit] = useState<'pounds' | 'pence'>('pence');
   const [evType, setEVType] = useState<string>('');
   const [publicChargingFrequency, setPublicChargingFrequency] = useState<string>('');
   const [batteryCapacity, setBatteryCapacity] = useState<string>('');
+
+  // Convert electricity rate to pounds for calculation if needed
+  const electricityRateInPounds = electricityUnit === 'pence' && electricityRate 
+    ? (parseFloat(electricityRate) / 100).toString() 
+    : electricityRate;
 
   const { results, calculateSavings } = useEVCalculator({
     milesPerYear,
     currentMPG,
     petrolPrice,
-    electricityRate,
+    electricityRate: electricityRateInPounds,
     evType,
     publicChargingFrequency,
     batteryCapacity,
@@ -37,6 +43,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     setCurrentMPG('');
     setPetrolPrice('');
     setElectricityRate('');
+    setElectricityUnit('pence');
     setEVType('');
     setPublicChargingFrequency('');
     setBatteryCapacity('');
@@ -46,9 +53,14 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
   useEffect(() => {
     if (energyPrices) {
       setPetrolPrice(energyPrices.petrol.toString());
-      setElectricityRate(energyPrices.electricity.toString());
+      // Convert to current unit (energyPrices are in pounds)
+      if (electricityUnit === 'pence') {
+        setElectricityRate((energyPrices.electricity * 100).toString());
+      } else {
+        setElectricityRate(energyPrices.electricity.toString());
+      }
     }
-  }, [energyPrices]);
+  }, [energyPrices, electricityUnit]);
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -61,6 +73,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
         setPetrolPrice={setPetrolPrice}
         electricityRate={electricityRate}
         setElectricityRate={setElectricityRate}
+        electricityUnit={electricityUnit}
+        setElectricityUnit={setElectricityUnit}
         evType={evType}
         setEVType={setEVType}
         publicChargingFrequency={publicChargingFrequency}
