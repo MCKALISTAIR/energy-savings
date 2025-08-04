@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Sun, PoundSterling, Calendar, TrendingUp } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Sun, PoundSterling, Calendar, TrendingUp, AlertTriangle } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 import { EnergyPricesConfig } from '@/components/dashboard/types';
 
@@ -80,8 +81,22 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
 
   // Remove auto-calculation - users must click calculate button
 
+  // Check if any data has been entered
+  const hasData = homeSize || monthlyBill || sunlightHours || location;
+
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="space-y-6">
+      {/* Environmental Impact Alert - shown when no data entered */}
+      {!hasData && (
+        <Alert className="border-amber-200 bg-amber-50">
+          <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-700">
+            Please fill in the solar panel details to see your potential environmental impact.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      <div className="grid md:grid-cols-2 gap-6">
       {/* Input Form */}
       <Card className="hover-scale">
         <CardHeader>
@@ -217,6 +232,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
