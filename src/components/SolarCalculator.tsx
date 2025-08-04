@@ -79,24 +79,11 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
     onUpdate(newResults);
   };
 
-  // Remove auto-calculation - users must click calculate button
-
   // Check if any data has been entered
   const hasData = homeSize || monthlyBill || sunlightHours || location;
 
   return (
-    <div className="space-y-6">
-      {/* Environmental Impact Alert - shown when no data entered */}
-      {!hasData && (
-        <Alert className="border-amber-200 bg-amber-50">
-          <AlertTriangle className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-700">
-            Please fill in the solar panel details to see your potential environmental impact.
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid md:grid-cols-2 gap-6">
       {/* Input Form */}
       <Card className="hover-scale">
         <CardHeader>
@@ -179,60 +166,70 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
-                £{results.monthlySavings.toFixed(0)}
+          {!hasData ? (
+            <Alert className="border-amber-200 bg-amber-50">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-700">
+                Please fill in the solar panel details to see your potential environmental impact.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    £{results.monthlySavings.toFixed(0)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Monthly Savings</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    £{results.systemCost.toFixed(0)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">System Cost</div>
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">Monthly Savings</div>
-            </div>
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">
-                £{results.systemCost.toFixed(0)}
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Payback Period
+                  </span>
+                  <span className="font-semibold">{results.paybackPeriod.toFixed(1)} years</span>
+                </div>
+                <Progress value={Math.min(100, (10 / results.paybackPeriod) * 100)} className="h-2" />
               </div>
-              <div className="text-sm text-muted-foreground">System Cost</div>
-            </div>
-          </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Payback Period
-              </span>
-              <span className="font-semibold">{results.paybackPeriod.toFixed(1)} years</span>
-            </div>
-            <Progress value={Math.min(100, (10 / results.paybackPeriod) * 100)} className="h-2" />
-          </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4" />
+                    20-Year Net Savings
+                  </span>
+                  <span className="font-semibold text-green-600">
+                    £{results.twentyYearSavings.toFixed(0)}
+                  </span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Total savings after system pays for itself
+                </div>
+              </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                20-Year Net Savings
-              </span>
-              <span className="font-semibold text-green-600">
-                £{results.twentyYearSavings.toFixed(0)}
-              </span>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Total savings after system pays for itself
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-yellow-50 to-green-50 p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">Environmental Impact</h4>
-            <p className="text-sm text-muted-foreground">
-              Your solar system would offset approximately{' '}
-              <span className="font-semibold text-green-600">
-                {(results.monthlySavings * 12 * 20 / 120).toFixed(1)} tonnes
-              </span>{' '}
-              of CO₂ over 20 years.
-            </p>
-          </div>
+              <div className="bg-gradient-to-r from-yellow-50 to-green-50 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Environmental Impact</h4>
+                <p className="text-sm text-muted-foreground">
+                  Your solar system would offset approximately{' '}
+                  <span className="font-semibold text-green-600">
+                    {(results.monthlySavings * 12 * 20 / 120).toFixed(1)} tonnes
+                  </span>{' '}
+                  of CO₂ over 20 years.
+                </p>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
-      </div>
     </div>
   );
 };
