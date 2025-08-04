@@ -35,6 +35,9 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
     setQuotePrice('');
   };
 
+  // Check if any data has been entered
+  const hasData = !!(homeSize || currentHeatingType || monthlyHeatingBill || heatPumpType || quotePrice);
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <HeatPumpInputForm
@@ -52,7 +55,7 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
         onClear={clearForm}
       />
 
-      <HeatPumpResults results={results} />
+      <HeatPumpResults results={results} hasData={hasData} />
     </div>
   );
 };

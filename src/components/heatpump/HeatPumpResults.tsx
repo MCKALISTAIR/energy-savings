@@ -1,15 +1,17 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PoundSterling } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { PoundSterling, AlertTriangle } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 import HeatPumpSavingsStats from './HeatPumpSavingsStats';
 import EnvironmentalImpactInfo from './EnvironmentalImpactInfo';
 
 interface HeatPumpResultsProps {
   results: SavingsData['heatPump'];
+  hasData: boolean;
 }
 
-const HeatPumpResults: React.FC<HeatPumpResultsProps> = ({ results }) => {
+const HeatPumpResults: React.FC<HeatPumpResultsProps> = ({ results, hasData }) => {
   return (
     <Card className="hover-scale">
       <CardHeader>
@@ -22,8 +24,19 @@ const HeatPumpResults: React.FC<HeatPumpResultsProps> = ({ results }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <HeatPumpSavingsStats results={results} />
-        <EnvironmentalImpactInfo results={results} />
+        {!hasData ? (
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-700">
+              Please fill in the heat pump details to see your potential environmental impact.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <>
+            <HeatPumpSavingsStats results={results} />
+            <EnvironmentalImpactInfo results={results} />
+          </>
+        )}
       </CardContent>
     </Card>
   );
