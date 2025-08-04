@@ -4,17 +4,20 @@ import { AlertTriangle } from 'lucide-react';
 interface EnvironmentalImpactInfoProps {
   milesPerYear: string;
   currentMPG: string;
+  hasCurrentVehicle: boolean;
 }
 
 const EnvironmentalImpactInfo: React.FC<EnvironmentalImpactInfoProps> = ({ 
   milesPerYear, 
-  currentMPG 
+  currentMPG,
+  hasCurrentVehicle 
 }) => {
   const miles = parseFloat(milesPerYear);
-  const mpg = parseFloat(currentMPG);
+  // Use current MPG if they have a vehicle, otherwise use average new car MPG (42)
+  const effectiveMPG = hasCurrentVehicle ? parseFloat(currentMPG) : 42;
   
   // Check if we have valid input values
-  const hasValidData = !isNaN(miles) && !isNaN(mpg) && miles > 0 && mpg > 0;
+  const hasValidData = !isNaN(miles) && !isNaN(effectiveMPG) && miles > 0 && effectiveMPG > 0;
   
   if (!hasValidData) {
     return (
@@ -24,14 +27,16 @@ const EnvironmentalImpactInfo: React.FC<EnvironmentalImpactInfoProps> = ({
           Environmental Impact
         </h4>
         <p className="text-sm text-muted-foreground">
-          Please fill in <span className="font-medium">Annual Miles</span> and{' '}
-          <span className="font-medium">Current MPG</span> to see your potential CO₂ savings.
+          Please fill in <span className="font-medium">Annual Miles</span>
+          {hasCurrentVehicle && (
+            <> and <span className="font-medium">Current MPG</span></>
+          )} to see your potential CO₂ savings.
         </p>
       </div>
     );
   }
 
-  const co2Savings = (miles / mpg) * 2.3 * 4.546 / 1000;
+  const co2Savings = (miles / effectiveMPG) * 2.3 * 4.546 / 1000;
   
   return (
     <div className="bg-green-50 p-4 rounded-lg">
@@ -41,7 +46,10 @@ const EnvironmentalImpactInfo: React.FC<EnvironmentalImpactInfoProps> = ({
         <span className="font-semibold text-green-600">
           {co2Savings.toFixed(1)} tonnes
         </span>{' '}
-        of CO₂ emissions annually.
+        of CO₂ emissions annually{hasCurrentVehicle 
+          ? ' compared to your current vehicle'
+          : ' compared to an equivalent new petrol car'
+        }.
       </p>
     </div>
   );

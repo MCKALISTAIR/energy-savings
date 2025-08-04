@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Car, AlertCircle, X, HelpCircle, Calculator } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface EVInputFormProps {
   milesPerYear: string;
@@ -24,6 +25,8 @@ interface EVInputFormProps {
   setPublicChargingFrequency: (value: string) => void;
   batteryCapacity: string;
   setBatteryCapacity: (value: string) => void;
+  hasCurrentVehicle: boolean;
+  setHasCurrentVehicle: (value: boolean) => void;
   onCalculate: () => void;
   onClear: () => void;
 }
@@ -45,6 +48,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setPublicChargingFrequency,
   batteryCapacity,
   setBatteryCapacity,
+  hasCurrentVehicle,
+  setHasCurrentVehicle,
   onCalculate,
   onClear
 }) => {
@@ -189,12 +194,13 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     setErrors({});
     setVehicleYear('');
     setMpgEstimated(false);
+    setHasCurrentVehicle(true);
     onClear();
   };
 
   // Check if form is complete
   const isFormComplete = milesPerYear.trim() !== '' && 
-                        currentMPG.trim() !== '' && 
+                        (!hasCurrentVehicle || currentMPG.trim() !== '') && 
                         petrolPrice.trim() !== '' && 
                         electricityRate.trim() !== '' && 
                         evType !== '' &&
@@ -206,7 +212,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   const getMissingFieldsMessage = () => {
     const missingFields = [];
     if (milesPerYear.trim() === '') missingFields.push('Annual Miles');
-    if (currentMPG.trim() === '') missingFields.push('Current MPG');
+    if (hasCurrentVehicle && currentMPG.trim() === '') missingFields.push('Current MPG');
     if (petrolPrice.trim() === '') missingFields.push('Petrol Price');
     if (electricityRate.trim() === '') missingFields.push('Electricity Rate');
     if (evType === '') missingFields.push('EV Type');
@@ -244,7 +250,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
           Electric Vehicle Calculator
         </CardTitle>
         <CardDescription>
-          Compare EV costs with your current vehicle
+          {hasCurrentVehicle 
+            ? 'Compare EV costs with your current vehicle' 
+            : 'Compare EV costs with equivalent new petrol vehicle'
+          }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -269,8 +278,18 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
           )}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="vehicleYear">Vehicle Year (Optional)</Label>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="hasCurrentVehicle"
+            checked={hasCurrentVehicle}
+            onCheckedChange={setHasCurrentVehicle}
+          />
+          <Label htmlFor="hasCurrentVehicle">I currently own a vehicle</Label>
+        </div>
+
+        {hasCurrentVehicle && (
+          <div className="space-y-2">
+            <Label htmlFor="vehicleYear">Vehicle Year (Optional)</Label>
           <div className="flex gap-2">
             <Input
               id="vehicleYear"
@@ -311,13 +330,15 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               {errors.vehicleYear}
             </div>
           )}
-          <p className="text-xs text-muted-foreground">
-            Use this to estimate MPG if you don't know your exact fuel efficiency
-          </p>
-        </div>
+            <p className="text-xs text-muted-foreground">
+              Use this to estimate MPG if you don't know your exact fuel efficiency
+            </p>
+          </div>
+        )}
 
-        <div className="space-y-2">
-          <Label htmlFor="mpg">Current Vehicle MPG</Label>
+        {hasCurrentVehicle && (
+          <div className="space-y-2">
+            <Label htmlFor="mpg">Current Vehicle MPG</Label>
           <div className="relative">
             <Input
               id="mpg"
@@ -356,10 +377,11 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               {errors.currentMPG}
             </div>
           )}
-          <p className="text-xs text-muted-foreground">
-            Miles per gallon of your current petrol/diesel vehicle
-          </p>
-        </div>
+            <p className="text-xs text-muted-foreground">
+              Miles per gallon of your current petrol/diesel vehicle
+            </p>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label htmlFor="petrolPrice">Petrol Price (£/litre)</Label>

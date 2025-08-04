@@ -10,6 +10,7 @@ interface UseEVCalculatorProps {
   evType: string;
   publicChargingFrequency: string;
   batteryCapacity: string;
+  hasCurrentVehicle: boolean;
   energyPrices?: EnergyPricesConfig;
   onUpdate: (data: SavingsData['ev']) => void;
 }
@@ -22,6 +23,7 @@ export const useEVCalculator = ({
   evType,
   publicChargingFrequency,
   batteryCapacity,
+  hasCurrentVehicle,
   energyPrices,
   onUpdate
 }: UseEVCalculatorProps) => {
@@ -36,7 +38,8 @@ export const useEVCalculator = ({
 
   const calculateSavings = () => {
     const milesPerYearNum = parseFloat(milesPerYear) || 0;
-    const currentMPGNum = parseFloat(currentMPG) || 0;
+    // Use current MPG if they have a vehicle, otherwise use average new car MPG
+    const effectiveMPG = hasCurrentVehicle ? (parseFloat(currentMPG) || 0) : 42; // 2024 average new car MPG
     const petrolPriceNum = parseFloat(petrolPrice) || 0;
     const electricityRateNum = parseFloat(electricityRate) || 0;
     const publicChargingFrequencyNum = parseFloat(publicChargingFrequency) || 0;
@@ -55,8 +58,8 @@ export const useEVCalculator = ({
 
     const selectedEV = evSpecs[evType] || evSpecs['mid-range'];
 
-    // Current annual fuel costs (convert MPG to miles per litre)
-    const milesPerLitre = currentMPGNum / 4.546; // 1 gallon = 4.546 litres
+    // Annual fuel costs for comparison vehicle (convert MPG to miles per litre)
+    const milesPerLitre = effectiveMPG / 4.546; // 1 gallon = 4.546 litres
     const annualLitres = milesPerYearNum / milesPerLitre;
     const annualPetrolCost = annualLitres * petrolPriceNum;
 
@@ -86,8 +89,8 @@ export const useEVCalculator = ({
     // Total annual savings
     const totalAnnualSavings = annualFuelSavings + annualMaintenanceSavings;
 
-    // Vehicle cost premium over comparable petrol car
-    const petrolCarEquivalent = 28000; // Average comparable petrol vehicle in UK
+    // Vehicle cost comparison
+    const petrolCarEquivalent = hasCurrentVehicle ? 0 : 28000; // If no current car, compare to new petrol car
     const vehicleCostPremium = selectedEV.cost - petrolCarEquivalent;
 
     // Payback period (considering UK EV grants where applicable)

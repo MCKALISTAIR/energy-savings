@@ -9,9 +9,10 @@ interface EVResultsProps {
   results: SavingsData['ev'];
   milesPerYear: string;
   currentMPG: string;
+  hasCurrentVehicle: boolean;
 }
 
-const EVResults: React.FC<EVResultsProps> = ({ results, milesPerYear, currentMPG }) => {
+const EVResults: React.FC<EVResultsProps> = ({ results, milesPerYear, currentMPG, hasCurrentVehicle }) => {
   return (
     <Card className="hover-scale">
       <CardHeader>
@@ -20,12 +21,19 @@ const EVResults: React.FC<EVResultsProps> = ({ results, milesPerYear, currentMPG
           Your EV Savings Potential
         </CardTitle>
         <CardDescription>
-          Financial benefits of switching to electric
+          {hasCurrentVehicle 
+            ? 'Financial benefits of switching to electric' 
+            : 'EV savings vs equivalent new petrol vehicle'
+          }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <EVSavingsStats results={results} />
-        <EnvironmentalImpactInfo milesPerYear={milesPerYear} currentMPG={currentMPG} />
+        <EnvironmentalImpactInfo 
+          milesPerYear={milesPerYear} 
+          currentMPG={currentMPG} 
+          hasCurrentVehicle={hasCurrentVehicle} 
+        />
       </CardContent>
     </Card>
   );
