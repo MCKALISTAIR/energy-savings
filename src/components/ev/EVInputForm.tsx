@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Car, AlertCircle, X } from 'lucide-react';
+import { Car, AlertCircle, X, HelpCircle } from 'lucide-react';
 
 interface EVInputFormProps {
   milesPerYear: string;
@@ -361,6 +361,32 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               )}
             </Tooltip>
           </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  className="hover-scale"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <div className="space-y-2">
+                  <p className="font-medium">How EV Savings are Calculated:</p>
+                  <ul className="text-sm space-y-1">
+                    <li>• Petrol costs = (Annual miles ÷ MPG) × Price per gallon</li>
+                    <li>• EV charging costs = (Annual miles ÷ EV efficiency) × Electricity rate</li>
+                    <li>• Public charging premium added based on frequency</li>
+                    <li>• Environmental impact calculated from CO₂ reduction</li>
+                  </ul>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
           <Button 
             onClick={handleClear} 
             variant="outline" 
