@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Car, AlertCircle, X, HelpCircle } from 'lucide-react';
+import { Car, AlertCircle, X, HelpCircle, Calculator } from 'lucide-react';
 
 interface EVInputFormProps {
   milesPerYear: string;
@@ -45,6 +45,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   onClear
 }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [vehicleYear, setVehicleYear] = useState<string>('');
+  const [mpgEstimated, setMpgEstimated] = useState<boolean>(false);
 
   const validateAndSetValue = (
     value: string,
@@ -129,8 +131,43 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     validateAndSetValue(value, fieldKey, setValue);
   };
 
+  const estimateMPGFromYear = () => {
+    if (!vehicleYear.trim()) return;
+    
+    const year = parseInt(vehicleYear);
+    if (year < 1990 || year > 2024) return;
+    
+    let estimatedMPG: number;
+    
+    if (year < 2000) {
+      estimatedMPG = 27.5; // Average for pre-2000 vehicles
+    } else if (year < 2010) {
+      estimatedMPG = 32.5; // 2000-2009 improved efficiency
+    } else if (year < 2015) {
+      estimatedMPG = 37.5; // 2010-2014 stricter emissions standards
+    } else if (year < 2020) {
+      estimatedMPG = 42.5; // 2015-2019 modern efficient engines
+    } else {
+      estimatedMPG = 47.5; // 2020+ latest efficiency standards
+    }
+    
+    setCurrentMPG(estimatedMPG.toString());
+    setMpgEstimated(true);
+    
+    // Clear any existing errors for MPG field
+    if (errors.currentMPG) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.currentMPG;
+        return newErrors;
+      });
+    }
+  };
+
   const handleClear = () => {
     setErrors({});
+    setVehicleYear('');
+    setMpgEstimated(false);
     onClear();
   };
 
@@ -212,24 +249,95 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="vehicleYear">Vehicle Year (Optional)</Label>
+          <div className="flex gap-2">
+            <Input
+              id="vehicleYear"
+              type="number"
+              min="1990"
+              max="2024"
+              value={vehicleYear}
+              onChange={(e) => handleNumericInput(e, 'vehicleYear', setVehicleYear)}
+              onInput={(e) => handleInputValidation(e, 'vehicleYear', setVehicleYear)}
+              onBlur={(e) => handleBlur(e, 'vehicleYear', setVehicleYear)}
+              placeholder="2018"
+              className={`flex-1 ${errors.vehicleYear ? 'border-red-500' : ''}`}
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={estimateMPGFromYear}
+                    disabled={!vehicleYear.trim() || parseInt(vehicleYear) < 1990 || parseInt(vehicleYear) > 2024}
+                    className="whitespace-nowrap"
+                  >
+                    <Calculator className="w-4 h-4 mr-1" />
+                    Estimate MPG
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Estimate MPG based on vehicle year using UK efficiency averages</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          {errors.vehicleYear && (
+            <div className="flex items-center gap-1 text-sm text-red-500">
+              <AlertCircle className="w-4 h-4" />
+              {errors.vehicleYear}
+            </div>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Use this to estimate MPG if you don't know your exact fuel efficiency
+          </p>
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="mpg">Current Vehicle MPG</Label>
-          <Input
-            id="mpg"
-            type="number"
-            min="0"
-            value={currentMPG}
-            onChange={(e) => handleNumericInput(e, 'currentMPG', setCurrentMPG)}
-            onInput={(e) => handleInputValidation(e, 'currentMPG', setCurrentMPG)}
-            onBlur={(e) => handleBlur(e, 'currentMPG', setCurrentMPG)}
-            placeholder="40"
-            className={errors.currentMPG ? 'border-red-500' : ''}
-          />
+          <div className="relative">
+            <Input
+              id="mpg"
+              type="number"
+              min="0"
+              value={currentMPG}
+              onChange={(e) => {
+                handleNumericInput(e, 'currentMPG', setCurrentMPG);
+                setMpgEstimated(false); // Clear estimated flag when manually edited
+              }}
+              onInput={(e) => handleInputValidation(e, 'currentMPG', setCurrentMPG)}
+              onBlur={(e) => handleBlur(e, 'currentMPG', setCurrentMPG)}
+              placeholder="40"
+              className={errors.currentMPG ? 'border-red-500' : ''}
+            />
+            {mpgEstimated && currentMPG && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                        Estimated
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>This MPG value was estimated from your {vehicleYear} vehicle year</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            )}
+          </div>
           {errors.currentMPG && (
             <div className="flex items-center gap-1 text-sm text-red-500">
               <AlertCircle className="w-4 h-4" />
               {errors.currentMPG}
             </div>
           )}
+          <p className="text-xs text-muted-foreground">
+            Miles per gallon of your current petrol/diesel vehicle
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -381,6 +489,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                     <li>• EV charging costs = (Annual miles ÷ EV efficiency) × Electricity rate</li>
                     <li>• Public charging premium added based on frequency</li>
                     <li>• Environmental impact calculated from CO₂ reduction</li>
+                    <li>• If you don't know your MPG, use the vehicle year to get an estimate</li>
                   </ul>
                 </div>
               </TooltipContent>
