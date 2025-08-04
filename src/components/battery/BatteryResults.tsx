@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Zap } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Zap, AlertTriangle } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 import BatterySavingsStats from './BatterySavingsStats';
 import BatteryBackupInfo from './BatteryBackupInfo';
@@ -9,12 +10,14 @@ interface BatteryResultsProps {
   results: SavingsData['battery'];
   outageFrequency: string;
   batterySize: string;
+  hasData: boolean;
 }
 
 const BatteryResults: React.FC<BatteryResultsProps> = ({ 
   results, 
   outageFrequency, 
-  batterySize 
+  batterySize,
+  hasData 
 }) => {
   return (
     <Card className="hover-scale">
@@ -28,11 +31,22 @@ const BatteryResults: React.FC<BatteryResultsProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <BatterySavingsStats results={results} />
-        <BatteryBackupInfo 
-          outageFrequency={outageFrequency} 
-          batterySize={batterySize} 
-        />
+        {!hasData ? (
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-700">
+              Please fill in the battery details to see your potential environmental impact.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <>
+            <BatterySavingsStats results={results} />
+            <BatteryBackupInfo 
+              outageFrequency={outageFrequency} 
+              batterySize={batterySize} 
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );

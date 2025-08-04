@@ -33,6 +33,9 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyP
     setBatterySize('');
   };
 
+  // Check if any data has been entered
+  const hasData = !!(monthlyBill || peakUsage || outageFrequency || batterySize);
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <BatteryInputForm
@@ -52,6 +55,7 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyP
         results={results}
         outageFrequency={outageFrequency}
         batterySize={batterySize}
+        hasData={hasData}
       />
     </div>
   );
