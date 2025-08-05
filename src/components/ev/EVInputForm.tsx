@@ -309,10 +309,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
 
   const getEVDescription = () => {
     const descriptions: { [key: string]: string } = {
-      'economy': 'Nissan Leaf, MG4',
-      'mid-range': 'Tesla Model 3, Hyundai Ioniq 5',
-      'luxury': 'Tesla Model S, BMW iX',
-      'truck': 'Ford Lightning, Rivian R1T'
+      'economy': 'Budget-friendly electric vehicles',
+      'mid-range': 'Popular mid-tier electric vehicles',
+      'luxury': 'Premium electric vehicles',
+      'truck': 'Electric SUVs and larger vehicles'
     };
     return descriptions[evType] || '';
   };
@@ -639,16 +639,16 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label>Electric Vehicle Type</Label>
+              <Label>Rough Vehicle Cost</Label>
               <Select value={evType} onValueChange={setEVType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select EV type" />
+                  <SelectValue placeholder="Select price range" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="economy">Economy EV (~£25k)</SelectItem>
-                  <SelectItem value="mid-range">Mid-Range EV (~£35k)</SelectItem>
-                  <SelectItem value="luxury">Luxury EV (~£55k)</SelectItem>
-                  <SelectItem value="truck">Electric SUV (~£50k)</SelectItem>
+                  <SelectItem value="economy">~£25,000</SelectItem>
+                  <SelectItem value="mid-range">~£35,000</SelectItem>
+                  <SelectItem value="luxury">~£55,000</SelectItem>
+                  <SelectItem value="truck">~£50,000</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
