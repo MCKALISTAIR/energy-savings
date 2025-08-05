@@ -22,7 +22,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
   const [useExactCost, setUseExactCost] = useState<boolean>(false);
   const [publicChargingFrequency, setPublicChargingFrequency] = useState<string>('');
   const [batteryCapacity, setBatteryCapacity] = useState<string>('');
-  const [hasCurrentVehicle, setHasCurrentVehicle] = useState<boolean>(true);
+  
 
   // Convert electricity rate to pounds for calculation if needed
   const electricityRateInPounds = electricityUnit === 'pence' && electricityRate 
@@ -39,7 +39,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     useExactCost,
     publicChargingFrequency,
     batteryCapacity,
-    hasCurrentVehicle,
+    
     energyPrices,
     onUpdate
   });
@@ -55,7 +55,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     setUseExactCost(false);
     setPublicChargingFrequency('');
     setBatteryCapacity('');
-    setHasCurrentVehicle(true);
+    
   };
 
   // Update form values when energyPrices change
@@ -94,8 +94,6 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
         setPublicChargingFrequency={setPublicChargingFrequency}
         batteryCapacity={batteryCapacity}
         setBatteryCapacity={setBatteryCapacity}
-        hasCurrentVehicle={hasCurrentVehicle}
-        setHasCurrentVehicle={setHasCurrentVehicle}
         onCalculate={calculateSavings}
         onClear={clearForm}
       />
@@ -104,7 +102,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
         results={results} 
         milesPerYear={milesPerYear} 
         currentMPG={currentMPG} 
-        hasCurrentVehicle={hasCurrentVehicle}
+        
       />
     </div>
   );
