@@ -18,6 +18,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
   const [electricityRate, setElectricityRate] = useState<string>('');
   const [electricityUnit, setElectricityUnit] = useState<'pounds' | 'pence'>('pence');
   const [evType, setEVType] = useState<string>('');
+  const [exactVehicleCost, setExactVehicleCost] = useState<string>('');
+  const [useExactCost, setUseExactCost] = useState<boolean>(false);
   const [publicChargingFrequency, setPublicChargingFrequency] = useState<string>('');
   const [batteryCapacity, setBatteryCapacity] = useState<string>('');
   const [hasCurrentVehicle, setHasCurrentVehicle] = useState<boolean>(true);
@@ -33,6 +35,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     petrolPrice,
     electricityRate: electricityRateInPounds,
     evType,
+    exactVehicleCost,
+    useExactCost,
     publicChargingFrequency,
     batteryCapacity,
     hasCurrentVehicle,
@@ -47,6 +51,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     setElectricityRate('');
     setElectricityUnit('pence');
     setEVType('');
+    setExactVehicleCost('');
+    setUseExactCost(false);
     setPublicChargingFrequency('');
     setBatteryCapacity('');
     setHasCurrentVehicle(true);
@@ -80,6 +86,10 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
         setElectricityUnit={setElectricityUnit}
         evType={evType}
         setEVType={setEVType}
+        exactVehicleCost={exactVehicleCost}
+        setExactVehicleCost={setExactVehicleCost}
+        useExactCost={useExactCost}
+        setUseExactCost={setUseExactCost}
         publicChargingFrequency={publicChargingFrequency}
         setPublicChargingFrequency={setPublicChargingFrequency}
         batteryCapacity={batteryCapacity}

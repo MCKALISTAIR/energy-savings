@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Car, AlertCircle, X, HelpCircle, Calculator, Download } from 'lucide-react';
@@ -24,6 +25,10 @@ interface EVInputFormProps {
   setElectricityUnit: (value: 'pounds' | 'pence') => void;
   evType: string;
   setEVType: (value: string) => void;
+  exactVehicleCost: string;
+  setExactVehicleCost: (value: string) => void;
+  useExactCost: boolean;
+  setUseExactCost: (value: boolean) => void;
   publicChargingFrequency: string;
   setPublicChargingFrequency: (value: string) => void;
   batteryCapacity: string;
@@ -47,6 +52,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setElectricityUnit,
   evType,
   setEVType,
+  exactVehicleCost,
+  setExactVehicleCost,
+  useExactCost,
+  setUseExactCost,
   publicChargingFrequency,
   setPublicChargingFrequency,
   batteryCapacity,
@@ -215,7 +224,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                         (!hasCurrentVehicle || currentMPG.trim() !== '') && 
                         petrolPrice.trim() !== '' && 
                         electricityRate.trim() !== '' && 
-                        evType !== '' &&
+                        (useExactCost ? exactVehicleCost.trim() !== '' : evType !== '') &&
                         publicChargingFrequency.trim() !== '' &&
                         batteryCapacity.trim() !== '' &&
                         Object.keys(errors).length === 0;
@@ -227,7 +236,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     if (hasCurrentVehicle && currentMPG.trim() === '') missingFields.push('Current MPG');
     if (petrolPrice.trim() === '') missingFields.push('Petrol Price');
     if (electricityRate.trim() === '') missingFields.push('Electricity Rate');
-    if (evType === '') missingFields.push('EV Type');
+    if (useExactCost && exactVehicleCost.trim() === '') missingFields.push('Exact Vehicle Cost');
+    if (!useExactCost && evType === '') missingFields.push('Vehicle Cost Range');
     if (publicChargingFrequency.trim() === '') missingFields.push('Public Charging Frequency');
     if (batteryCapacity.trim() === '') missingFields.push('Battery Capacity');
     
@@ -638,20 +648,65 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               </p>
             </div>
 
-            <div className="space-y-2">
-              <Label>Rough Vehicle Cost</Label>
-              <Select value={evType} onValueChange={setEVType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select price range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="economy">~£25,000</SelectItem>
-                  <SelectItem value="mid-range">~£35,000</SelectItem>
-                  <SelectItem value="luxury">~£55,000</SelectItem>
-                  <SelectItem value="truck">~£50,000</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
+            <div className="space-y-4">
+              <Label>Vehicle Cost</Label>
+              
+              <RadioGroup 
+                value={useExactCost ? "exact" : "estimate"} 
+                onValueChange={(value) => setUseExactCost(value === "exact")}
+                className="flex flex-col space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="exact" id="exact-cost" />
+                  <Label htmlFor="exact-cost" className="cursor-pointer">I know the exact vehicle cost</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="estimate" id="rough-estimate" />
+                  <Label htmlFor="rough-estimate" className="cursor-pointer">Use a rough estimate</Label>
+                </div>
+              </RadioGroup>
+
+              {useExactCost ? (
+                <div className="space-y-2">
+                  <Label htmlFor="exactVehicleCost">Exact Vehicle Cost (£)</Label>
+                  <Input
+                    id="exactVehicleCost"
+                    type="number"
+                    min="0"
+                    value={exactVehicleCost}
+                    onChange={(e) => handleNumericInput(e, 'exactVehicleCost', setExactVehicleCost)}
+                    onInput={(e) => handleInputValidation(e, 'exactVehicleCost', setExactVehicleCost)}
+                    onBlur={(e) => handleBlur(e, 'exactVehicleCost', setExactVehicleCost)}
+                    placeholder="35000"
+                    className={errors.exactVehicleCost ? 'border-red-500' : ''}
+                  />
+                  {errors.exactVehicleCost && (
+                    <div className="flex items-center gap-1 text-sm text-red-500">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.exactVehicleCost}
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    Enter the exact purchase price of the electric vehicle you're considering
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label>Rough Vehicle Cost</Label>
+                  <Select value={evType} onValueChange={setEVType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select price range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="economy">~£25,000</SelectItem>
+                      <SelectItem value="mid-range">~£35,000</SelectItem>
+                      <SelectItem value="luxury">~£55,000</SelectItem>
+                      <SelectItem value="truck">~£50,000</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2">

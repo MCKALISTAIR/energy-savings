@@ -8,6 +8,8 @@ interface UseEVCalculatorProps {
   petrolPrice: string;
   electricityRate: string;
   evType: string;
+  exactVehicleCost: string;
+  useExactCost: boolean;
   publicChargingFrequency: string;
   batteryCapacity: string;
   hasCurrentVehicle: boolean;
@@ -21,6 +23,8 @@ export const useEVCalculator = ({
   petrolPrice,
   electricityRate,
   evType,
+  exactVehicleCost,
+  useExactCost,
   publicChargingFrequency,
   batteryCapacity,
   hasCurrentVehicle,
@@ -57,6 +61,14 @@ export const useEVCalculator = ({
     };
 
     const selectedEV = evSpecs[evType] || evSpecs['mid-range'];
+    
+    // Determine vehicle cost: use exact cost if provided, otherwise use dropdown selection
+    let vehicleCost: number;
+    if (useExactCost && exactVehicleCost && !isNaN(parseFloat(exactVehicleCost))) {
+      vehicleCost = parseFloat(exactVehicleCost);
+    } else {
+      vehicleCost = selectedEV.cost;
+    }
 
     // Annual fuel costs for comparison vehicle (convert MPG to miles per litre)
     const milesPerLitre = effectiveMPG / 4.546; // 1 gallon = 4.546 litres
@@ -91,10 +103,10 @@ export const useEVCalculator = ({
 
     // Vehicle cost comparison
     const petrolCarEquivalent = hasCurrentVehicle ? 0 : 28000; // If no current car, compare to new petrol car
-    const vehicleCostPremium = selectedEV.cost - petrolCarEquivalent;
+    const vehicleCostPremium = vehicleCost - petrolCarEquivalent;
 
     // Payback period (considering UK EV grants where applicable)
-    const evGrant = selectedEV.cost <= 35000 ? 2500 : 0; // UK EV grant for cars under £35k
+    const evGrant = vehicleCost <= 35000 ? 2500 : 0; // UK EV grant for cars under £35k
     const netCostPremium = Math.max(0, vehicleCostPremium - evGrant);
     const paybackPeriod = totalAnnualSavings > 0 ? netCostPremium / totalAnnualSavings : 0;
 
@@ -102,7 +114,7 @@ export const useEVCalculator = ({
     const tenYearSavings = (totalAnnualSavings * 10) - netCostPremium;
 
     const newResults = {
-      vehicleCost: selectedEV.cost,
+      vehicleCost: vehicleCost,
       fuelSavings: annualFuelSavings,
       maintenanceSavings: annualMaintenanceSavings,
       totalMonthlySavings: totalAnnualSavings / 12,
