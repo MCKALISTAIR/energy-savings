@@ -111,9 +111,8 @@ export const useEVCalculator = ({
     const petrolCarEquivalent = hasCurrentVehicle ? 0 : 28000; // If no current car, compare to new petrol car
     const vehicleCostPremium = vehicleCost - petrolCarEquivalent;
 
-    // Payback period (considering UK EV grants where applicable)
-    const evGrant = vehicleCost <= 35000 ? 2500 : 0; // UK EV grant for cars under £35k
-    const netCostPremium = Math.max(0, vehicleCostPremium - evGrant);
+    // Payback period
+    const netCostPremium = Math.max(0, vehicleCostPremium);
     const paybackPeriod = totalAnnualSavings > 0 ? netCostPremium / totalAnnualSavings : 0;
 
     // 10-year savings
