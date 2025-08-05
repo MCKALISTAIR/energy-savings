@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
@@ -47,6 +47,30 @@ export type Database = {
           period_start?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      exchange_rates: {
+        Row: {
+          from_currency: string
+          id: string
+          rate: number
+          to_currency: string
+          updated_at: string
+        }
+        Insert: {
+          from_currency: string
+          id?: string
+          rate: number
+          to_currency: string
+          updated_at?: string
+        }
+        Update: {
+          from_currency?: string
+          id?: string
+          rate?: number
+          to_currency?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -244,6 +268,30 @@ export type Database = {
           selected_energy_supplier?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      vehicle_pricing_cache: {
+        Row: {
+          average_price_usd: number
+          data_source: string | null
+          id: string
+          updated_at: string
+          vehicle_class: string
+        }
+        Insert: {
+          average_price_usd: number
+          data_source?: string | null
+          id?: string
+          updated_at?: string
+          vehicle_class: string
+        }
+        Update: {
+          average_price_usd?: number
+          data_source?: string | null
+          id?: string
+          updated_at?: string
+          vehicle_class?: string
         }
         Relationships: []
       }
