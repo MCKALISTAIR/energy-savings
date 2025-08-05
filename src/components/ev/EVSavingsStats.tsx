@@ -63,7 +63,7 @@ const EVSavingsStats: React.FC<EVSavingsStatsProps> = ({ results }) => {
           £{results.tenYearSavings.toFixed(0)}
         </div>
         <p className="text-sm text-muted-foreground mt-2">
-          Including applicable UK EV grants
+          Total savings over 10 years
         </p>
       </div>
     </>
