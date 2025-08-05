@@ -586,7 +586,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                 </div>
               )}
               <p className="text-xs text-muted-foreground">
-                Your home electricity rate - typical UK rate is around {electricityUnit === 'pence' ? '30p' : '£0.30'} per kWh
+                Your home electricity rate - typical UK rate is around {electricityUnit === 'pence' ? '30p' : '£0.30'} per kWh. If you have a time of use tariff, use the price at the time you'll likely be charging.
               </p>
             </div>
 
