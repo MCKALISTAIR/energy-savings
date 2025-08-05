@@ -1,1 +1,4 @@
 project_id = "auvimrxyqfprotetusxb"
+
+[functions.fetch-fuel-prices]
+verify_jwt = false

@@ -257,6 +257,14 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
           title: "Price updated!",
           description: `Current UK average: £${data.price.toFixed(3)}/litre (${data.source})`,
         });
+      } else if (data?.fallbackPrice) {
+        // Handle fallback case when data source is unavailable
+        setPetrolPrice(data.fallbackPrice.toFixed(3));
+        toast({
+          title: "Using fallback price",
+          description: `£${data.fallbackPrice.toFixed(3)}/litre - ${data.message}`,
+          variant: "default",
+        });
       } else {
         throw new Error('No price data received');
       }

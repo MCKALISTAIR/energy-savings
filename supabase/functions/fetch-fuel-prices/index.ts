@@ -15,70 +15,80 @@ serve(async (req) => {
   try {
     console.log('Fetching UK fuel prices...');
     
-    // Fetch the CSV data from UK Government's open data
-    const response = await fetch('https://www.gov.uk/government/statistics/weekly-road-fuel-prices.csv');
+    // Use the UK Government's statistical data API
+    // This endpoint provides the latest weekly road fuel prices
+    const response = await fetch('https://assets.publishing.service.gov.uk/media/66f8b5b5a3e84e5e6d7bad26/CSV_RFS0142.csv');
     
     if (!response.ok) {
+      console.error(`Failed to fetch CSV: ${response.status} ${response.statusText}`);
       throw new Error(`Failed to fetch fuel prices: ${response.status}`);
     }
     
     const csvText = await response.text();
-    console.log('CSV data fetched successfully');
+    console.log('CSV data fetched successfully, length:', csvText.length);
     
     // Parse CSV to get the latest petrol price
     const lines = csvText.trim().split('\n');
-    const headers = lines[0].split(',');
     
-    // Find the petrol price column (usually "ULSP" for Unleaded Super Petrol)
-    const petrolIndex = headers.findIndex(header => 
-      header.toLowerCase().includes('ulsp') || 
-      header.toLowerCase().includes('petrol') ||
-      header.toLowerCase().includes('unleaded')
-    );
-    
-    if (petrolIndex === -1) {
-      throw new Error('Could not find petrol price column in data');
+    if (lines.length < 2) {
+      throw new Error('Invalid CSV data - not enough rows');
     }
     
-    // Get the most recent data (last row with data)
-    let latestPrice = null;
-    let latestDate = null;
+    // Skip header row and get the most recent data
+    // UK Government CSV format: Date, ULSP (Unleaded Super Petrol), Diesel, etc.
+    const dataLines = lines.slice(1).filter(line => line.trim().length > 0);
     
-    for (let i = lines.length - 1; i >= 1; i--) {
-      const values = lines[i].split(',');
-      const priceValue = values[petrolIndex];
-      
-      if (priceValue && !isNaN(parseFloat(priceValue))) {
-        latestPrice = parseFloat(priceValue);
-        latestDate = values[0]; // Assuming first column is date
-        break;
-      }
+    if (dataLines.length === 0) {
+      throw new Error('No data rows found in CSV');
     }
     
-    if (!latestPrice) {
-      throw new Error('No valid petrol price found in data');
+    // Get the most recent entry (last row)
+    const latestRow = dataLines[dataLines.length - 1];
+    const values = latestRow.split(',');
+    
+    console.log('Latest row:', latestRow);
+    console.log('Values:', values);
+    
+    // Extract date and petrol price
+    // Assuming format: Date, ULSP, Diesel, ...
+    const date = values[0]?.trim();
+    const petrolPriceStr = values[1]?.trim();
+    
+    if (!petrolPriceStr || petrolPriceStr === '' || petrolPriceStr === '-') {
+      throw new Error('No valid petrol price found in latest data');
     }
     
-    // Convert from pence to pounds (UK government data is typically in pence)
-    const priceInPounds = latestPrice > 50 ? latestPrice / 100 : latestPrice;
+    const petrolPrice = parseFloat(petrolPriceStr);
     
-    console.log(`Latest petrol price: £${priceInPounds}/litre from ${latestDate}`);
+    if (isNaN(petrolPrice) || petrolPrice <= 0) {
+      throw new Error(`Invalid petrol price: ${petrolPriceStr}`);
+    }
+    
+    // UK Government data is typically in pence per litre, convert to pounds
+    const priceInPounds = petrolPrice > 50 ? petrolPrice / 100 : petrolPrice;
+    
+    console.log(`Latest petrol price: £${priceInPounds}/litre from ${date}`);
     
     return new Response(JSON.stringify({
       price: priceInPounds,
-      date: latestDate,
-      source: 'UK Government Weekly Road Fuel Prices'
+      date: date,
+      source: 'UK Government Weekly Road Fuel Prices',
+      rawPrice: petrolPrice
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
     
   } catch (error) {
     console.error('Error fetching fuel prices:', error);
+    
+    // Fallback: return a reasonable default price with error info
     return new Response(JSON.stringify({ 
       error: 'Failed to fetch current fuel prices',
-      details: error.message 
+      details: error.message,
+      fallbackPrice: 1.45, // Typical UK petrol price as fallback
+      message: 'Using fallback price due to data source unavailability'
     }), {
-      status: 500,
+      status: 200, // Return 200 so frontend can handle gracefully
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
