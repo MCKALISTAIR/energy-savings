@@ -390,7 +390,9 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="miles">Annual Miles Driven</Label>
+              <Label htmlFor="miles">
+                {hasCurrentVehicle ? 'Annual Miles Driven' : 'Estimated Annual Mileage'}
+              </Label>
               <Input
                 id="miles"
                 type="number"
