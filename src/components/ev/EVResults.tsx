@@ -28,27 +28,36 @@ const EVResults: React.FC<EVResultsProps> = ({
   onTogglePricing
 }) => {
   const getDataSourceInfo = () => {
+    if (!useRealTimeVehiclePricing) {
+      return {
+        icon: <Database className="w-4 h-4" />,
+        label: 'Static pricing',
+        description: 'Estimated pricing based on market averages',
+        variant: 'outline' as const
+      };
+    }
+
     switch (dataSource) {
       case 'marketcheck':
         return {
           icon: <Database className="w-4 h-4" />,
-          label: 'Real-time market data',
-          description: 'Pricing from MarketCheck API (US market, converted to GBP)',
+          label: 'Market pricing',
+          description: 'Live pricing from MarketCheck API (US market, converted to GBP)',
           variant: 'default' as const
         };
       case 'cached':
         return {
           icon: <Clock className="w-4 h-4" />,
-          label: 'Cached market data',
+          label: 'Market pricing',
           description: 'Recent MarketCheck data (updated within 7 days)',
           variant: 'secondary' as const
         };
       default:
         return {
           icon: <Database className="w-4 h-4" />,
-          label: 'Static pricing',
-          description: 'Estimated pricing based on market averages',
-          variant: 'outline' as const
+          label: 'Market pricing',
+          description: 'Fetching real-time market data...',
+          variant: 'default' as const
         };
     }
   };
@@ -87,7 +96,7 @@ const EVResults: React.FC<EVResultsProps> = ({
               variant={dataSourceInfo.variant} 
               className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={onTogglePricing}
-              title={useRealTimeVehiclePricing ? "Click to use static pricing" : "Click to use real-time market pricing"}
+              title={useRealTimeVehiclePricing ? "Click to use static pricing" : "Click to use market pricing"}
             >
               {dataSourceInfo.icon}
               {dataSourceInfo.label}
