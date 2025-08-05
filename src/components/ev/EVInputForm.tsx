@@ -33,6 +33,8 @@ interface EVInputFormProps {
   setPublicChargingFrequency: (value: string) => void;
   batteryCapacity: string;
   setBatteryCapacity: (value: string) => void;
+  hasCurrentVehicle: boolean;
+  setHasCurrentVehicle: (value: boolean) => void;
   onCalculate: () => void;
   onClear: () => void;
 }
@@ -58,14 +60,16 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setPublicChargingFrequency,
   batteryCapacity,
   setBatteryCapacity,
+  hasCurrentVehicle,
+  setHasCurrentVehicle,
   onCalculate,
   onClear
 }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [vehicleYear, setVehicleYear] = useState<string>('');
   const [mpgEstimated, setMpgEstimated] = useState<boolean>(false);
-  const [showMainForm, setShowMainForm] = useState<boolean>(true);
   const [loadingFuelPrice, setLoadingFuelPrice] = useState<boolean>(false);
+  const [showMainForm, setShowMainForm] = useState<boolean>(false);
   const { toast } = useToast();
 
   const validateAndSetValue = (
@@ -205,13 +209,19 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     setErrors({});
     setVehicleYear('');
     setMpgEstimated(false);
-    setShowMainForm(true); // Always show main form now
+    setHasCurrentVehicle(true);
+    setShowMainForm(false);
     onClear();
+  };
+
+  const handleVehicleChoice = (hasVehicle: boolean) => {
+    setHasCurrentVehicle(hasVehicle);
+    setShowMainForm(true);
   };
 
   // Check if form is complete
   const isFormComplete = milesPerYear.trim() !== '' && 
-                        currentMPG.trim() !== '' && 
+                        (!hasCurrentVehicle || currentMPG.trim() !== '') && 
                         petrolPrice.trim() !== '' && 
                         electricityRate.trim() !== '' && 
                         (useExactCost ? exactVehicleCost.trim() !== '' : evType !== '') &&
@@ -223,7 +233,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   const getMissingFieldsMessage = () => {
     const missingFields = [];
     if (milesPerYear.trim() === '') missingFields.push('Annual Miles');
-    if (currentMPG.trim() === '') missingFields.push('Comparison MPG');
+    if (hasCurrentVehicle && currentMPG.trim() === '') missingFields.push('Current MPG');
     if (petrolPrice.trim() === '') missingFields.push('Petrol Price');
     if (electricityRate.trim() === '') missingFields.push('Electricity Rate');
     if (useExactCost && exactVehicleCost.trim() === '') missingFields.push('Exact Vehicle Cost');
@@ -331,12 +341,74 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
           Electric Vehicle Calculator
         </CardTitle>
         <CardDescription>
-          Compare EV costs with equivalent priced petrol car
+          {hasCurrentVehicle 
+            ? 'Compare EV costs with your current vehicle' 
+            : 'Compare EV costs with equivalent new petrol vehicle'
+          }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="miles">Annual Miles Driven</Label>
+        {!showMainForm ? (
+          // Initial vehicle ownership question
+          <div className="text-center space-y-6 py-8">
+            <div className="space-y-3">
+              <h3 className="text-lg font-medium">Let's get started</h3>
+              <p className="text-muted-foreground">
+                Do you currently own a vehicle that you'd like to compare with an electric vehicle?
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <Button 
+                onClick={() => handleVehicleChoice(true)}
+                className="flex-1"
+                size="lg"
+              >
+                <Car className="w-4 h-4 mr-2" />
+                Yes, I own a vehicle
+              </Button>
+              <Button 
+                onClick={() => handleVehicleChoice(false)}
+                variant="outline"
+                className="flex-1"
+                size="lg"
+              >
+                No, I don't own a vehicle
+              </Button>
+            </div>
+            
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              We'll customize the calculator based on your choice to provide the most accurate savings estimate.
+            </p>
+          </div>
+        ) : (
+          // Main form after vehicle choice is made
+          <>
+            {/* Small vehicle choice indicator that can be changed */}
+            <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+              <div className="flex items-center gap-2 text-sm">
+                <Car className="w-4 h-4" />
+                <span>
+                  {hasCurrentVehicle 
+                    ? 'Comparing with your current vehicle' 
+                    : 'Comparing with equivalent new petrol vehicle'
+                  }
+                </span>
+              </div>
+              <Button
+                onClick={() => setShowMainForm(false)}
+                variant="ghost"
+                size="sm"
+                className="text-xs h-auto p-1"
+              >
+                Change
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="miles">
+                {hasCurrentVehicle ? 'Annual Miles Driven' : 'Estimated Annual Mileage'}
+              </Label>
               <Input
                 id="miles"
                 type="number"
@@ -355,8 +427,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                 </div>
               )}
             </div>
-        <div className="space-y-2">
-          <Label htmlFor="vehicleYear">Vehicle Year (Optional - for MPG estimation)</Label>
+
+            {hasCurrentVehicle && (
+              <div className="space-y-2">
+                <Label htmlFor="vehicleYear">Vehicle Year (Optional)</Label>
               <div className="flex gap-2">
                 <Input
                   id="vehicleYear"
@@ -397,13 +471,15 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                   {errors.vehicleYear}
                 </div>
               )}
-          <p className="text-xs text-muted-foreground">
-            Use this to estimate MPG if you don't know what efficiency to compare against
-          </p>
-        </div>
+                <p className="text-xs text-muted-foreground">
+                  Use this to estimate MPG if you don't know your exact fuel efficiency
+                </p>
+              </div>
+            )}
 
-        <div className="space-y-2">
-          <Label htmlFor="mpg">Comparison MPG</Label>
+            {hasCurrentVehicle && (
+              <div className="space-y-2">
+                <Label htmlFor="mpg">Current Vehicle MPG</Label>
               <div className="relative">
                 <Input
                   id="mpg"
@@ -442,10 +518,11 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                   {errors.currentMPG}
                 </div>
               )}
-          <p className="text-xs text-muted-foreground">
-            Miles per gallon to compare against (your current vehicle or average new car ~42 MPG)
-          </p>
-        </div>
+                <p className="text-xs text-muted-foreground">
+                  Miles per gallon of your current petrol/diesel vehicle
+                </p>
+              </div>
+            )}
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -719,8 +796,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                 <X className="w-4 h-4" />
               </Button>
             </div>
-        </CardContent>
-      </Card>
+          </>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

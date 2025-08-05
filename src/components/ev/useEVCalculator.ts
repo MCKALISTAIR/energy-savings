@@ -12,7 +12,7 @@ interface UseEVCalculatorProps {
   useExactCost: boolean;
   publicChargingFrequency: string;
   batteryCapacity: string;
-  
+  hasCurrentVehicle: boolean;
   energyPrices?: EnergyPricesConfig;
   onUpdate: (data: SavingsData['ev']) => void;
 }
@@ -27,7 +27,7 @@ export const useEVCalculator = ({
   useExactCost,
   publicChargingFrequency,
   batteryCapacity,
-  
+  hasCurrentVehicle,
   energyPrices,
   onUpdate
 }: UseEVCalculatorProps) => {
@@ -42,8 +42,8 @@ export const useEVCalculator = ({
 
   const calculateSavings = () => {
     const milesPerYearNum = parseFloat(milesPerYear) || 0;
-    // Use provided MPG for comparison, or average new car MPG if not provided
-    const effectiveMPG = parseFloat(currentMPG) || 42; // 2024 average new car MPG
+    // Use current MPG if they have a vehicle, otherwise use average new car MPG
+    const effectiveMPG = hasCurrentVehicle ? (parseFloat(currentMPG) || 0) : 42; // 2024 average new car MPG
     const petrolPriceNum = parseFloat(petrolPrice) || 0;
     const electricityRateNum = parseFloat(electricityRate) || 0;
     const publicChargingFrequencyNum = parseFloat(publicChargingFrequency) || 0;
@@ -107,9 +107,8 @@ export const useEVCalculator = ({
     // Total annual savings
     const totalAnnualSavings = annualFuelSavings + annualMaintenanceSavings;
 
-    // Vehicle cost comparison - always compare against equivalent priced ICE car
-    // ICE cars are typically 15-20% cheaper than equivalent EVs
-    const petrolCarEquivalent = vehicleCost * 0.85; // Assume ICE equivalent costs 85% of EV price
+    // Vehicle cost comparison
+    const petrolCarEquivalent = hasCurrentVehicle ? 0 : 28000; // If no current car, compare to new petrol car
     const vehicleCostPremium = vehicleCost - petrolCarEquivalent;
 
     // Payback period
