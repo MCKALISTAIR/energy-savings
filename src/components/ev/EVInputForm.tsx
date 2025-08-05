@@ -618,18 +618,19 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </Tooltip>
           </TooltipProvider>
           
-          <div className="relative">
-            <Button 
-              variant="outline" 
-              size="icon"
-              className="hover-scale hover:bg-muted active:bg-muted"
-              onClick={() => setShowCalculationInfo(!showCalculationInfo)}
-            >
-              <HelpCircle className="w-4 h-4" />
-            </Button>
-            
-            {showCalculationInfo && (
-              <div className="absolute top-full right-0 mt-2 p-4 bg-popover border rounded-md shadow-md z-50 max-w-xs">
+          <TooltipProvider>
+            <Tooltip open={showCalculationInfo} onOpenChange={setShowCalculationInfo}>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  className="hover-scale hover:bg-muted active:bg-muted"
+                  onClick={() => setShowCalculationInfo(!showCalculationInfo)}
+                >
+                  <HelpCircle className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
                 <div className="space-y-2">
                   <p className="font-medium">How EV Savings are Calculated:</p>
                   <ul className="text-sm space-y-1">
@@ -640,9 +641,9 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                     <li>• If you don't know your MPG, use the vehicle year to get an estimate</li>
                   </ul>
                 </div>
-              </div>
-            )}
-          </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
           <Button 
             onClick={handleClear} 
