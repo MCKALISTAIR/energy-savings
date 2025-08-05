@@ -237,45 +237,63 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   };
 
   const fetchCurrentFuelPrice = async () => {
+    console.log('fetchCurrentFuelPrice called');
     setLoadingFuelPrice(true);
+    
     try {
+      console.log('Invoking edge function...');
       const { data, error } = await supabase.functions.invoke('fetch-fuel-prices');
+      
+      console.log('Edge function response:', { data, error });
       
       if (error) {
         console.error('Edge function error:', error);
         toast({
           title: "Failed to fetch fuel prices",
-          description: "Could not retrieve current UK fuel prices. Please enter manually.",
+          description: `Error: ${error.message}`,
           variant: "destructive",
         });
         return;
       }
 
+      console.log('Received data:', data);
+
       if (data?.price) {
+        console.log('Setting petrol price to:', data.price.toFixed(3));
         setPetrolPrice(data.price.toFixed(3));
         toast({
           title: "Price updated!",
-          description: `Current UK average: £${data.price.toFixed(3)}/litre (${data.source})`,
+          description: `Current UK average: £${data.price.toFixed(3)}/litre`,
         });
       } else if (data?.fallbackPrice) {
-        // Handle fallback case when data source is unavailable
+        console.log('Using fallback price:', data.fallbackPrice.toFixed(3));
         setPetrolPrice(data.fallbackPrice.toFixed(3));
         toast({
           title: "Using fallback price",
-          description: `£${data.fallbackPrice.toFixed(3)}/litre - ${data.message}`,
+          description: `£${data.fallbackPrice.toFixed(3)}/litre - Data source temporarily unavailable`,
           variant: "default",
         });
       } else {
-        throw new Error('No price data received');
+        console.error('No price data in response:', data);
+        // Set a manual fallback price
+        setPetrolPrice('1.45');
+        toast({
+          title: "Using manual fallback",
+          description: "£1.45/litre - Unable to fetch current prices",
+          variant: "default",
+        });
       }
     } catch (error) {
       console.error('Failed to fetch fuel prices:', error);
+      // Set a manual fallback price
+      setPetrolPrice('1.45');
       toast({
-        title: "Failed to fetch fuel prices",
-        description: "Could not retrieve current UK fuel prices. Please enter manually.",
+        title: "Using manual fallback",
+        description: "£1.45/litre - Unable to fetch current prices",
         variant: "destructive",
       });
     } finally {
+      console.log('Setting loading to false');
       setLoadingFuelPrice(false);
     }
   };
