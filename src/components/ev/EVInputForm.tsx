@@ -662,7 +662,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </Button>
             
             {showCalculationInfo && (
-              <div className="absolute top-full right-0 mt-2 z-50 max-w-xs rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md">
+              <div className="absolute top-full right-0 mt-1 z-50 max-w-xs overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95">
                 <div className="space-y-2">
                   <p className="font-medium">How EV Savings are Calculated:</p>
                   <ul className="text-sm space-y-1">
