@@ -42,7 +42,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
     batteryCapacity,
     hasCurrentVehicle,
     energyPrices,
-    useRealTimeVehiclePricing: dashboardConfig?.useRealTimeVehiclePricing || false,
+    useRealTimeVehiclePricing: dashboardConfig?.useRealTimeVehiclePricing || true,
     onUpdate
   });
 
