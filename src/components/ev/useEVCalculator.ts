@@ -52,15 +52,21 @@ export const useEVCalculator = ({
     // Get public charging rate from config or default
     const publicChargingRate = energyPrices?.publicCharging || 0.79;
 
-    // EV specifications based on type (UK market)
+    // EV specifications based on cost range (UK market)
     const evSpecs: { [key: string]: { efficiency: number; cost: number; range: number } } = {
-      'economy': { efficiency: 4.5, cost: 25000, range: 200 }, // miles per kWh
-      'mid-range': { efficiency: 4.0, cost: 35000, range: 250 },
-      'luxury': { efficiency: 3.5, cost: 55000, range: 300 },
-      'truck': { efficiency: 3.0, cost: 50000, range: 250 }
+      '10000': { efficiency: 4.2, cost: 10000, range: 180 }, // miles per kWh
+      '20000': { efficiency: 4.3, cost: 20000, range: 200 },
+      '30000': { efficiency: 4.2, cost: 30000, range: 220 },
+      '40000': { efficiency: 4.0, cost: 40000, range: 250 },
+      '50000': { efficiency: 3.8, cost: 50000, range: 280 },
+      '60000': { efficiency: 3.7, cost: 60000, range: 300 },
+      '70000': { efficiency: 3.6, cost: 70000, range: 320 },
+      '80000': { efficiency: 3.5, cost: 80000, range: 350 },
+      '90000': { efficiency: 3.4, cost: 90000, range: 380 },
+      '100000': { efficiency: 3.3, cost: 100000, range: 400 }
     };
 
-    const selectedEV = evSpecs[evType] || evSpecs['mid-range'];
+    const selectedEV = evSpecs[evType] || evSpecs['30000'];
     
     // Determine vehicle cost: use exact cost if provided, otherwise use dropdown selection
     let vehicleCost: number;

@@ -319,10 +319,16 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
 
   const getEVDescription = () => {
     const descriptions: { [key: string]: string } = {
-      'economy': 'Budget-friendly electric vehicles',
-      'mid-range': 'Popular mid-tier electric vehicles',
-      'luxury': 'Premium electric vehicles',
-      'truck': 'Electric SUVs and larger vehicles'
+      '10000': 'Entry-level electric vehicles',
+      '20000': 'Budget-friendly electric vehicles',
+      '30000': 'Popular mid-tier electric vehicles',
+      '40000': 'Well-equipped electric vehicles',
+      '50000': 'Premium electric vehicles',
+      '60000': 'High-end electric vehicles',
+      '70000': 'Luxury electric vehicles',
+      '80000': 'Premium luxury electric vehicles',
+      '90000': 'Ultra-luxury electric vehicles',
+      '100000': 'Top-tier electric vehicles'
     };
     return descriptions[evType] || '';
   };
@@ -698,10 +704,16 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                       <SelectValue placeholder="Select price range" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="economy">~£25,000</SelectItem>
-                      <SelectItem value="mid-range">~£35,000</SelectItem>
-                      <SelectItem value="luxury">~£55,000</SelectItem>
-                      <SelectItem value="truck">~£50,000</SelectItem>
+                      <SelectItem value="10000">~£10,000</SelectItem>
+                      <SelectItem value="20000">~£20,000</SelectItem>
+                      <SelectItem value="30000">~£30,000</SelectItem>
+                      <SelectItem value="40000">~£40,000</SelectItem>
+                      <SelectItem value="50000">~£50,000</SelectItem>
+                      <SelectItem value="60000">~£60,000</SelectItem>
+                      <SelectItem value="70000">~£70,000</SelectItem>
+                      <SelectItem value="80000">~£80,000</SelectItem>
+                      <SelectItem value="90000">~£90,000</SelectItem>
+                      <SelectItem value="100000">~£100,000</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
