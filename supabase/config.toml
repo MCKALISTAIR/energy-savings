@@ -2,3 +2,6 @@ project_id = "auvimrxyqfprotetusxb"
 
 [functions.fetch-fuel-prices]
 verify_jwt = false
+
+[functions.vehicle-pricing]
+verify_jwt = false

@@ -46,6 +46,8 @@ export interface DashboardConfig {
   priceRiseDate: string; // Format: "DD-MM" e.g., "01-01" for January 1st
   // High price warning threshold
   highPriceWarningThreshold: number; // £/kWh threshold for electricity and gas
+  // Real-time vehicle pricing configuration
+  useRealTimeVehiclePricing: boolean;
 }
 
 export interface DashboardSettingsProps {

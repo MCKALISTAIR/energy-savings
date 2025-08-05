@@ -32,4 +32,5 @@ export const getDefaultConfig = (): DashboardConfig => ({
   annualPriceRisePercentage: 3.0, // Default 3% annual increase
   priceRiseDate: '01-01', // January 1st (DD-MM format)
   highPriceWarningThreshold: 2.0, // £/kWh - warn for electricity and gas above this
+  useRealTimeVehiclePricing: false, // Default to static pricing
 });
