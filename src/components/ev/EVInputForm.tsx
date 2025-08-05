@@ -60,6 +60,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   const [vehicleYear, setVehicleYear] = useState<string>('');
   const [mpgEstimated, setMpgEstimated] = useState<boolean>(false);
   const [loadingFuelPrice, setLoadingFuelPrice] = useState<boolean>(false);
+  const [showMainForm, setShowMainForm] = useState<boolean>(false);
   const { toast } = useToast();
 
   const validateAndSetValue = (
@@ -200,7 +201,13 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     setVehicleYear('');
     setMpgEstimated(false);
     setHasCurrentVehicle(true);
+    setShowMainForm(false);
     onClear();
+  };
+
+  const handleVehicleChoice = (hasVehicle: boolean) => {
+    setHasCurrentVehicle(hasVehicle);
+    setShowMainForm(true);
   };
 
   // Check if form is complete
@@ -325,353 +332,403 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="miles">Annual Miles Driven</Label>
-          <Input
-            id="miles"
-            type="number"
-            min="0"
-            value={milesPerYear}
-            onChange={(e) => handleNumericInput(e, 'milesPerYear', setMilesPerYear)}
-            onInput={(e) => handleInputValidation(e, 'milesPerYear', setMilesPerYear)}
-            onBlur={(e) => handleBlur(e, 'milesPerYear', setMilesPerYear)}
-            placeholder="10000"
-            className={errors.milesPerYear ? 'border-red-500' : ''}
-          />
-          {errors.milesPerYear && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.milesPerYear}
+        {!showMainForm ? (
+          // Initial vehicle ownership question
+          <div className="text-center space-y-6 py-8">
+            <div className="space-y-3">
+              <h3 className="text-lg font-medium">Let's get started</h3>
+              <p className="text-muted-foreground">
+                Do you currently own a vehicle that you'd like to compare with an electric vehicle?
+              </p>
             </div>
-          )}
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="hasCurrentVehicle"
-            checked={hasCurrentVehicle}
-            onCheckedChange={setHasCurrentVehicle}
-          />
-          <Label htmlFor="hasCurrentVehicle">I currently own a vehicle</Label>
-        </div>
-
-        {hasCurrentVehicle && (
-          <div className="space-y-2">
-            <Label htmlFor="vehicleYear">Vehicle Year (Optional)</Label>
-          <div className="flex gap-2">
-            <Input
-              id="vehicleYear"
-              type="number"
-              min="1990"
-              max="2024"
-              value={vehicleYear}
-              onChange={(e) => handleNumericInput(e, 'vehicleYear', setVehicleYear)}
-              onInput={(e) => handleInputValidation(e, 'vehicleYear', setVehicleYear)}
-              onBlur={(e) => handleBlur(e, 'vehicleYear', setVehicleYear)}
-              placeholder="2018"
-              className={`flex-1 ${errors.vehicleYear ? 'border-red-500' : ''}`}
-            />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={estimateMPGFromYear}
-                    disabled={!vehicleYear.trim() || parseInt(vehicleYear) < 1990 || parseInt(vehicleYear) > 2024}
-                    className="whitespace-nowrap"
-                  >
-                    <Calculator className="w-4 h-4 mr-1" />
-                    Estimate MPG
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Estimate MPG based on vehicle year using UK efficiency averages</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          {errors.vehicleYear && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.vehicleYear}
+            
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <Button 
+                onClick={() => handleVehicleChoice(true)}
+                className="flex-1"
+                size="lg"
+              >
+                <Car className="w-4 h-4 mr-2" />
+                Yes, I own a vehicle
+              </Button>
+              <Button 
+                onClick={() => handleVehicleChoice(false)}
+                variant="outline"
+                className="flex-1"
+                size="lg"
+              >
+                No, I don't own a vehicle
+              </Button>
             </div>
-          )}
-            <p className="text-xs text-muted-foreground">
-              Use this to estimate MPG if you don't know your exact fuel efficiency
+            
+            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+              We'll customize the calculator based on your choice to provide the most accurate savings estimate.
             </p>
           </div>
-        )}
+        ) : (
+          // Main form after vehicle choice is made
+          <>
+            {/* Small vehicle choice indicator that can be changed */}
+            <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+              <div className="flex items-center gap-2 text-sm">
+                <Car className="w-4 h-4" />
+                <span>
+                  {hasCurrentVehicle 
+                    ? 'Comparing with your current vehicle' 
+                    : 'Comparing with equivalent new petrol vehicle'
+                  }
+                </span>
+              </div>
+              <Button
+                onClick={() => setShowMainForm(false)}
+                variant="ghost"
+                size="sm"
+                className="text-xs h-auto p-1"
+              >
+                Change
+              </Button>
+            </div>
 
-        {hasCurrentVehicle && (
-          <div className="space-y-2">
-            <Label htmlFor="mpg">Current Vehicle MPG</Label>
-          <div className="relative">
-            <Input
-              id="mpg"
-              type="number"
-              min="0"
-              value={currentMPG}
-              onChange={(e) => {
-                handleNumericInput(e, 'currentMPG', setCurrentMPG);
-                setMpgEstimated(false); // Clear estimated flag when manually edited
-              }}
-              onInput={(e) => handleInputValidation(e, 'currentMPG', setCurrentMPG)}
-              onBlur={(e) => handleBlur(e, 'currentMPG', setCurrentMPG)}
-              placeholder="40"
-              className={errors.currentMPG ? 'border-red-500' : ''}
-            />
-            {mpgEstimated && currentMPG && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="space-y-2">
+              <Label htmlFor="miles">Annual Miles Driven</Label>
+              <Input
+                id="miles"
+                type="number"
+                min="0"
+                value={milesPerYear}
+                onChange={(e) => handleNumericInput(e, 'milesPerYear', setMilesPerYear)}
+                onInput={(e) => handleInputValidation(e, 'milesPerYear', setMilesPerYear)}
+                onBlur={(e) => handleBlur(e, 'milesPerYear', setMilesPerYear)}
+                placeholder="10000"
+                className={errors.milesPerYear ? 'border-red-500' : ''}
+              />
+              {errors.milesPerYear && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.milesPerYear}
+                </div>
+              )}
+            </div>
+
+            {hasCurrentVehicle && (
+              <div className="space-y-2">
+                <Label htmlFor="vehicleYear">Vehicle Year (Optional)</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="vehicleYear"
+                  type="number"
+                  min="1990"
+                  max="2024"
+                  value={vehicleYear}
+                  onChange={(e) => handleNumericInput(e, 'vehicleYear', setVehicleYear)}
+                  onInput={(e) => handleInputValidation(e, 'vehicleYear', setVehicleYear)}
+                  onBlur={(e) => handleBlur(e, 'vehicleYear', setVehicleYear)}
+                  placeholder="2018"
+                  className={`flex-1 ${errors.vehicleYear ? 'border-red-500' : ''}`}
+                />
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
-                      <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                        Estimated
-                      </div>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={estimateMPGFromYear}
+                        disabled={!vehicleYear.trim() || parseInt(vehicleYear) < 1990 || parseInt(vehicleYear) > 2024}
+                        className="whitespace-nowrap"
+                      >
+                        <Calculator className="w-4 h-4 mr-1" />
+                        Estimate MPG
+                      </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>This MPG value was estimated from your {vehicleYear} vehicle year</p>
+                      <p>Estimate MPG based on vehicle year using UK efficiency averages</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
-            )}
-          </div>
-          {errors.currentMPG && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.currentMPG}
-            </div>
-          )}
-            <p className="text-xs text-muted-foreground">
-              Miles per gallon of your current petrol/diesel vehicle
-            </p>
-          </div>
-        )}
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="petrolPrice">Petrol Price (£/litre)</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={fetchCurrentFuelPrice}
-                    disabled={loadingFuelPrice}
-                    className="text-xs h-7"
-                  >
-                    <Download className="w-3 h-3 mr-1" />
-                    {loadingFuelPrice ? 'Loading...' : 'Get Current UK Price'}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Fetch latest UK Government weekly fuel prices</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <Input
-            id="petrolPrice"
-            type="number"
-            step="0.01"
-            min="0"
-            value={petrolPrice}
-            onChange={(e) => handleNumericInput(e, 'petrolPrice', setPetrolPrice)}
-            onInput={(e) => handleInputValidation(e, 'petrolPrice', setPetrolPrice)}
-            onBlur={(e) => handleBlur(e, 'petrolPrice', setPetrolPrice)}
-            placeholder="1.45"
-            className={errors.petrolPrice ? 'border-red-500' : ''}
-          />
-          {errors.petrolPrice && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.petrolPrice}
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="electricityRate">
-              Electricity Rate ({electricityUnit === 'pence' ? 'p/kWh' : '£/kWh'})
-            </Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={toggleElectricityUnit}
-              className="text-xs h-7"
-            >
-              Switch to {electricityUnit === 'pence' ? '£' : 'p'}
-            </Button>
-          </div>
-          <Input
-            id="electricityRate"
-            type="number"
-            step={electricityUnit === 'pence' ? '0.1' : '0.001'}
-            min="0"
-            value={electricityRate}
-            onChange={(e) => handleNumericInput(e, 'electricityRate', setElectricityRate)}
-            onInput={(e) => handleInputValidation(e, 'electricityRate', setElectricityRate)}
-            onBlur={(e) => handleBlur(e, 'electricityRate', setElectricityRate)}
-            placeholder={electricityUnit === 'pence' ? '30' : '0.30'}
-            className={errors.electricityRate ? 'border-red-500' : ''}
-          />
-          {errors.electricityRate && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.electricityRate}
-            </div>
-          )}
-          <p className="text-xs text-muted-foreground">
-            Your home electricity rate - typical UK rate is around {electricityUnit === 'pence' ? '30p' : '£0.30'} per kWh
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="publicChargingFrequency">Public Charging per Month</Label>
-          <Input
-            id="publicChargingFrequency"
-            type="number"
-            min="0"
-            value={publicChargingFrequency}
-            onChange={(e) => handleNumericInput(e, 'publicChargingFrequency', setPublicChargingFrequency)}
-            onInput={(e) => handleInputValidation(e, 'publicChargingFrequency', setPublicChargingFrequency)}
-            onBlur={(e) => handleBlur(e, 'publicChargingFrequency', setPublicChargingFrequency)}
-            placeholder="4"
-            className={errors.publicChargingFrequency ? 'border-red-500' : ''}
-          />
-          {errors.publicChargingFrequency && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.publicChargingFrequency}
-            </div>
-          )}
-          <p className="text-xs text-muted-foreground">
-            How often you use public rapid charging stations per month
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="batteryCapacity">EV Battery Capacity (kWh)</Label>
-          <Input
-            id="batteryCapacity"
-            type="number"
-            min="0"
-            value={batteryCapacity}
-            onChange={(e) => handleNumericInput(e, 'batteryCapacity', setBatteryCapacity)}
-            onInput={(e) => handleInputValidation(e, 'batteryCapacity', setBatteryCapacity)}
-            onBlur={(e) => handleBlur(e, 'batteryCapacity', setBatteryCapacity)}
-            placeholder="75"
-            className={errors.batteryCapacity ? 'border-red-500' : ''}
-          />
-          {errors.batteryCapacity && (
-            <div className="flex items-center gap-1 text-sm text-red-500">
-              <AlertCircle className="w-4 h-4" />
-              {errors.batteryCapacity}
-            </div>
-          )}
-          <p className="text-xs text-muted-foreground">
-            Total battery capacity of your electric vehicle
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Electric Vehicle Type</Label>
-          <Select value={evType} onValueChange={setEVType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select EV type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="economy">Economy EV (~£25k)</SelectItem>
-              <SelectItem value="mid-range">Mid-Range EV (~£35k)</SelectItem>
-              <SelectItem value="luxury">Luxury EV (~£55k)</SelectItem>
-              <SelectItem value="truck">Electric SUV (~£50k)</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
-        </div>
-
-        <div className="flex gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild className="flex-1">
-                <div>
-                  <Button 
-                    onClick={onCalculate} 
-                    className="w-full" 
-                    disabled={!isFormComplete}
-                  >
-                    Recalculate Savings
-                  </Button>
+              {errors.vehicleYear && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.vehicleYear}
                 </div>
-              </TooltipTrigger>
-              {!isFormComplete && (
-                <TooltipContent>
-                  <p>{getMissingFieldsMessage()}</p>
-                </TooltipContent>
               )}
-            </Tooltip>
-          </TooltipProvider>
-          
-          <Dialog>
-            <DialogTrigger asChild>
+                <p className="text-xs text-muted-foreground">
+                  Use this to estimate MPG if you don't know your exact fuel efficiency
+                </p>
+              </div>
+            )}
+
+            {hasCurrentVehicle && (
+              <div className="space-y-2">
+                <Label htmlFor="mpg">Current Vehicle MPG</Label>
+              <div className="relative">
+                <Input
+                  id="mpg"
+                  type="number"
+                  min="0"
+                  value={currentMPG}
+                  onChange={(e) => {
+                    handleNumericInput(e, 'currentMPG', setCurrentMPG);
+                    setMpgEstimated(false); // Clear estimated flag when manually edited
+                  }}
+                  onInput={(e) => handleInputValidation(e, 'currentMPG', setCurrentMPG)}
+                  onBlur={(e) => handleBlur(e, 'currentMPG', setCurrentMPG)}
+                  placeholder="40"
+                  className={errors.currentMPG ? 'border-red-500' : ''}
+                />
+                {mpgEstimated && currentMPG && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                            Estimated
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>This MPG value was estimated from your {vehicleYear} vehicle year</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                )}
+              </div>
+              {errors.currentMPG && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.currentMPG}
+                </div>
+              )}
+                <p className="text-xs text-muted-foreground">
+                  Miles per gallon of your current petrol/diesel vehicle
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="petrolPrice">Petrol Price (£/litre)</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={fetchCurrentFuelPrice}
+                        disabled={loadingFuelPrice}
+                        className="text-xs h-7"
+                      >
+                        <Download className="w-3 h-3 mr-1" />
+                        {loadingFuelPrice ? 'Loading...' : 'Get Current UK Price'}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Fetch latest UK Government weekly fuel prices</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Input
+                id="petrolPrice"
+                type="number"
+                step="0.01"
+                min="0"
+                value={petrolPrice}
+                onChange={(e) => handleNumericInput(e, 'petrolPrice', setPetrolPrice)}
+                onInput={(e) => handleInputValidation(e, 'petrolPrice', setPetrolPrice)}
+                onBlur={(e) => handleBlur(e, 'petrolPrice', setPetrolPrice)}
+                placeholder="1.45"
+                className={errors.petrolPrice ? 'border-red-500' : ''}
+              />
+              {errors.petrolPrice && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.petrolPrice}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="electricityRate">
+                  Electricity Rate ({electricityUnit === 'pence' ? 'p/kWh' : '£/kWh'})
+                </Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleElectricityUnit}
+                  className="text-xs h-7"
+                >
+                  Switch to {electricityUnit === 'pence' ? '£' : 'p'}
+                </Button>
+              </div>
+              <Input
+                id="electricityRate"
+                type="number"
+                step={electricityUnit === 'pence' ? '0.1' : '0.001'}
+                min="0"
+                value={electricityRate}
+                onChange={(e) => handleNumericInput(e, 'electricityRate', setElectricityRate)}
+                onInput={(e) => handleInputValidation(e, 'electricityRate', setElectricityRate)}
+                onBlur={(e) => handleBlur(e, 'electricityRate', setElectricityRate)}
+                placeholder={electricityUnit === 'pence' ? '30' : '0.30'}
+                className={errors.electricityRate ? 'border-red-500' : ''}
+              />
+              {errors.electricityRate && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.electricityRate}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Your home electricity rate - typical UK rate is around {electricityUnit === 'pence' ? '30p' : '£0.30'} per kWh
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="publicChargingFrequency">Public Charging per Month</Label>
+              <Input
+                id="publicChargingFrequency"
+                type="number"
+                min="0"
+                value={publicChargingFrequency}
+                onChange={(e) => handleNumericInput(e, 'publicChargingFrequency', setPublicChargingFrequency)}
+                onInput={(e) => handleInputValidation(e, 'publicChargingFrequency', setPublicChargingFrequency)}
+                onBlur={(e) => handleBlur(e, 'publicChargingFrequency', setPublicChargingFrequency)}
+                placeholder="4"
+                className={errors.publicChargingFrequency ? 'border-red-500' : ''}
+              />
+              {errors.publicChargingFrequency && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.publicChargingFrequency}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                How often you use public rapid charging stations per month
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="batteryCapacity">EV Battery Capacity (kWh)</Label>
+              <Input
+                id="batteryCapacity"
+                type="number"
+                min="0"
+                value={batteryCapacity}
+                onChange={(e) => handleNumericInput(e, 'batteryCapacity', setBatteryCapacity)}
+                onInput={(e) => handleInputValidation(e, 'batteryCapacity', setBatteryCapacity)}
+                onBlur={(e) => handleBlur(e, 'batteryCapacity', setBatteryCapacity)}
+                placeholder="75"
+                className={errors.batteryCapacity ? 'border-red-500' : ''}
+              />
+              {errors.batteryCapacity && (
+                <div className="flex items-center gap-1 text-sm text-red-500">
+                  <AlertCircle className="w-4 h-4" />
+                  {errors.batteryCapacity}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Total battery capacity of your electric vehicle
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Electric Vehicle Type</Label>
+              <Select value={evType} onValueChange={setEVType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select EV type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="economy">Economy EV (~£25k)</SelectItem>
+                  <SelectItem value="mid-range">Mid-Range EV (~£35k)</SelectItem>
+                  <SelectItem value="luxury">Luxury EV (~£55k)</SelectItem>
+                  <SelectItem value="truck">Electric SUV (~£50k)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
+            </div>
+
+            <div className="flex gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild className="flex-1">
+                    <div>
+                      <Button 
+                        onClick={onCalculate} 
+                        className="w-full" 
+                        disabled={!isFormComplete}
+                      >
+                        Calculate Savings
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  {!isFormComplete && (
+                    <TooltipContent>
+                      <p>{getMissingFieldsMessage()}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+              
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    className="hover-scale hover:bg-muted active:bg-muted"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>How EV Savings are Calculated</DialogTitle>
+                    <DialogDescription asChild>
+                      <div className="space-y-3 pt-2">
+                        <ul className="text-sm space-y-2">
+                          <li className="flex items-start gap-2">
+                            <span className="text-primary font-medium">•</span>
+                            <span><strong>Petrol costs:</strong> (Annual miles ÷ MPG) × Price per gallon</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-primary font-medium">•</span>
+                            <span><strong>EV charging costs:</strong> (Annual miles ÷ EV efficiency) × Electricity rate</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-primary font-medium">•</span>
+                            <span><strong>Public charging premium:</strong> Added based on frequency of use</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-primary font-medium">•</span>
+                            <span><strong>Environmental impact:</strong> Calculated from CO₂ reduction</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-primary font-medium">•</span>
+                            <span><strong>MPG estimation:</strong> If you don't know your MPG, use the vehicle year to get an estimate</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+              
               <Button 
+                onClick={handleClear} 
                 variant="outline" 
                 size="icon"
-                className="hover-scale hover:bg-muted active:bg-muted"
+                className="hover-scale"
+                title="Clear all fields"
               >
-                <HelpCircle className="w-4 h-4" />
+                <X className="w-4 h-4" />
               </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>How EV Savings are Calculated</DialogTitle>
-                <DialogDescription asChild>
-                  <div className="space-y-3 pt-2">
-                    <ul className="text-sm space-y-2">
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary font-medium">•</span>
-                        <span><strong>Petrol costs:</strong> (Annual miles ÷ MPG) × Price per gallon</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary font-medium">•</span>
-                        <span><strong>EV charging costs:</strong> (Annual miles ÷ EV efficiency) × Electricity rate</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary font-medium">•</span>
-                        <span><strong>Public charging premium:</strong> Added based on frequency of use</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary font-medium">•</span>
-                        <span><strong>Environmental impact:</strong> Calculated from CO₂ reduction</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary font-medium">•</span>
-                        <span><strong>MPG estimation:</strong> If you don't know your MPG, use the vehicle year to get an estimate</span>
-                      </li>
-                    </ul>
-                  </div>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-          
-          <Button 
-            onClick={handleClear} 
-            variant="outline" 
-            size="icon"
-            className="hover-scale"
-            title="Clear all fields"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );
