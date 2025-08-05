@@ -5,8 +5,10 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Car, AlertCircle, X, HelpCircle, Calculator } from 'lucide-react';
+import { Car, AlertCircle, X, HelpCircle, Calculator, Download } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface EVInputFormProps {
   milesPerYear: string;
@@ -56,6 +58,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [vehicleYear, setVehicleYear] = useState<string>('');
   const [mpgEstimated, setMpgEstimated] = useState<boolean>(false);
+  const [loadingFuelPrice, setLoadingFuelPrice] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const validateAndSetValue = (
     value: string,
@@ -232,6 +236,42 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     return '';
   };
 
+  const fetchCurrentFuelPrice = async () => {
+    setLoadingFuelPrice(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-fuel-prices');
+      
+      if (error) {
+        console.error('Edge function error:', error);
+        toast({
+          title: "Failed to fetch fuel prices",
+          description: "Could not retrieve current UK fuel prices. Please enter manually.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data?.price) {
+        setPetrolPrice(data.price.toFixed(3));
+        toast({
+          title: "Price updated!",
+          description: `Current UK average: £${data.price.toFixed(3)}/litre (${data.source})`,
+        });
+      } else {
+        throw new Error('No price data received');
+      }
+    } catch (error) {
+      console.error('Failed to fetch fuel prices:', error);
+      toast({
+        title: "Failed to fetch fuel prices",
+        description: "Could not retrieve current UK fuel prices. Please enter manually.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingFuelPrice(false);
+    }
+  };
+
   const getEVDescription = () => {
     const descriptions: { [key: string]: string } = {
       'economy': 'Nissan Leaf, MG4',
@@ -384,7 +424,29 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="petrolPrice">Petrol Price (£/litre)</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="petrolPrice">Petrol Price (£/litre)</Label>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={fetchCurrentFuelPrice}
+                    disabled={loadingFuelPrice}
+                    className="text-xs h-7"
+                  >
+                    <Download className="w-3 h-3 mr-1" />
+                    {loadingFuelPrice ? 'Loading...' : 'Get Current UK Price'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Fetch latest UK Government weekly fuel prices</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
           <Input
             id="petrolPrice"
             type="number"
