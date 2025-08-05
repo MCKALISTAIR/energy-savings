@@ -623,7 +623,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                 <Button 
                   variant="outline" 
                   size="icon"
-                  className="hover-scale"
+                  className="hover-scale hover:bg-muted active:bg-muted"
                 >
                   <HelpCircle className="w-4 h-4" />
                 </Button>
