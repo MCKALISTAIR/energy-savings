@@ -60,6 +60,7 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   const [mpgEstimated, setMpgEstimated] = useState<boolean>(false);
   const [loadingFuelPrice, setLoadingFuelPrice] = useState<boolean>(false);
   const [showCalculationInfo, setShowCalculationInfo] = useState<boolean>(false);
+  const [mouseLeaveTimer, setMouseLeaveTimer] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const validateAndSetValue = (
@@ -296,6 +297,34 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     } finally {
       console.log('Setting loading to false');
       setLoadingFuelPrice(false);
+    }
+  };
+
+  const handleHelpButtonClick = () => {
+    // Clear any existing timer
+    if (mouseLeaveTimer) {
+      clearTimeout(mouseLeaveTimer);
+      setMouseLeaveTimer(null);
+    }
+    setShowCalculationInfo(!showCalculationInfo);
+  };
+
+  const handleMouseEnter = () => {
+    // Clear any existing timer when mouse re-enters
+    if (mouseLeaveTimer) {
+      clearTimeout(mouseLeaveTimer);
+      setMouseLeaveTimer(null);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    // Only start timer if info box is visible
+    if (showCalculationInfo) {
+      const timer = setTimeout(() => {
+        setShowCalculationInfo(false);
+        setMouseLeaveTimer(null);
+      }, 3000);
+      setMouseLeaveTimer(timer);
     }
   };
 
@@ -618,19 +647,22 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </Tooltip>
           </TooltipProvider>
           
-          <TooltipProvider>
-            <Tooltip open={showCalculationInfo} onOpenChange={setShowCalculationInfo}>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  className="hover-scale hover:bg-muted active:bg-muted"
-                  onClick={() => setShowCalculationInfo(!showCalculationInfo)}
-                >
-                  <HelpCircle className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
+          <div 
+            className="relative"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="hover-scale hover:bg-muted active:bg-muted"
+              onClick={handleHelpButtonClick}
+            >
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            
+            {showCalculationInfo && (
+              <div className="absolute top-full right-0 mt-2 p-4 bg-popover border rounded-md shadow-md z-50 max-w-xs">
                 <div className="space-y-2">
                   <p className="font-medium">How EV Savings are Calculated:</p>
                   <ul className="text-sm space-y-1">
@@ -641,9 +673,9 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                     <li>• If you don't know your MPG, use the vehicle year to get an estimate</li>
                   </ul>
                 </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+              </div>
+            )}
+          </div>
           
           <Button 
             onClick={handleClear} 
