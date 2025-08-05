@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Car, AlertCircle, X, HelpCircle, Calculator, Download } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
@@ -59,8 +60,6 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   const [vehicleYear, setVehicleYear] = useState<string>('');
   const [mpgEstimated, setMpgEstimated] = useState<boolean>(false);
   const [loadingFuelPrice, setLoadingFuelPrice] = useState<boolean>(false);
-  const [showCalculationInfo, setShowCalculationInfo] = useState<boolean>(false);
-  const [mouseLeaveTimer, setMouseLeaveTimer] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const validateAndSetValue = (
@@ -300,33 +299,6 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
     }
   };
 
-  const handleHelpButtonClick = () => {
-    // Clear any existing timer
-    if (mouseLeaveTimer) {
-      clearTimeout(mouseLeaveTimer);
-      setMouseLeaveTimer(null);
-    }
-    setShowCalculationInfo(!showCalculationInfo);
-  };
-
-  const handleMouseEnter = () => {
-    // Clear any existing timer when mouse re-enters
-    if (mouseLeaveTimer) {
-      clearTimeout(mouseLeaveTimer);
-      setMouseLeaveTimer(null);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    // Only start timer if info box is visible
-    if (showCalculationInfo) {
-      const timer = setTimeout(() => {
-        setShowCalculationInfo(false);
-        setMouseLeaveTimer(null);
-      }, 3000);
-      setMouseLeaveTimer(timer);
-    }
-  };
 
   const getEVDescription = () => {
     const descriptions: { [key: string]: string } = {
@@ -647,35 +619,48 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </Tooltip>
           </TooltipProvider>
           
-          <div 
-            className="relative"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <Button 
-              variant="outline" 
-              size="icon"
-              className="hover-scale hover:bg-muted active:bg-muted"
-              onClick={handleHelpButtonClick}
-            >
-              <HelpCircle className="w-4 h-4" />
-            </Button>
-            
-            {showCalculationInfo && (
-              <div className="absolute top-full right-0 mt-1 z-50 max-w-xs overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95">
-                <div className="space-y-2">
-                  <p className="font-medium">How EV Savings are Calculated:</p>
-                  <ul className="text-sm space-y-1">
-                    <li>• Petrol costs = (Annual miles ÷ MPG) × Price per gallon</li>
-                    <li>• EV charging costs = (Annual miles ÷ EV efficiency) × Electricity rate</li>
-                    <li>• Public charging premium added based on frequency</li>
-                    <li>• Environmental impact calculated from CO₂ reduction</li>
-                    <li>• If you don't know your MPG, use the vehicle year to get an estimate</li>
-                  </ul>
-                </div>
-              </div>
-            )}
-          </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="hover-scale hover:bg-muted active:bg-muted"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>How EV Savings are Calculated</DialogTitle>
+                <DialogDescription asChild>
+                  <div className="space-y-3 pt-2">
+                    <ul className="text-sm space-y-2">
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary font-medium">•</span>
+                        <span><strong>Petrol costs:</strong> (Annual miles ÷ MPG) × Price per gallon</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary font-medium">•</span>
+                        <span><strong>EV charging costs:</strong> (Annual miles ÷ EV efficiency) × Electricity rate</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary font-medium">•</span>
+                        <span><strong>Public charging premium:</strong> Added based on frequency of use</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary font-medium">•</span>
+                        <span><strong>Environmental impact:</strong> Calculated from CO₂ reduction</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary font-medium">•</span>
+                        <span><strong>MPG estimation:</strong> If you don't know your MPG, use the vehicle year to get an estimate</span>
+                      </li>
+                    </ul>
+                  </div>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
           
           <Button 
             onClick={handleClear} 
