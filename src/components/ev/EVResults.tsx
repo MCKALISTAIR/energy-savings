@@ -13,6 +13,8 @@ interface EVResultsProps {
   hasCurrentVehicle: boolean;
   dataSource?: 'marketcheck' | 'cached' | 'static';
   lastUpdated?: string;
+  useRealTimeVehiclePricing: boolean;
+  onTogglePricing: () => void;
 }
 
 const EVResults: React.FC<EVResultsProps> = ({ 
@@ -21,7 +23,9 @@ const EVResults: React.FC<EVResultsProps> = ({
   currentMPG, 
   hasCurrentVehicle, 
   dataSource = 'static', 
-  lastUpdated 
+  lastUpdated,
+  useRealTimeVehiclePricing,
+  onTogglePricing
 }) => {
   const getDataSourceInfo = () => {
     switch (dataSource) {
@@ -79,7 +83,12 @@ const EVResults: React.FC<EVResultsProps> = ({
         {/* Data Source Attribution */}
         <div className="flex items-center justify-between text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">
-            <Badge variant={dataSourceInfo.variant} className="flex items-center gap-1">
+            <Badge 
+              variant={dataSourceInfo.variant} 
+              className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={onTogglePricing}
+              title={useRealTimeVehiclePricing ? "Click to use static pricing" : "Click to use real-time market pricing"}
+            >
               {dataSourceInfo.icon}
               {dataSourceInfo.label}
             </Badge>
