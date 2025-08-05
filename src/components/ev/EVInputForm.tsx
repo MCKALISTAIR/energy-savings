@@ -647,37 +647,35 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </Tooltip>
           </TooltipProvider>
           
-          <TooltipProvider>
-            <div 
-              className="relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
+          <div 
+            className="relative"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="hover-scale hover:bg-muted active:bg-muted"
+              onClick={handleHelpButtonClick}
             >
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="hover-scale hover:bg-muted active:bg-muted"
-                onClick={handleHelpButtonClick}
-              >
-                <HelpCircle className="w-4 h-4" />
-              </Button>
-              
-              {showCalculationInfo && (
-                <TooltipContent className="max-w-xs absolute top-full right-0 mt-2 z-50">
-                  <div className="space-y-2">
-                    <p className="font-medium">How EV Savings are Calculated:</p>
-                    <ul className="text-sm space-y-1">
-                      <li>• Petrol costs = (Annual miles ÷ MPG) × Price per gallon</li>
-                      <li>• EV charging costs = (Annual miles ÷ EV efficiency) × Electricity rate</li>
-                      <li>• Public charging premium added based on frequency</li>
-                      <li>• Environmental impact calculated from CO₂ reduction</li>
-                      <li>• If you don't know your MPG, use the vehicle year to get an estimate</li>
-                    </ul>
-                  </div>
-                </TooltipContent>
-              )}
-            </div>
-          </TooltipProvider>
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            
+            {showCalculationInfo && (
+              <div className="absolute top-full right-0 mt-2 z-50 max-w-xs rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md">
+                <div className="space-y-2">
+                  <p className="font-medium">How EV Savings are Calculated:</p>
+                  <ul className="text-sm space-y-1">
+                    <li>• Petrol costs = (Annual miles ÷ MPG) × Price per gallon</li>
+                    <li>• EV charging costs = (Annual miles ÷ EV efficiency) × Electricity rate</li>
+                    <li>• Public charging premium added based on frequency</li>
+                    <li>• Environmental impact calculated from CO₂ reduction</li>
+                    <li>• If you don't know your MPG, use the vehicle year to get an estimate</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
           
           <Button 
             onClick={handleClear} 
