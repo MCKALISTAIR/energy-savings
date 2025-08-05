@@ -83,6 +83,7 @@ const TabContent: React.FC<TabContentProps> = ({
         <EVCalculator 
           onUpdate={updateEVData} 
           energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
+          dashboardConfig={dashboardConfig}
         />
       </TabsContent>
 

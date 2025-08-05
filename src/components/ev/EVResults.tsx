@@ -1,18 +1,64 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Fuel } from 'lucide-react';
+import { Fuel, Database, Clock } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 import EVSavingsStats from './EVSavingsStats';
 import EnvironmentalImpactInfo from './EnvironmentalImpactInfo';
+import { Badge } from '@/components/ui/badge';
 
 interface EVResultsProps {
   results: SavingsData['ev'];
   milesPerYear: string;
   currentMPG: string;
   hasCurrentVehicle: boolean;
+  dataSource?: 'marketcheck' | 'cached' | 'static';
+  lastUpdated?: string;
 }
 
-const EVResults: React.FC<EVResultsProps> = ({ results, milesPerYear, currentMPG, hasCurrentVehicle }) => {
+const EVResults: React.FC<EVResultsProps> = ({ 
+  results, 
+  milesPerYear, 
+  currentMPG, 
+  hasCurrentVehicle, 
+  dataSource = 'static', 
+  lastUpdated 
+}) => {
+  const getDataSourceInfo = () => {
+    switch (dataSource) {
+      case 'marketcheck':
+        return {
+          icon: <Database className="w-4 h-4" />,
+          label: 'Real-time market data',
+          description: 'Pricing from MarketCheck API (US market, converted to GBP)',
+          variant: 'default' as const
+        };
+      case 'cached':
+        return {
+          icon: <Clock className="w-4 h-4" />,
+          label: 'Cached market data',
+          description: 'Recent MarketCheck data (updated within 7 days)',
+          variant: 'secondary' as const
+        };
+      default:
+        return {
+          icon: <Database className="w-4 h-4" />,
+          label: 'Static pricing',
+          description: 'Estimated pricing based on market averages',
+          variant: 'outline' as const
+        };
+    }
+  };
+
+  const dataSourceInfo = getDataSourceInfo();
+  const formattedDate = lastUpdated 
+    ? new Date(lastUpdated).toLocaleDateString('en-GB', { 
+        day: 'numeric', 
+        month: 'short', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
+    : null;
+
   return (
     <Card className="hover-scale">
       <CardHeader>
@@ -29,6 +75,21 @@ const EVResults: React.FC<EVResultsProps> = ({ results, milesPerYear, currentMPG
       </CardHeader>
       <CardContent className="space-y-6">
         <EVSavingsStats results={results} />
+        
+        {/* Data Source Attribution */}
+        <div className="flex items-center justify-between text-sm text-muted-foreground border-t pt-4">
+          <div className="flex items-center gap-2">
+            <Badge variant={dataSourceInfo.variant} className="flex items-center gap-1">
+              {dataSourceInfo.icon}
+              {dataSourceInfo.label}
+            </Badge>
+            <span className="text-xs">{dataSourceInfo.description}</span>
+          </div>
+          {formattedDate && (
+            <span className="text-xs">Updated: {formattedDate}</span>
+          )}
+        </div>
+        
         <EnvironmentalImpactInfo 
           milesPerYear={milesPerYear} 
           currentMPG={currentMPG} 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { SavingsData } from '@/pages/Index';
 import { EnergyPricesConfig } from '@/components/dashboard/types';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UseEVCalculatorProps {
   milesPerYear: string;
@@ -14,6 +15,7 @@ interface UseEVCalculatorProps {
   batteryCapacity: string;
   hasCurrentVehicle: boolean;
   energyPrices?: EnergyPricesConfig;
+  useRealTimeVehiclePricing?: boolean;
   onUpdate: (data: SavingsData['ev']) => void;
 }
 
@@ -29,6 +31,7 @@ export const useEVCalculator = ({
   batteryCapacity,
   hasCurrentVehicle,
   energyPrices,
+  useRealTimeVehiclePricing = false,
   onUpdate
 }: UseEVCalculatorProps) => {
   const [results, setResults] = useState<SavingsData['ev']>({
@@ -40,7 +43,50 @@ export const useEVCalculator = ({
     tenYearSavings: 0
   });
 
-  const calculateSavings = () => {
+  const [dataSource, setDataSource] = useState<'marketcheck' | 'cached' | 'static'>('static');
+  const [lastUpdated, setLastUpdated] = useState<string>('');
+
+  const getVehiclePricing = async (vehicleClass: string, targetPrice: number): Promise<number> => {
+    if (!useRealTimeVehiclePricing) {
+      setDataSource('static');
+      setLastUpdated(new Date().toISOString());
+      // Static pricing: UK market adjustment for comparison vehicle
+      const ukAdjustmentFactor = 1.175; // US prices are typically 15-20% lower than UK
+      return targetPrice * 0.85 * ukAdjustmentFactor;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('vehicle-pricing', {
+        body: {
+          vehicleClass,
+          targetPrice,
+          useCache: true
+        }
+      });
+
+      if (error) {
+        console.error('Error fetching vehicle pricing:', error);
+        setDataSource('static');
+        setLastUpdated(new Date().toISOString());
+        // Fallback to static pricing
+        const ukAdjustmentFactor = 1.175;
+        return targetPrice * 0.85 * ukAdjustmentFactor;
+      }
+
+      setDataSource(data.dataSource);
+      setLastUpdated(data.lastUpdated);
+      return data.priceInGBP;
+    } catch (error) {
+      console.error('Error calling vehicle pricing function:', error);
+      setDataSource('static');
+      setLastUpdated(new Date().toISOString());
+      // Fallback to static pricing
+      const ukAdjustmentFactor = 1.175;
+      return targetPrice * 0.85 * ukAdjustmentFactor;
+    }
+  };
+
+  const calculateSavings = async () => {
     const milesPerYearNum = parseFloat(milesPerYear) || 0;
     // Use current MPG if they have a vehicle, otherwise use average new car MPG
     const effectiveMPG = hasCurrentVehicle ? (parseFloat(currentMPG) || 0) : 42; // 2024 average new car MPG
@@ -107,8 +153,8 @@ export const useEVCalculator = ({
     // Total annual savings
     const totalAnnualSavings = annualFuelSavings + annualMaintenanceSavings;
 
-    // Vehicle cost comparison
-    const petrolCarEquivalent = hasCurrentVehicle ? 0 : 28000; // If no current car, compare to new petrol car
+    // Get comparison vehicle pricing (async)
+    const petrolCarEquivalent = hasCurrentVehicle ? 0 : await getVehiclePricing(evType, 28000);
     const vehicleCostPremium = vehicleCost - petrolCarEquivalent;
 
     // Payback period
@@ -133,5 +179,5 @@ export const useEVCalculator = ({
 
   // Remove auto-calculation - users must click calculate button
 
-  return { results, calculateSavings };
+  return { results, calculateSavings, dataSource, lastUpdated };
 };

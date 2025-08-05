@@ -8,6 +8,7 @@ import { DashboardConfig, DashboardSettingsProps } from './types';
 import { getDefaultConfig } from './defaultConfig';
 import TimePeriodsSection from './TimePeriodsSection';
 import VisibilitySection from './VisibilitySection';
+import ApiSettingsSection from './ApiSettingsSection';
 import EnergyPriceSettingsModal from './EnergyPriceSettingsModal';
 import ActionButtons from './ActionButtons';
 
@@ -72,6 +73,11 @@ const DashboardSettings: React.FC<DashboardSettingsPropsExtended> = ({
             />
 
             <VisibilitySection
+              config={localConfig}
+              onConfigChange={setLocalConfig}
+            />
+
+            <ApiSettingsSection
               config={localConfig}
               onConfigChange={setLocalConfig}
             />

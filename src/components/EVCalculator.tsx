@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SavingsData } from '@/pages/Index';
-import { EnergyPricesConfig } from '@/components/dashboard/types';
+import { EnergyPricesConfig, DashboardConfig } from '@/components/dashboard/types';
 import { useEVCalculator } from './ev/useEVCalculator';
 import EVInputForm from './ev/EVInputForm';
 import EVResults from './ev/EVResults';
@@ -9,9 +9,10 @@ import EVResults from './ev/EVResults';
 interface EVCalculatorProps {
   onUpdate: (data: SavingsData['ev']) => void;
   energyPrices?: EnergyPricesConfig;
+  dashboardConfig?: DashboardConfig;
 }
 
-const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) => {
+const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, dashboardConfig }) => {
   const [milesPerYear, setMilesPerYear] = useState<string>('');
   const [currentMPG, setCurrentMPG] = useState<string>('');
   const [petrolPrice, setPetrolPrice] = useState<string>('');
@@ -29,7 +30,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     ? (parseFloat(electricityRate) / 100).toString() 
     : electricityRate;
 
-  const { results, calculateSavings } = useEVCalculator({
+  const { results, calculateSavings, dataSource, lastUpdated } = useEVCalculator({
     milesPerYear,
     currentMPG,
     petrolPrice,
@@ -41,6 +42,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
     batteryCapacity,
     hasCurrentVehicle,
     energyPrices,
+    useRealTimeVehiclePricing: dashboardConfig?.useRealTimeVehiclePricing || false,
     onUpdate
   });
 
@@ -105,6 +107,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices }) =
         milesPerYear={milesPerYear} 
         currentMPG={currentMPG} 
         hasCurrentVehicle={hasCurrentVehicle}
+        dataSource={dataSource}
+        lastUpdated={lastUpdated}
       />
     </div>
   );
