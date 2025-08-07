@@ -726,30 +726,38 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </div>
 
             {/* Pricing Mode Toggle */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Vehicle pricing</span>
-              <div className="flex rounded-full bg-muted p-1">
-                <button
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
-                    !useRealTimeVehiclePricing 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  onClick={() => setUseRealTimeVehiclePricing(false)}
-                >
-                  Static
-                </button>
-                <button
-                  className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
-                    useRealTimeVehiclePricing 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  onClick={() => setUseRealTimeVehiclePricing(true)}
-                >
-                  Market
-                </button>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Vehicle pricing</span>
+                <div className="flex rounded-full bg-muted p-1">
+                  <button
+                    className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                      !useRealTimeVehiclePricing 
+                        ? 'bg-background text-foreground shadow-sm' 
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                    onClick={() => setUseRealTimeVehiclePricing(false)}
+                  >
+                    Static
+                  </button>
+                  <button
+                    className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                      useRealTimeVehiclePricing 
+                        ? 'bg-background text-foreground shadow-sm' 
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                    onClick={() => setUseRealTimeVehiclePricing(true)}
+                  >
+                    Market
+                  </button>
+                </div>
               </div>
+              <p className="text-xs text-muted-foreground">
+                {useRealTimeVehiclePricing 
+                  ? 'Uses live pricing from MarketCheck API for more accurate estimates' 
+                  : 'Uses estimated pricing based on market averages'
+                }
+              </p>
             </div>
 
             <div className="flex gap-2">
