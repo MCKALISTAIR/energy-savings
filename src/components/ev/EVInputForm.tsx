@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Car, AlertCircle, X, HelpCircle, Calculator, Download } from 'lucide-react';
+import { Car, AlertCircle, X, HelpCircle, Calculator, Download, Database, Globe } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -35,6 +35,8 @@ interface EVInputFormProps {
   setBatteryCapacity: (value: string) => void;
   hasCurrentVehicle: boolean;
   setHasCurrentVehicle: (value: boolean) => void;
+  useRealTimeVehiclePricing: boolean;
+  setUseRealTimeVehiclePricing: (value: boolean) => void;
   onCalculate: () => void;
   onClear: () => void;
 }
@@ -62,6 +64,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setBatteryCapacity,
   hasCurrentVehicle,
   setHasCurrentVehicle,
+  useRealTimeVehiclePricing,
+  setUseRealTimeVehiclePricing,
   onCalculate,
   onClear
 }) => {
@@ -719,6 +723,42 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
                   <p className="text-xs text-muted-foreground">{getEVDescription()}</p>
                 </div>
               )}
+            </div>
+
+            {/* Pricing Mode Toggle */}
+            <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Vehicle Pricing Mode</Label>
+                <div className="flex items-center gap-2">
+                  {useRealTimeVehiclePricing ? (
+                    <Globe className="w-4 h-4 text-primary" />
+                  ) : (
+                    <Database className="w-4 h-4 text-muted-foreground" />
+                  )}
+                  <span className="text-sm text-muted-foreground">
+                    {useRealTimeVehiclePricing ? 'Market pricing' : 'Static pricing'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="realTimePricing"
+                  checked={useRealTimeVehiclePricing}
+                  onCheckedChange={setUseRealTimeVehiclePricing}
+                />
+                <Label htmlFor="realTimePricing" className="text-sm cursor-pointer">
+                  Use real-time market pricing data
+                </Label>
+              </div>
+              
+              <p className="text-xs text-muted-foreground">
+                {useRealTimeVehiclePricing ? (
+                  'Using live vehicle pricing from MarketCheck API for more accurate cost estimates'
+                ) : (
+                  'Using static pricing estimates based on UK market averages'
+                )}
+              </p>
             </div>
 
             <div className="flex gap-2">
