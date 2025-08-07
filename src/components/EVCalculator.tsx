@@ -110,8 +110,6 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
         milesPerYear={milesPerYear} 
         currentMPG={currentMPG} 
         hasCurrentVehicle={hasCurrentVehicle}
-        dataSource={dataSource}
-        lastUpdated={lastUpdated}
       />
     </div>
   );
