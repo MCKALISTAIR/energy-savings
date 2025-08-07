@@ -15,7 +15,8 @@ import {
   Zap,
   MapPin,
   Car,
-  Fuel
+  Fuel,
+  DollarSign
 } from 'lucide-react';
 
 const Status = () => {
@@ -53,6 +54,8 @@ const Status = () => {
         return <Car className="w-5 h-5" />;
       case 'fuel-prices':
         return <Fuel className="w-5 h-5" />;
+      case 'unirate':
+        return <DollarSign className="w-5 h-5" />;
       default:
         return <Database className="w-5 h-5" />;
     }
