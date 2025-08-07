@@ -8,6 +8,7 @@ import Landing from '@/pages/Landing';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
 import Help from '@/pages/Help';
+import Status from '@/pages/Status';
 import './App.css';
 
 const AppContent = () => {
@@ -20,6 +21,7 @@ const AppContent = () => {
           <Route path="/auth" element={<Auth />} />
           <Route path="/calculator" element={<Index />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/status" element={<Status />} />
         </Routes>
       </DatabaseSystemProvider>
     </SystemProvider>

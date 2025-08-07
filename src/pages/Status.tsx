@@ -1,0 +1,226 @@
+import React, { useState } from 'react';
+import { useServiceStatus } from '@/hooks/useServiceStatus';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  RefreshCw, 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  AlertTriangle,
+  Database,
+  Zap,
+  MapPin,
+  Car,
+  Fuel
+} from 'lucide-react';
+
+const Status = () => {
+  const { 
+    services, 
+    logs, 
+    isChecking, 
+    checkAllServices, 
+    checkSingleService,
+    clearLogs 
+  } = useServiceStatus();
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'healthy':
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case 'error':
+        return <XCircle className="w-4 h-4 text-red-600" />;
+      case 'warning':
+        return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-400" />;
+    }
+  };
+
+  const getServiceIcon = (serviceId: string) => {
+    switch (serviceId) {
+      case 'supabase':
+        return <Database className="w-5 h-5" />;
+      case 'octopus-energy':
+        return <Zap className="w-5 h-5" />;
+      case 'address-lookup':
+        return <MapPin className="w-5 h-5" />;
+      case 'vehicle-pricing':
+        return <Car className="w-5 h-5" />;
+      case 'fuel-prices':
+        return <Fuel className="w-5 h-5" />;
+      default:
+        return <Database className="w-5 h-5" />;
+    }
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'healthy':
+        return 'default';
+      case 'error':
+        return 'destructive';
+      case 'warning':
+        return 'secondary';
+      default:
+        return 'outline';
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Service Status</h1>
+            <p className="text-muted-foreground">
+              Monitor the health of all connected services
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={clearLogs}
+              variant="outline"
+              disabled={isChecking}
+            >
+              Clear Logs
+            </Button>
+            <Button
+              onClick={checkAllServices}
+              disabled={isChecking}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
+              {isChecking ? 'Checking...' : 'Check All Services'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {services.map((service) => (
+            <Card key={service.id} className="relative">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {getServiceIcon(service.id)}
+                    <CardTitle className="text-lg">{service.name}</CardTitle>
+                  </div>
+                  <Badge variant={getStatusBadgeVariant(service.status)}>
+                    <div className="flex items-center gap-1">
+                      {getStatusIcon(service.status)}
+                      {service.status}
+                    </div>
+                  </Badge>
+                </div>
+                <CardDescription>{service.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Last Checked:</span>
+                    <span>
+                      {service.lastChecked 
+                        ? new Date(service.lastChecked).toLocaleString()
+                        : 'Never'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Response Time:</span>
+                    <span>
+                      {service.responseTime ? `${service.responseTime}ms` : 'N/A'}
+                    </span>
+                  </div>
+                  {service.lastError && (
+                    <div className="text-sm">
+                      <span className="text-muted-foreground">Last Error:</span>
+                      <p className="text-red-600 text-xs mt-1 truncate" title={service.lastError}>
+                        {service.lastError}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <Button
+                  onClick={() => checkSingleService(service.id)}
+                  disabled={isChecking}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  <RefreshCw className={`w-3 h-3 mr-2 ${isChecking ? 'animate-spin' : ''}`} />
+                  Test Service
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Error Logs */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              Service Error Logs
+              <Badge variant="outline">{logs.length} entries</Badge>
+            </CardTitle>
+            <CardDescription>
+              Detailed logs of service errors and health check results
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-96">
+              {logs.length === 0 ? (
+                <div className="text-center text-muted-foreground py-8">
+                  No logs available. Run service checks to generate logs.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {logs.map((log, index) => (
+                    <div key={index} className="border rounded-lg p-3 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          {getServiceIcon(log.service)}
+                          <span className="font-medium">{log.service}</span>
+                          <Badge 
+                            variant={log.level === 'error' ? 'destructive' : 
+                                   log.level === 'warning' ? 'secondary' : 'default'}
+                          >
+                            {log.level}
+                          </Badge>
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {new Date(log.timestamp).toLocaleString()}
+                        </span>
+                      </div>
+                      <p className="text-sm">{log.message}</p>
+                      {log.details && (
+                        <details className="text-xs">
+                          <summary className="cursor-pointer text-muted-foreground">
+                            Show details
+                          </summary>
+                          <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto">
+                            {typeof log.details === 'string' 
+                              ? log.details 
+                              : JSON.stringify(log.details, null, 2)
+                            }
+                          </pre>
+                        </details>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default Status;
