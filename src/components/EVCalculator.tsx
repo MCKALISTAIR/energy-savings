@@ -112,8 +112,6 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
         hasCurrentVehicle={hasCurrentVehicle}
         dataSource={dataSource}
         lastUpdated={lastUpdated}
-        useRealTimeVehiclePricing={useRealTimeVehiclePricing}
-        onTogglePricing={() => setUseRealTimeVehiclePricing(!useRealTimeVehiclePricing)}
       />
     </div>
   );

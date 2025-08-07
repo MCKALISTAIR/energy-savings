@@ -13,8 +13,6 @@ interface EVResultsProps {
   hasCurrentVehicle: boolean;
   dataSource?: 'marketcheck' | 'cached' | 'static';
   lastUpdated?: string;
-  useRealTimeVehiclePricing: boolean;
-  onTogglePricing: () => void;
 }
 
 const EVResults: React.FC<EVResultsProps> = ({ 
@@ -23,20 +21,9 @@ const EVResults: React.FC<EVResultsProps> = ({
   currentMPG, 
   hasCurrentVehicle, 
   dataSource = 'static', 
-  lastUpdated,
-  useRealTimeVehiclePricing,
-  onTogglePricing
+  lastUpdated
 }) => {
   const getDataSourceInfo = () => {
-    if (!useRealTimeVehiclePricing) {
-      return {
-        icon: <Database className="w-4 h-4" />,
-        label: 'Static pricing',
-        description: 'Estimated pricing based on market averages',
-        variant: 'outline' as const
-      };
-    }
-
     switch (dataSource) {
       case 'marketcheck':
         return {
@@ -51,6 +38,13 @@ const EVResults: React.FC<EVResultsProps> = ({
           label: 'Market pricing',
           description: 'Recent MarketCheck data (updated within 7 days)',
           variant: 'secondary' as const
+        };
+      case 'static':
+        return {
+          icon: <Database className="w-4 h-4" />,
+          label: 'Static pricing',
+          description: 'Estimated pricing based on market averages',
+          variant: 'outline' as const
         };
       default:
         return {
@@ -94,9 +88,7 @@ const EVResults: React.FC<EVResultsProps> = ({
           <div className="flex items-center gap-2">
             <Badge 
               variant={dataSourceInfo.variant} 
-              className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={onTogglePricing}
-              title={useRealTimeVehiclePricing ? "Click to use static pricing" : "Click to use market pricing"}
+              className="flex items-center gap-1"
             >
               {dataSourceInfo.icon}
               {dataSourceInfo.label}

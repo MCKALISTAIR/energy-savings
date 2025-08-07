@@ -726,39 +726,28 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </div>
 
             {/* Pricing Mode Toggle */}
-            <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">Vehicle Pricing Mode</Label>
-                <div className="flex items-center gap-2">
-                  {useRealTimeVehiclePricing ? (
-                    <Globe className="w-4 h-4 text-primary" />
-                  ) : (
-                    <Database className="w-4 h-4 text-muted-foreground" />
-                  )}
-                  <span className="text-sm text-muted-foreground">
+            <div className="space-y-2">
+              <div 
+                className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => setUseRealTimeVehiclePricing(!useRealTimeVehiclePricing)}
+              >
+                {useRealTimeVehiclePricing ? (
+                  <Globe className="w-4 h-4 text-primary" />
+                ) : (
+                  <Database className="w-4 h-4 text-muted-foreground" />
+                )}
+                <div className="flex-1">
+                  <div className="text-sm font-medium">
                     {useRealTimeVehiclePricing ? 'Market pricing' : 'Static pricing'}
-                  </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {useRealTimeVehiclePricing 
+                      ? 'Live pricing from MarketCheck API' 
+                      : 'Estimated pricing based on market averages'
+                    }
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="realTimePricing"
-                  checked={useRealTimeVehiclePricing}
-                  onCheckedChange={setUseRealTimeVehiclePricing}
-                />
-                <Label htmlFor="realTimePricing" className="text-sm cursor-pointer">
-                  Use real-time market pricing data
-                </Label>
-              </div>
-              
-              <p className="text-xs text-muted-foreground">
-                {useRealTimeVehiclePricing ? (
-                  'Using live vehicle pricing from MarketCheck API for more accurate cost estimates'
-                ) : (
-                  'Using static pricing estimates based on UK market averages'
-                )}
-              </p>
             </div>
 
             <div className="flex gap-2">
