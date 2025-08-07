@@ -24,7 +24,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
   const [publicChargingFrequency, setPublicChargingFrequency] = useState<string>('');
   const [batteryCapacity, setBatteryCapacity] = useState<string>('');
   const [hasCurrentVehicle, setHasCurrentVehicle] = useState<boolean>(true);
-  const [useRealTimeVehiclePricing, setUseRealTimeVehiclePricing] = useState<boolean>(false);
+  const [useRealTimeVehiclePricing, setUseRealTimeVehiclePricing] = useState<boolean>(true);
 
   // Convert electricity rate to pounds for calculation if needed
   const electricityRateInPounds = electricityUnit === 'pence' && electricityRate 
