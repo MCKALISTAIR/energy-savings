@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Fuel } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Fuel, AlertTriangle } from 'lucide-react';
 import { SavingsData } from '@/pages/Index';
 import EVSavingsStats from './EVSavingsStats';
 import EnvironmentalImpactInfo from './EnvironmentalImpactInfo';
@@ -10,13 +11,15 @@ interface EVResultsProps {
   milesPerYear: string;
   currentMPG: string;
   hasCurrentVehicle: boolean;
+  hasData: boolean;
 }
 
 const EVResults: React.FC<EVResultsProps> = ({ 
   results, 
   milesPerYear, 
   currentMPG, 
-  hasCurrentVehicle
+  hasCurrentVehicle,
+  hasData
 }) => {
 
   return (
@@ -34,13 +37,24 @@ const EVResults: React.FC<EVResultsProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <EVSavingsStats results={results} />
-        
-        <EnvironmentalImpactInfo 
-          milesPerYear={milesPerYear} 
-          currentMPG={currentMPG} 
-          hasCurrentVehicle={hasCurrentVehicle} 
-        />
+        {!hasData ? (
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-700">
+              Please fill in the EV details and click "Calculate Savings" to see your potential benefits.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <>
+            <EVSavingsStats results={results} />
+            
+            <EnvironmentalImpactInfo 
+              milesPerYear={milesPerYear} 
+              currentMPG={currentMPG} 
+              hasCurrentVehicle={hasCurrentVehicle} 
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );
