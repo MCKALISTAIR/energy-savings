@@ -98,47 +98,110 @@ function isWithin7Days(dateString: string): boolean {
   return diffDays < 7;
 }
 
+async function testNetworkConnectivity(): Promise<boolean> {
+  try {
+    const response = await fetch('https://httpbin.org/get', { 
+      method: 'GET',
+      signal: AbortSignal.timeout(5000)
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Network connectivity test failed:', error);
+    return false;
+  }
+}
+
 async function getMarketCheckPricing(vehicleClass: string, targetPrice: number): Promise<{ averagePrice: number; count: number } | null> {
   if (!MARKETCHECK_API_KEY) {
     console.error('MarketCheck API key not configured');
     return null;
   }
 
-  try {
-    const searchParams = new URLSearchParams({
-      api_key: MARKETCHECK_API_KEY,
-      body_type: vehicleClass,
-      price_min: Math.max(0, targetPrice - 5000).toString(),
-      price_max: (targetPrice + 5000).toString(),
-      fuel_type: 'Gasoline',
-      listing_type: 'used',
-      radius: '100',
-      zip: '10001', // NYC area for consistent data
-      rows: '50'
-    });
-
-    const response = await fetch(`https://marketcheck-prod.apigee.net/v1/search?${searchParams}`);
-    
-    if (!response.ok) {
-      console.error('MarketCheck API error:', response.status);
-      return null;
-    }
-
-    const data = await response.json();
-    
-    if (data.listings && data.listings.length > 0) {
-      const prices = data.listings.map((listing: any) => listing.price).filter((price: number) => price > 0);
-      const averagePrice = prices.reduce((sum: number, price: number) => sum + price, 0) / prices.length;
-      
-      console.log(`MarketCheck: Found ${prices.length} vehicles, average price: $${averagePrice}`);
-      return { averagePrice, count: prices.length };
-    }
-
-    return null;
-  } catch (error) {
-    console.error('Error fetching MarketCheck data:', error);
+  // Test network connectivity first
+  const hasConnectivity = await testNetworkConnectivity();
+  if (!hasConnectivity) {
+    console.error('Network connectivity test failed - falling back to static pricing');
     return null;
   }
+
+  // API endpoints to try in order
+  const apiEndpoints = [
+    'https://api.marketcheck.com/v2/search',
+    'https://marketcheck-prod.apigee.net/v2/search', 
+    'https://marketcheck-prod.apigee.net/v1/search'
+  ];
+
+  for (const endpoint of apiEndpoints) {
+    try {
+      console.log(`Attempting MarketCheck API call to: ${endpoint}`);
+
+      const searchParams = new URLSearchParams({
+        body_type: vehicleClass,
+        price_min: Math.max(0, targetPrice - 5000).toString(),
+        price_max: (targetPrice + 5000).toString(),
+        fuel_type: 'Gasoline',
+        listing_type: 'used',
+        radius: '100',
+        zip: '94538', // California ZIP code for testing
+        rows: '50'
+      });
+
+      // Try with API key in headers first
+      let response = await fetch(`${endpoint}?${searchParams}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${MARKETCHECK_API_KEY}`,
+          'X-API-KEY': MARKETCHECK_API_KEY,
+          'User-Agent': 'Supabase-Function/1.0'
+        },
+        signal: AbortSignal.timeout(10000)
+      });
+
+      // If headers don't work, try with API key in query params
+      if (!response.ok) {
+        console.log(`Headers auth failed (${response.status}), trying query param auth`);
+        searchParams.set('api_key', MARKETCHECK_API_KEY);
+        response = await fetch(`${endpoint}?${searchParams}`, {
+          method: 'GET',
+          signal: AbortSignal.timeout(10000)
+        });
+      }
+      
+      if (!response.ok) {
+        console.error(`MarketCheck API error for ${endpoint}: ${response.status} - ${response.statusText}`);
+        const errorText = await response.text();
+        console.error(`Response body: ${errorText}`);
+        continue; // Try next endpoint
+      }
+
+      const data = await response.json();
+      console.log(`MarketCheck API response structure:`, Object.keys(data));
+      
+      if (data.listings && data.listings.length > 0) {
+        const prices = data.listings.map((listing: any) => listing.price).filter((price: number) => price > 0);
+        const averagePrice = prices.reduce((sum: number, price: number) => sum + price, 0) / prices.length;
+        
+        console.log(`MarketCheck SUCCESS: Found ${prices.length} vehicles, average price: $${averagePrice}`);
+        return { averagePrice, count: prices.length };
+      }
+
+      console.log('MarketCheck returned no listings');
+      return null;
+
+    } catch (error) {
+      console.error(`Error fetching MarketCheck data from ${endpoint}:`, error);
+      
+      // Log specific error types for debugging
+      if (error instanceof TypeError && error.message.includes('dns error')) {
+        console.error('DNS resolution failed - this appears to be a network configuration issue');
+      }
+      
+      continue; // Try next endpoint
+    }
+  }
+
+  console.error('All MarketCheck API endpoints failed');
+  return null;
 }
 
 async function getCachedVehiclePricing(vehicleClass: string): Promise<{ averagePrice: number; lastUpdated: string } | null> {
