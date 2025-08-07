@@ -46,6 +46,14 @@ export const useEVCalculator = ({
   const [dataSource, setDataSource] = useState<'marketcheck' | 'cached' | 'static'>('static');
   const [lastUpdated, setLastUpdated] = useState<string>('');
 
+  // Update dataSource immediately when pricing mode changes
+  useEffect(() => {
+    if (!useRealTimeVehiclePricing) {
+      setDataSource('static');
+      setLastUpdated(new Date().toISOString());
+    }
+  }, [useRealTimeVehiclePricing]);
+
   const getVehiclePricing = async (vehicleClass: string, targetPrice: number): Promise<number> => {
     if (!useRealTimeVehiclePricing) {
       setDataSource('static');
