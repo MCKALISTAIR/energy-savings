@@ -726,27 +726,29 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             </div>
 
             {/* Pricing Mode Toggle */}
-            <div className="space-y-2">
-              <div 
-                className="flex items-center gap-2 p-3 bg-muted/30 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                onClick={() => setUseRealTimeVehiclePricing(!useRealTimeVehiclePricing)}
-              >
-                {useRealTimeVehiclePricing ? (
-                  <Globe className="w-4 h-4 text-primary" />
-                ) : (
-                  <Database className="w-4 h-4 text-muted-foreground" />
-                )}
-                <div className="flex-1">
-                  <div className="text-sm font-medium">
-                    {useRealTimeVehiclePricing ? 'Market pricing' : 'Static pricing'}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {useRealTimeVehiclePricing 
-                      ? 'Live pricing from MarketCheck API' 
-                      : 'Estimated pricing based on market averages'
-                    }
-                  </div>
-                </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Vehicle pricing</span>
+              <div className="flex rounded-full bg-muted p-1">
+                <button
+                  className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                    !useRealTimeVehiclePricing 
+                      ? 'bg-background text-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  onClick={() => setUseRealTimeVehiclePricing(false)}
+                >
+                  Static
+                </button>
+                <button
+                  className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                    useRealTimeVehiclePricing 
+                      ? 'bg-background text-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                  onClick={() => setUseRealTimeVehiclePricing(true)}
+                >
+                  Market
+                </button>
               </div>
             </div>
 
