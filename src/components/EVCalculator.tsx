@@ -106,6 +106,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
         setHasCurrentVehicle={setHasCurrentVehicle}
         useRealTimeVehiclePricing={useRealTimeVehiclePricing}
         setUseRealTimeVehiclePricing={setUseRealTimeVehiclePricing}
+        dataSource={dataSource}
+        lastUpdated={lastUpdated}
         onCalculate={calculateSavings}
         onClear={clearForm}
       />

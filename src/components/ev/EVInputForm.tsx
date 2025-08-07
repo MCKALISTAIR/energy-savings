@@ -37,6 +37,8 @@ interface EVInputFormProps {
   setHasCurrentVehicle: (value: boolean) => void;
   useRealTimeVehiclePricing: boolean;
   setUseRealTimeVehiclePricing: (value: boolean) => void;
+  dataSource?: 'marketcheck' | 'cached' | 'static';
+  lastUpdated?: string;
   onCalculate: () => void;
   onClear: () => void;
 }
@@ -66,6 +68,8 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
   setHasCurrentVehicle,
   useRealTimeVehiclePricing,
   setUseRealTimeVehiclePricing,
+  dataSource,
+  lastUpdated,
   onCalculate,
   onClear
 }) => {
@@ -729,32 +733,47 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Vehicle pricing</span>
-                <div className="flex rounded-full bg-muted p-1">
-                  <button
-                    className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
-                      !useRealTimeVehiclePricing 
-                        ? 'bg-background text-foreground shadow-sm' 
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                    onClick={() => setUseRealTimeVehiclePricing(false)}
-                  >
-                    Static
-                  </button>
-                  <button
-                    className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
-                      useRealTimeVehiclePricing 
-                        ? 'bg-background text-foreground shadow-sm' 
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                    onClick={() => setUseRealTimeVehiclePricing(true)}
-                  >
-                    Market
-                  </button>
+                <div className="flex items-center gap-2">
+                  <div className="flex rounded-full bg-muted p-1">
+                    <button
+                      className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                        !useRealTimeVehiclePricing 
+                          ? 'bg-background text-foreground shadow-sm' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                      onClick={() => setUseRealTimeVehiclePricing(false)}
+                    >
+                      Static
+                    </button>
+                    <button
+                      className={`px-3 py-1 text-xs font-medium rounded-full transition-all ${
+                        useRealTimeVehiclePricing 
+                          ? 'bg-background text-foreground shadow-sm' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                      onClick={() => setUseRealTimeVehiclePricing(true)}
+                    >
+                      Market
+                    </button>
+                  </div>
+                  {dataSource && (
+                    <div className={`px-2 py-1 text-xs rounded-full ${
+                      dataSource === 'marketcheck' 
+                        ? 'bg-green-100 text-green-800' 
+                        : dataSource === 'cached' 
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {dataSource === 'marketcheck' ? 'Live' : dataSource === 'cached' ? 'Cached' : 'Static'}
+                    </div>
+                  )}
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
                 {useRealTimeVehiclePricing 
-                  ? 'Uses live pricing from MarketCheck API for more accurate estimates' 
+                  ? dataSource === 'static' 
+                    ? 'MarketCheck API unavailable - using fallback pricing' 
+                    : 'Uses live pricing from MarketCheck API for more accurate estimates'
                   : 'Uses estimated pricing based on market averages'
                 }
               </p>
