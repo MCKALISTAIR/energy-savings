@@ -17,6 +17,7 @@ interface UseEVCalculatorProps {
   energyPrices?: EnergyPricesConfig;
   useRealTimeVehiclePricing?: boolean;
   onUpdate: (data: SavingsData['ev']) => void;
+  onPricingModeChange?: (usePricing: boolean) => void;
 }
 
 export const useEVCalculator = ({
@@ -32,7 +33,8 @@ export const useEVCalculator = ({
   hasCurrentVehicle,
   energyPrices,
   useRealTimeVehiclePricing = false,
-  onUpdate
+  onUpdate,
+  onPricingModeChange
 }: UseEVCalculatorProps) => {
   const [results, setResults] = useState<SavingsData['ev']>({
     vehicleCost: 0,
@@ -76,6 +78,8 @@ export const useEVCalculator = ({
         console.error('Error fetching vehicle pricing:', error);
         setDataSource('static');
         setLastUpdated(new Date().toISOString());
+        // Switch to static mode and notify parent
+        onPricingModeChange?.(false);
         // Fallback to static pricing
         const ukAdjustmentFactor = 1.175;
         return targetPrice * 0.85 * ukAdjustmentFactor;
@@ -88,6 +92,8 @@ export const useEVCalculator = ({
       console.error('Error calling vehicle pricing function:', error);
       setDataSource('static');
       setLastUpdated(new Date().toISOString());
+      // Switch to static mode and notify parent
+      onPricingModeChange?.(false);
       // Fallback to static pricing
       const ukAdjustmentFactor = 1.175;
       return targetPrice * 0.85 * ukAdjustmentFactor;

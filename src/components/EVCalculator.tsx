@@ -24,7 +24,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
   const [publicChargingFrequency, setPublicChargingFrequency] = useState<string>('');
   const [batteryCapacity, setBatteryCapacity] = useState<string>('');
   const [hasCurrentVehicle, setHasCurrentVehicle] = useState<boolean>(true);
-  const [useRealTimeVehiclePricing, setUseRealTimeVehiclePricing] = useState<boolean>(false);
+  const [useRealTimeVehiclePricing, setUseRealTimeVehiclePricing] = useState<boolean>(true);
   const [hasCalculated, setHasCalculated] = useState<boolean>(false);
 
   // Convert electricity rate to pounds for calculation if needed
@@ -48,7 +48,8 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
     onUpdate: (data) => {
       setHasCalculated(true);
       onUpdate(data);
-    }
+    },
+    onPricingModeChange: setUseRealTimeVehiclePricing
   });
 
   const clearForm = () => {
