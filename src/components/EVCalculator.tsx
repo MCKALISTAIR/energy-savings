@@ -5,6 +5,7 @@ import { EnergyPricesConfig, DashboardConfig } from '@/components/dashboard/type
 import { useEVCalculator } from './ev/useEVCalculator';
 import EVInputForm from './ev/EVInputForm';
 import EVResults from './ev/EVResults';
+import FuelPriceBreakeven from './ev/FuelPriceBreakeven';
 
 interface EVCalculatorProps {
   onUpdate: (data: SavingsData['ev']) => void;
@@ -81,45 +82,52 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
   }, [energyPrices, electricityUnit]);
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
-      <EVInputForm
-        milesPerYear={milesPerYear}
-        setMilesPerYear={setMilesPerYear}
-        currentMPG={currentMPG}
-        setCurrentMPG={setCurrentMPG}
-        petrolPrice={petrolPrice}
-        setPetrolPrice={setPetrolPrice}
-        electricityRate={electricityRate}
-        setElectricityRate={setElectricityRate}
+    <div className="space-y-6">
+      <FuelPriceBreakeven 
+        onElectricityRateUpdate={setElectricityRate}
         electricityUnit={electricityUnit}
-        setElectricityUnit={setElectricityUnit}
-        evType={evType}
-        setEVType={setEVType}
-        exactVehicleCost={exactVehicleCost}
-        setExactVehicleCost={setExactVehicleCost}
-        useExactCost={useExactCost}
-        setUseExactCost={setUseExactCost}
-        publicChargingFrequency={publicChargingFrequency}
-        setPublicChargingFrequency={setPublicChargingFrequency}
-        batteryCapacity={batteryCapacity}
-        setBatteryCapacity={setBatteryCapacity}
-        hasCurrentVehicle={hasCurrentVehicle}
-        setHasCurrentVehicle={setHasCurrentVehicle}
-        useRealTimeVehiclePricing={useRealTimeVehiclePricing}
-        setUseRealTimeVehiclePricing={setUseRealTimeVehiclePricing}
-        dataSource={dataSource}
-        lastUpdated={lastUpdated}
-        onCalculate={calculateSavings}
-        onClear={clearForm}
       />
+      
+      <div className="grid md:grid-cols-2 gap-6">
+        <EVInputForm
+          milesPerYear={milesPerYear}
+          setMilesPerYear={setMilesPerYear}
+          currentMPG={currentMPG}
+          setCurrentMPG={setCurrentMPG}
+          petrolPrice={petrolPrice}
+          setPetrolPrice={setPetrolPrice}
+          electricityRate={electricityRate}
+          setElectricityRate={setElectricityRate}
+          electricityUnit={electricityUnit}
+          setElectricityUnit={setElectricityUnit}
+          evType={evType}
+          setEVType={setEVType}
+          exactVehicleCost={exactVehicleCost}
+          setExactVehicleCost={setExactVehicleCost}
+          useExactCost={useExactCost}
+          setUseExactCost={setUseExactCost}
+          publicChargingFrequency={publicChargingFrequency}
+          setPublicChargingFrequency={setPublicChargingFrequency}
+          batteryCapacity={batteryCapacity}
+          setBatteryCapacity={setBatteryCapacity}
+          hasCurrentVehicle={hasCurrentVehicle}
+          setHasCurrentVehicle={setHasCurrentVehicle}
+          useRealTimeVehiclePricing={useRealTimeVehiclePricing}
+          setUseRealTimeVehiclePricing={setUseRealTimeVehiclePricing}
+          dataSource={dataSource}
+          lastUpdated={lastUpdated}
+          onCalculate={calculateSavings}
+          onClear={clearForm}
+        />
 
-      <EVResults 
-        results={results} 
-        milesPerYear={milesPerYear} 
-        currentMPG={currentMPG} 
-        hasCurrentVehicle={hasCurrentVehicle}
-        hasData={hasCalculated}
-      />
+        <EVResults 
+          results={results} 
+          milesPerYear={milesPerYear} 
+          currentMPG={currentMPG} 
+          hasCurrentVehicle={hasCurrentVehicle}
+          hasData={hasCalculated}
+        />
+      </div>
     </div>
   );
 };

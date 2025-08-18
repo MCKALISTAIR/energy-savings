@@ -284,20 +284,12 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
 
       console.log('Received data:', data);
 
-      if (data?.price) {
-        console.log('Setting petrol price to:', data.price.toFixed(3));
-        setPetrolPrice(data.price.toFixed(3));
+      if (data?.petrol) {
+        console.log('Setting petrol price to:', data.petrol.toFixed(3));
+        setPetrolPrice(data.petrol.toFixed(3));
         toast({
           title: "Price updated!",
-          description: `Current UK average: £${data.price.toFixed(3)}/litre`,
-        });
-      } else if (data?.fallbackPrice) {
-        console.log('Using fallback price:', data.fallbackPrice.toFixed(3));
-        setPetrolPrice(data.fallbackPrice.toFixed(3));
-        toast({
-          title: "Using fallback price",
-          description: `£${data.fallbackPrice.toFixed(3)}/litre - Data source temporarily unavailable`,
-          variant: "default",
+          description: `Current UK average: £${data.petrol.toFixed(3)}/litre`,
         });
       } else {
         console.error('No price data in response:', data);
