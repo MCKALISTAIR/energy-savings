@@ -21,33 +21,35 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
   const { fuelPrices, loading, error, refetch } = useFuelPrices();
   const { toast } = useToast();
   const [customMPG, setCustomMPG] = useState<string>('42');
+  const [selectedFuel, setSelectedFuel] = useState<'petrol' | 'diesel'>('petrol');
 
   const breakEvenCalculation = useMemo(() => {
     if (!fuelPrices) return null;
 
     const mpg = parseFloat(customMPG) || 42;
-    const petrolPricePerLitre = fuelPrices.petrol;
+    const fuelPricePerLitre = selectedFuel === 'petrol' ? fuelPrices.petrol : fuelPrices.diesel;
     
     // Convert MPG to miles per litre (1 gallon = 4.546 litres)
     const milesPerLitre = mpg / 4.546;
     
-    // Cost per mile for petrol vehicle
-    const petrolCostPerMile = petrolPricePerLitre / milesPerLitre;
+    // Cost per mile for fuel vehicle
+    const fuelCostPerMile = fuelPricePerLitre / milesPerLitre;
     
     // Average EV efficiency: 3.5 miles per kWh
     const evMilesPerKWh = 3.5;
     const evKWhPerMile = 1 / evMilesPerKWh;
     
     // Maximum electricity price for EV to be cheaper (per kWh)
-    const maxElectricityPricePerKWh = petrolCostPerMile / evKWhPerMile;
+    const maxElectricityPricePerKWh = fuelCostPerMile / evKWhPerMile;
     
     return {
-      petrolCostPerMile: petrolCostPerMile,
+      fuelCostPerMile: fuelCostPerMile,
       maxElectricityPricePerKWh: maxElectricityPricePerKWh,
       maxElectricityPricePence: maxElectricityPricePerKWh * 100,
-      mpgUsed: mpg
+      mpgUsed: mpg,
+      selectedFuelType: selectedFuel
     };
-  }, [fuelPrices, customMPG]);
+  }, [fuelPrices, customMPG, selectedFuel]);
 
   const handleUseBreakevenRate = () => {
     if (!breakEvenCalculation) return;
@@ -119,7 +121,14 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
       <CardContent className="space-y-6">
         {/* Current Fuel Prices */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-4 bg-amber-50 rounded-lg border border-amber-200">
+          <button 
+            onClick={() => setSelectedFuel('petrol')}
+            className={`text-center p-4 rounded-lg border transition-all cursor-pointer ${
+              selectedFuel === 'petrol' 
+                ? 'bg-amber-100 border-amber-300 ring-2 ring-amber-400' 
+                : 'bg-amber-50 border-amber-200 hover:bg-amber-75'
+            }`}
+          >
             <div className="flex items-center justify-center gap-2 mb-2">
               <Fuel className="w-5 h-5 text-amber-600" />
               <span className="font-medium text-amber-900">Petrol</span>
@@ -127,9 +136,19 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
             <div className="text-2xl font-bold text-amber-900">
               {formatCurrency(fuelPrices.petrol, 3)}/L
             </div>
-          </div>
+            {selectedFuel === 'petrol' && (
+              <div className="text-xs text-amber-700 mt-1 font-medium">Selected</div>
+            )}
+          </button>
           
-          <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <button 
+            onClick={() => setSelectedFuel('diesel')}
+            className={`text-center p-4 rounded-lg border transition-all cursor-pointer ${
+              selectedFuel === 'diesel' 
+                ? 'bg-gray-100 border-gray-300 ring-2 ring-gray-400' 
+                : 'bg-gray-50 border-gray-200 hover:bg-gray-75'
+            }`}
+          >
             <div className="flex items-center justify-center gap-2 mb-2">
               <Fuel className="w-5 h-5 text-gray-600" />
               <span className="font-medium text-gray-900">Diesel</span>
@@ -137,7 +156,10 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
             <div className="text-2xl font-bold text-gray-900">
               {formatCurrency(fuelPrices.diesel, 3)}/L
             </div>
-          </div>
+            {selectedFuel === 'diesel' && (
+              <div className="text-xs text-gray-700 mt-1 font-medium">Selected</div>
+            )}
+          </button>
         </div>
 
         <div className="text-xs text-muted-foreground text-center">
@@ -174,9 +196,9 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
               <div className="p-4 bg-green-50 rounded-lg border border-green-200 space-y-3">
                 <div className="text-sm text-green-800">
                   <div className="flex items-center justify-between">
-                    <span>Petrol cost per mile:</span>
+                    <span>{selectedFuel === 'petrol' ? 'Petrol' : 'Diesel'} cost per mile:</span>
                     <span className="font-medium">
-                      {formatCurrency(breakEvenCalculation.petrolCostPerMile, 3)}
+                      {formatCurrency(breakEvenCalculation.fuelCostPerMile, 3)}
                     </span>
                   </div>
                 </div>
@@ -185,7 +207,7 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
 
                 <div className="space-y-2">
                   <div className="text-sm font-medium text-green-900">
-                    For an EV to be cheaper, find charging that costs no more than:
+                    For an EV to be cheaper than {selectedFuel}, find charging that costs no more than:
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-green-900">
