@@ -195,9 +195,6 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
                             <div className="text-xs text-green-700 mt-1">
                               Based on {breakEvenCalculation.mpgUsed} MPG and 3.5 miles/kWh EV efficiency
                             </div>
-                            <div className="text-xs text-green-600 mt-2 text-center">
-                              Compare this to your charging rate above
-                            </div>
                           </div>
                         </div>
                       </div>
