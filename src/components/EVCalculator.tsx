@@ -84,7 +84,6 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
   return (
     <div className="space-y-6">
       <FuelPriceBreakeven 
-        onElectricityRateUpdate={setElectricityRate}
         electricityUnit={electricityUnit}
       />
       

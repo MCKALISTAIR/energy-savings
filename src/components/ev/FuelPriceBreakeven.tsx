@@ -6,21 +6,17 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Fuel, Zap, TrendingUp, RefreshCw, ArrowRight, ChevronDown } from 'lucide-react';
+import { Fuel, Zap, TrendingUp, RefreshCw, ChevronDown } from 'lucide-react';
 import { useFuelPrices } from '@/hooks/useFuelPrices';
-import { useToast } from '@/hooks/use-toast';
 
 interface FuelPriceBreakevenProps {
-  onElectricityRateUpdate?: (rate: string) => void;
   electricityUnit?: 'pounds' | 'pence';
 }
 
 const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
-  onElectricityRateUpdate,
   electricityUnit = 'pence'
 }) => {
   const { fuelPrices, loading, error, refetch } = useFuelPrices();
-  const { toast } = useToast();
   const [customMPG, setCustomMPG] = useState<string>('42');
   const [selectedFuel, setSelectedFuel] = useState<'petrol' | 'diesel'>('petrol');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -53,20 +49,6 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
     };
   }, [fuelPrices, customMPG, selectedFuel]);
 
-  const handleUseBreakevenRate = () => {
-    if (!breakEvenCalculation) return;
-
-    const rate = electricityUnit === 'pence' 
-      ? breakEvenCalculation.maxElectricityPricePence.toFixed(1)
-      : breakEvenCalculation.maxElectricityPricePerKWh.toFixed(3);
-
-    onElectricityRateUpdate?.(rate);
-    
-    toast({
-      title: "Rate updated!",
-      description: `Set to break-even rate: ${rate} ${electricityUnit === 'pence' ? 'p' : '£'}/kWh`,
-    });
-  };
 
   const formatCurrency = (amount: number, decimals: number = 2) => {
     return `£${amount.toFixed(decimals)}`;
@@ -213,19 +195,11 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
                             <div className="text-xs text-green-700 mt-1">
                               Based on {breakEvenCalculation.mpgUsed} MPG and 3.5 miles/kWh EV efficiency
                             </div>
+                            <div className="text-xs text-green-600 mt-2 text-center">
+                              Compare this to your charging rate above
+                            </div>
                           </div>
                         </div>
-
-                        {onElectricityRateUpdate && (
-                          <Button 
-                            onClick={handleUseBreakevenRate}
-                            className="w-full"
-                            size="sm"
-                          >
-                            <ArrowRight className="w-4 h-4 mr-2" />
-                            Use This Rate in Calculator
-                          </Button>
-                        )}
                       </div>
                     )}
                   </div>
