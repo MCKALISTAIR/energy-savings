@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Fuel, Zap, TrendingUp, RefreshCw, ChevronDown } from 'lucide-react';
+import { Fuel, Zap, TrendingUp, RefreshCw, ChevronDown, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useFuelPrices } from '@/hooks/useFuelPrices';
 
 interface FuelPriceBreakevenProps {
@@ -151,6 +152,27 @@ const FuelPriceBreakeven: React.FC<FuelPriceBreakevenProps> = ({
                   <div className="flex items-center gap-2">
                     <Zap className="w-5 h-5 text-green-500" />
                     <h3 className="font-medium">EV Break-Even Calculator</h3>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-sm p-4">
+                          <div className="space-y-2 text-sm">
+                            <p className="font-medium">How charging costs are calculated:</p>
+                            <ul className="space-y-1 list-disc list-inside">
+                              <li><strong>Home charging:</strong> Electricity rate × EV efficiency (assumed 3.5 miles/kWh)</li>
+                              <li><strong>Public charging:</strong> Higher rates applied based on your usage frequency</li>
+                              <li><strong>Battery capacity:</strong> Affects charging patterns and costs per session</li>
+                              <li><strong>Annual costs:</strong> (Miles ÷ Efficiency) × Blended charging rate</li>
+                            </ul>
+                            <p className="text-xs text-muted-foreground">
+                              Calculations include both home and public charging based on your usage patterns.
+                            </p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   
                   <div className="space-y-3">

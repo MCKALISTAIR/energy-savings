@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Car, AlertCircle, X, HelpCircle, Calculator, Download, Database, Globe, Info } from 'lucide-react';
+import { Car, AlertCircle, X, HelpCircle, Calculator, Download, Database, Globe } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -339,27 +339,6 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
         <CardTitle className="flex items-center gap-2">
           <Car className="w-5 h-5 text-green-500" />
           Electric Vehicle Calculator
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-sm p-4">
-                <div className="space-y-2 text-sm">
-                  <p className="font-medium">How charging costs are calculated:</p>
-                  <ul className="space-y-1 list-disc list-inside">
-                    <li><strong>Home charging:</strong> Electricity rate × EV efficiency (assumed 3.5 miles/kWh)</li>
-                    <li><strong>Public charging:</strong> Higher rates applied based on your usage frequency</li>
-                    <li><strong>Battery capacity:</strong> Affects charging patterns and costs per session</li>
-                    <li><strong>Annual costs:</strong> (Miles ÷ Efficiency) × Blended charging rate</li>
-                  </ul>
-                  <p className="text-xs text-muted-foreground">
-                    Calculations include both home and public charging based on your usage patterns.
-                  </p>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </CardTitle>
         <CardDescription>
           {hasCurrentVehicle 
