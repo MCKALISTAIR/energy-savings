@@ -8,6 +8,11 @@ interface ErrorPageProps {
   resetError?: () => void;
 }
 
+interface ApiError extends Error {
+  status?: number;
+  code?: string;
+}
+
 const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -17,6 +22,21 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
                       location.state?.message || 
                       new URLSearchParams(location.search).get('msg') ||
                       'An unexpected error occurred';
+  
+  // Check if it's an API error with status code
+  const apiError = error as ApiError;
+  const hasStatusCode = apiError?.status && apiError.status >= 400;
+  
+  const getErrorTitle = () => {
+    if (hasStatusCode) {
+      if (apiError.status >= 500) return 'Server Error';
+      if (apiError.status === 404) return 'Not Found';
+      if (apiError.status === 403) return 'Access Denied';
+      if (apiError.status === 401) return 'Authentication Required';
+      return 'Request Error';
+    }
+    return 'Something went wrong';
+  };
 
   const handleRefresh = () => {
     if (resetError) {
@@ -38,10 +58,15 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
             <AlertTriangle className="w-16 h-16 text-destructive" />
           </div>
           <CardTitle className="text-3xl font-bold text-foreground">
-            Something went wrong
+            {getErrorTitle()}
           </CardTitle>
+          {hasStatusCode && (
+            <p className="text-lg font-semibold text-muted-foreground">
+              Error {apiError.status}
+            </p>
+          )}
           <p className="text-lg text-muted-foreground">
-            An unexpected error occurred
+            {hasStatusCode ? 'The request could not be completed' : 'An unexpected error occurred'}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">

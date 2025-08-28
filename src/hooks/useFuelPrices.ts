@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { apiFetch } from '@/utils/apiFetch';
 
 export interface FuelPrices {
   petrol: number;
@@ -20,12 +20,8 @@ export const useFuelPrices = () => {
     setError(null);
     
     try {
-      const { data, error: functionError } = await supabase.functions.invoke('fetch-fuel-prices');
+      const data = await apiFetch('fetch-fuel-prices');
       
-      if (functionError) {
-        throw new Error(functionError.message);
-      }
-
       if (data) {
         setFuelPrices(data);
       } else {

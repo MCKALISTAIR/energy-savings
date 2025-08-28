@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { apiFetch } from '@/utils/apiFetch';
 
 interface AddressResult {
   formatted_address: string;
@@ -35,16 +34,7 @@ export const useAddressLookup = () => {
     try {
       console.log('Searching addresses for postcode:', searchPostcode);
       
-      const { data, error: functionError } = await supabase.functions.invoke('address-lookup', {
-        body: { postcode: searchPostcode.trim() }
-      });
-
-      if (functionError) {
-        console.error('Function error:', functionError);
-        setError('Address lookup service is temporarily unavailable. Please try manual entry.');
-        setAddresses([]);
-        return;
-      }
+      const data = await apiFetch('address-lookup', { postcode: searchPostcode.trim() });
 
       if (data.error) {
         setError(data.error);
