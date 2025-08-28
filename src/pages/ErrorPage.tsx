@@ -1,6 +1,7 @@
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface ErrorPageProps {
   error?: Error;
@@ -8,6 +9,15 @@ interface ErrorPageProps {
 }
 
 const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Get error message from various sources
+  const errorMessage = error?.message || 
+                      location.state?.message || 
+                      new URLSearchParams(location.search).get('msg') ||
+                      'An unexpected error occurred';
+
   const handleRefresh = () => {
     if (resetError) {
       resetError();
@@ -17,7 +27,7 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
   };
 
   const handleHome = () => {
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (
@@ -35,13 +45,11 @@ const ErrorPage = ({ error, resetError }: ErrorPageProps) => {
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          {error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
-              <p className="text-sm text-destructive font-mono">
-                {error.message}
-              </p>
-            </div>
-          )}
+          <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+            <p className="text-sm text-destructive font-mono">
+              {errorMessage}
+            </p>
+          </div>
           <p className="text-muted-foreground text-sm">
             Please try refreshing the page or return to the home page.
           </p>
