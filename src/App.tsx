@@ -9,6 +9,7 @@ import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
 import Help from '@/pages/Help';
 import Status from '@/pages/Status';
+import NotFound from '@/pages/NotFound';
 import './App.css';
 
 const AppContent = () => {
@@ -22,6 +23,7 @@ const AppContent = () => {
           <Route path="/calculator" element={<Index />} />
           <Route path="/help" element={<Help />} />
           <Route path="/status" element={<Status />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </DatabaseSystemProvider>
     </SystemProvider>
