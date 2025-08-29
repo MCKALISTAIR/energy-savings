@@ -43,8 +43,7 @@ const HeroSection: React.FC = () => {
         <p className={`${isMobile ? 'text-sm px-2' : 'text-xl'} text-muted-foreground max-w-3xl mx-auto ${isMobile ? 'mb-6' : 'mb-8'}`}>
           {isMobile 
             ? 'Calculate savings from solar panels, batteries, EVs, and heat pumps with our planning tool.'
-            : 'Make informed decisions about your sustainable energy future. Calculate potential savings from solar panels, battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.'
-                size={isMobile ? "default" : "lg"}
+            : 'Make informed decisions about your sustainable energy future. Calculate potential savings from solar panels, battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.'}
         </p>
         <div className="flex justify-center">
           {user ? (
@@ -52,15 +51,15 @@ const HeroSection: React.FC = () => {
               size={isMobile ? "default" : "lg"}
               onClick={() => navigate('/calculator')}
               className={isMobile ? "px-6" : "text-lg px-8 py-6"}
-                className={isMobile ? "w-full" : "text-lg px-8 py-6"}
+            >
               <Calculator className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
               Go to Calculator
             </Button>
           ) : (
-                size={isMobile ? "default" : "lg"}
+            <Button
               size={isMobile ? "default" : "lg"}
               onClick={() => navigate('/auth')}
-                className={`${isMobile ? 'w-full' : 'text-lg px-8 py-6'} bg-white/10 border-white/20 text-white hover:bg-white/20`}
+              className={`${isMobile ? 'w-full' : 'text-lg px-8 py-6'} bg-white/10 border-white/20 text-white hover:bg-white/20`}
             >
               <Zap className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
               Start Calculating Savings
@@ -68,7 +67,9 @@ const HeroSection: React.FC = () => {
           )}
         </div>
       </div>
-          <p className={`${isMobile ? 'text-xs' : 'text-sm'} opacity-75 ${isMobile ? 'mt-3' : 'mt-4'}`}>
+      <p className={`${isMobile ? 'text-xs' : 'text-sm'} opacity-75 ${isMobile ? 'mt-3' : 'mt-4'}`}>
+      </p>
+    </div>
   );
 };
 
