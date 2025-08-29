@@ -39,9 +39,7 @@ const HeroSection: React.FC = () => {
             {isMobile ? ' Renewable Energy' : ' Renewable Energy '}
           </span>
           Savings
-      description: isMobile
-        ? "Analyze heat pump efficiency vs traditional heating"
-        : "Explore heat pump efficiency and cost savings compared to traditional heating systems."
+        </h1>
         <p className={`${isMobile ? 'text-sm px-2' : 'text-xl'} text-muted-foreground max-w-3xl mx-auto ${isMobile ? 'mb-6' : 'mb-8'}`}>
           {isMobile 
             ? 'Calculate savings from solar panels, batteries, EVs, and heat pumps with our planning tool.'
@@ -51,44 +49,8 @@ const HeroSection: React.FC = () => {
         <div className="flex justify-center">
           {user ? (
             <Button 
-  if (isMobile) {
-    return (
-      <div className="container mx-auto px-4 mb-8">
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {features.map((feature, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-4/5">
-                <Card className="h-full">
-                  <CardHeader className="text-center pb-3">
-                    <div className="flex justify-center mb-2">
-                      {feature.icon}
-                    </div>
-                    <CardTitle className="text-base leading-tight">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-center text-sm leading-relaxed">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-2" />
-          <CarouselNext className="right-2" />
-        </Carousel>
-      </div>
-    );
-  }
-
               size={isMobile ? "default" : "lg"}
-    <div className="container mx-auto px-4 mb-16">
+              onClick={() => navigate('/calculator')}
               className={isMobile ? "px-6" : "text-lg px-8 py-6"}
             >
               <Calculator className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
