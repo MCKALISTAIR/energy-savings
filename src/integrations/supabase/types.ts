@@ -7,13 +7,82 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      app_logs: {
+        Row: {
+          details: Json | null
+          id: string
+          level: string
+          message: string
+          resolved_at: string | null
+          resolved_by: string | null
+          session_id: string | null
+          source: string
+          stack_trace: string | null
+          timestamp: string
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          details?: Json | null
+          id?: string
+          level: string
+          message: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id?: string | null
+          source: string
+          stack_trace?: string | null
+          timestamp?: string
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          details?: Json | null
+          id?: string
+          level?: string
+          message?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          session_id?: string | null
+          source?: string
+          stack_trace?: string | null
+          timestamp?: string
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       energy_insights: {
         Row: {
           created_at: string
@@ -300,7 +369,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
