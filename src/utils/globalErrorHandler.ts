@@ -1,10 +1,25 @@
 import { navigateToErrorWithQuery } from './errorNavigation';
+import { logger } from './logger';
 
 // Global error handler for unhandled promise rejections
 export const setupGlobalErrorHandling = () => {
   // Handle unhandled promise rejections
   window.addEventListener('unhandledrejection', (event) => {
     console.error('Unhandled promise rejection:', event.reason);
+    
+    // Log to our centralized logging system
+    logger.logError(
+      `Unhandled Promise Rejection: ${event.reason?.message || event.reason}`,
+      'global_handler',
+      {
+        details: {
+          reason: event.reason,
+          stack: event.reason?.stack,
+          type: 'unhandledrejection'
+        },
+        stackTrace: event.reason?.stack
+      }
+    );
     
     // Check if it's a network error or API error
     const error = event.reason;
@@ -25,6 +40,22 @@ export const setupGlobalErrorHandling = () => {
   // Handle global JavaScript errors
   window.addEventListener('error', (event) => {
     console.error('Global error:', event.error);
+    
+    // Log to our centralized logging system
+    logger.logError(
+      `Global JavaScript Error: ${event.error?.message || event.message}`,
+      'global_handler',
+      {
+        details: {
+          error: event.error,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          type: 'javascript_error'
+        },
+        stackTrace: event.error?.stack
+      }
+    );
     
     // Only redirect for certain types of critical errors
     if (event.error?.name === 'ChunkLoadError' || 

@@ -1,4 +1,5 @@
 import React, { Component, ReactNode } from 'react';
+import { logger } from '@/utils/logger';
 import ErrorPage from '@/pages/ErrorPage';
 
 interface Props {
@@ -22,6 +23,21 @@ class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Log the error to our centralized logging system
+    logger.logError(
+      `React Error: ${error.message}`,
+      'error_boundary',
+      {
+        details: {
+          name: error.name,
+          stack: error.stack,
+          errorInfo: errorInfo,
+          componentStack: errorInfo.componentStack
+        },
+        stackTrace: error.stack
+      }
+    );
   }
 
   resetError = () => {

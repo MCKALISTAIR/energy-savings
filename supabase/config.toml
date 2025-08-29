@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.vehicle-pricing]
 verify_jwt = false
+
+[functions.log-event]
+verify_jwt = false

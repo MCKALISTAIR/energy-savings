@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useServiceStatus } from '@/hooks/useServiceStatus';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +18,8 @@ import {
   MapPin,
   Car,
   Fuel,
-  DollarSign
+  DollarSign,
+  FileText
 } from 'lucide-react';
 
 const Status = () => {
@@ -28,6 +31,7 @@ const Status = () => {
     checkSingleService,
     clearLogs 
   } = useServiceStatus();
+  const { isAdmin } = useIsAdmin();
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -101,6 +105,14 @@ const Status = () => {
               <RefreshCw className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
               {isChecking ? 'Checking...' : 'Check All Services'}
             </Button>
+            {isAdmin && (
+              <Button asChild variant="secondary">
+                <Link to="/admin/logs">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View All Logs
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 

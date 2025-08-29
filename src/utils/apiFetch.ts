@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { navigateToError } from './errorNavigation';
+import { logger } from './logger';
 
 interface ApiError extends Error {
   status?: number;
@@ -28,6 +29,21 @@ export const apiFetch = async (
       apiError.status = error.status;
       apiError.code = error.code;
       
+      // Log the API error
+      logger.logError(
+        `API Error in ${functionName}: ${apiError.message}`,
+        'api_fetch',
+        {
+          details: {
+            functionName,
+            body,
+            status: apiError.status,
+            code: apiError.code,
+            error: error
+          }
+        }
+      );
+      
       if (redirectOnError) {
         navigateToErrorWithQuery(`API Error: ${apiError.message}`);
         return null;
@@ -42,6 +58,20 @@ export const apiFetch = async (
 
     if (data && !data.success && data.error) {
       const apiError: ApiError = new Error(data.error);
+      
+      // Log the data error
+      logger.logError(
+        `Data Error in ${functionName}: ${apiError.message}`,
+        'api_fetch',
+        {
+          details: {
+            functionName,
+            body,
+            data,
+            error: data.error
+          }
+        }
+      );
       
       if (redirectOnError) {
         navigateToErrorWithQuery(`API Error: ${apiError.message}`);
@@ -58,6 +88,22 @@ export const apiFetch = async (
     return data;
   } catch (error) {
     const apiError: ApiError = error instanceof Error ? error : new Error('Unknown API error');
+    
+    // Log the catch error if it wasn't already logged
+    if (!apiError.message.includes('API Error in')) {
+      logger.logError(
+        `Network/Exception Error in ${functionName}: ${apiError.message}`,
+        'api_fetch',
+        {
+          details: {
+            functionName,
+            body,
+            originalError: error
+          },
+          stackTrace: apiError.stack
+        }
+      );
+    }
     
     if (redirectOnError) {
       navigateToErrorWithQuery(`Network Error: ${apiError.message}`);
@@ -86,6 +132,18 @@ export const dbQuery = async (
       const dbError: ApiError = new Error(result.error.message || 'Database query failed');
       dbError.code = result.error.code;
       
+      // Log the database error
+      logger.logError(
+        `Database Error: ${dbError.message}`,
+        'api_fetch',
+        {
+          details: {
+            code: dbError.code,
+            error: result.error
+          }
+        }
+      );
+      
       if (redirectOnError) {
         navigateToErrorWithQuery(`Database Error: ${dbError.message}`);
         return null;
@@ -101,6 +159,20 @@ export const dbQuery = async (
     return result.data;
   } catch (error) {
     const dbError: ApiError = error instanceof Error ? error : new Error('Unknown database error');
+    
+    // Log the catch error if it wasn't already logged
+    if (!dbError.message.includes('Database Error:')) {
+      logger.logError(
+        `Database Exception: ${dbError.message}`,
+        'api_fetch',
+        {
+          details: {
+            originalError: error
+          },
+          stackTrace: dbError.stack
+        }
+      );
+    }
     
     if (redirectOnError) {
       navigateToErrorWithQuery(`Database Error: ${dbError.message}`);
