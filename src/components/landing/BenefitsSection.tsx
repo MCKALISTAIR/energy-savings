@@ -6,12 +6,10 @@ import { Calculator, Zap, LogIn } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import UserActions from '@/components/UserActions';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 const HeroSection: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const isMobile = useIsMobile();
   const isMobile = useIsMobile();
 
   return (
@@ -39,8 +37,9 @@ const HeroSection: React.FC = () => {
             {isMobile ? ' Renewable Energy' : ' Renewable Energy '}
           </span>
           Savings
-          <h2 className={`${isMobile ? 'text-xl' : 'text-3xl md:text-4xl'} font-bold text-foreground ${isMobile ? 'mb-2' : 'mb-4'}`}>
         </h1>
+        <h2 className={`${isMobile ? 'text-xl' : 'text-3xl md:text-4xl'} font-bold text-foreground ${isMobile ? 'mb-2' : 'mb-4'}`}>
+        </h2>
         <p className={`${isMobile ? 'text-sm px-2' : 'text-xl'} text-muted-foreground max-w-3xl mx-auto ${isMobile ? 'mb-6' : 'mb-8'}`}>
           {isMobile 
             ? 'Calculate savings from solar panels, batteries, EVs, and heat pumps with our planning tool.'
@@ -57,22 +56,32 @@ const HeroSection: React.FC = () => {
               <Calculator className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
               Go to Calculator
             </Button>
-        <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'md:grid-cols-3 gap-8'}`}>
+          ) : (
             <Button 
               size={isMobile ? "default" : "lg"}
-              <div className={`flex justify-center ${isMobile ? 'mb-2' : 'mb-4'}`}>
-                <div className={`bg-accent/20 rounded-full ${isMobile ? 'p-2' : 'p-3'}`}>
+              onClick={() => navigate('/auth')}
+              className={isMobile ? "px-6" : "text-lg px-8 py-6"}
             >
-          <p className={`${isMobile ? 'text-sm px-2' : 'text-lg'} text-muted-foreground max-w-2xl mx-auto`}>
-            {isMobile
-              <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold ${isMobile ? 'mb-1' : 'mb-2'}`}>
-                {benefit.title}
-              </h3>
-              <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
-                {benefit.description}
-              </p>
-            }
+              <LogIn className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
+              Get Started
+            </Button>
           )}
+        </div>
+        <div className={`grid ${isMobile ? 'grid-cols-1 gap-4' : 'md:grid-cols-3 gap-8'}`}>
+          <div className={`flex justify-center ${isMobile ? 'mb-2' : 'mb-4'}`}>
+            <div className={`bg-accent/20 rounded-full ${isMobile ? 'p-2' : 'p-3'}`}>
+              <Zap className={`${isMobile ? 'w-4 h-4' : 'w-6 h-6'}`} />
+            </div>
+          </div>
+          <p className={`${isMobile ? 'text-sm px-2' : 'text-lg'} text-muted-foreground max-w-2xl mx-auto`}>
+            {isMobile ? 'Quick calculations' : 'Get quick and accurate calculations'}
+          </p>
+          <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold ${isMobile ? 'mb-1' : 'mb-2'}`}>
+            Benefits
+          </h3>
+          <p className={`text-muted-foreground ${isMobile ? 'text-sm' : ''}`}>
+            Discover the benefits of renewable energy
+          </p>
         </div>
       </div>
     </div>
