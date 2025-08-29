@@ -1,75 +1,108 @@
-
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Calculator, Zap, LogIn } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import UserActions from '@/components/UserActions';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { Card, CardContent } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Sun, Battery, Car, Thermometer } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const HeroSection: React.FC = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+const features = [
+  {
+    icon: Sun,
+    title: 'Solar Panel Calculator',
+    description: 'Calculate potential savings from solar panel installations based on your location and usage'
+  },
+  {
+    icon: Battery,
+    title: 'Battery Storage Analysis',
+    description: 'Determine the optimal battery storage solution for your energy needs'
+  },
+  {
+    icon: Car,
+    title: 'Electric Vehicle Planning',
+    description: 'Compare EV costs and savings against traditional fuel vehicles'
+  },
+  {
+    icon: Thermometer,
+    title: 'Heat Pump Calculator',
+    description: 'Analyze heat pump efficiency and savings compared to traditional heating'
+  }
+];
+
+const FeaturesGrid: React.FC = () => {
   const isMobile = useIsMobile();
-  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold mb-3">
+              Comprehensive Energy Planning
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              All the tools you need in one place
+            </p>
+          </div>
+          
+          <Carousel className="w-full">
+            <CarouselContent>
+              {features.map((feature, index) => (
+                <CarouselItem key={index} className="basis-4/5">
+                  <Card className="h-full">
+                    <CardContent className="p-4">
+                      <div className="inline-flex items-center justify-center rounded-lg bg-primary/10 p-2 mb-3">
+                        <feature.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <h3 className="text-base font-semibold mb-2">
+                        {feature.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {feature.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2" />
+            <CarouselNext className="right-2" />
+          </Carousel>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <div className={`container mx-auto px-4 relative ${isMobile ? 'py-8' : 'py-16'}`}>
-      {/* Login/User Actions in top right */}
-      <div className={`absolute ${isMobile ? 'top-4 right-2' : 'top-6 right-4'}`}>
-        {user ? (
-          <UserActions />
-        ) : (
-          <Button 
-            size={isMobile ? "sm" : "icon"}
-            variant="outline"
-            onClick={() => navigate('/auth')}
-            className="bg-white/70 backdrop-blur-sm hover:bg-white/90"
-          >
-            <LogIn className={`${isMobile ? 'h-3 w-3' : 'h-4 w-4'}`} />
-          </Button>
-        )}
-      </div>
-
-      <div className={`text-center ${isMobile ? 'mb-8' : 'mb-16'}`}>
-        <h1 className={`${isMobile ? 'text-3xl' : 'text-5xl md:text-6xl'} font-bold text-foreground ${isMobile ? 'mb-4' : 'mb-6'}`}>
-          Discover Your
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600">
-            {isMobile ? ' Renewable Energy' : ' Renewable Energy '}
-          </span>
-          Savings
-        </h1>
-        <p className={`${isMobile ? 'text-sm px-2' : 'text-xl'} text-muted-foreground max-w-3xl mx-auto ${isMobile ? 'mb-6' : 'mb-8'}`}>
-          {isMobile 
-            ? 'Calculate savings from solar panels, batteries, EVs, and heat pumps with our planning tool.'
-            : 'Make informed decisions about your sustainable energy future. Calculate potential savings from solar panels, battery storage, electric vehicles, and heat pumps with our comprehensive planning tool.'
-          }
-        </p>
-        <div className="flex justify-center">
-          {user ? (
-            <Button 
-              size={isMobile ? "default" : "lg"}
-              onClick={() => navigate('/calculator')}
-              className={isMobile ? "px-6" : "text-lg px-8 py-6"}
-            >
-              <Calculator className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
-              Go to Calculator
-            </Button>
-          ) : (
-            <Button 
-              size={isMobile ? "default" : "lg"}
-              onClick={() => navigate('/auth')}
-              className={isMobile ? "px-6" : "text-lg px-8 py-6"}
-            >
-              <Zap className={`${isMobile ? 'w-4 h-4 mr-2' : 'w-5 h-5 mr-2'}`} />
-              Start Calculating Savings
-            </Button>
-          )}
+    <section className="py-16">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">
+            Comprehensive Energy Planning Tools
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Everything you need to make informed decisions about your renewable energy future
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((feature, index) => (
+            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="inline-flex items-center justify-center rounded-lg bg-primary/10 p-3 mb-4">
+                  <feature.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {feature.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default HeroSection;
+export default FeaturesGrid;
