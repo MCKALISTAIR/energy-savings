@@ -74,3 +74,5 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
     </div>
   );
 };
+
+export default SystemForm;
