@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import UserActions from '@/components/UserActions';
 import HelpSection from '@/components/HelpSection';
+import VisuallyHidden from '@/components/accessibility/VisuallyHidden';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -15,19 +16,29 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="w-full mb-8">
+    <header className="w-full mb-8" role="banner">
       <div className="flex justify-between items-start">
         <div className="flex items-center">
           <House 
             className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-muted-foreground hover:text-foreground cursor-pointer transition-colors ${isMobile ? 'mr-2' : 'mr-4'}`}
             onClick={handleHomeClick}
+            aria-label="Go to home page"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleHomeClick();
+              }
+            }}
           />
+          <VisuallyHidden>Home</VisuallyHidden>
         </div>
 
-        <div className={`flex items-center gap-2 ${isMobile ? 'ml-2' : 'ml-4'}`}>
+        <nav id="navigation" className={`flex items-center gap-2 ${isMobile ? 'ml-2' : 'ml-4'}`} role="navigation" aria-label="Main navigation">
           <HelpSection />
           <UserActions />
-        </div>
+        </nav>
       </div>
       
       <div className={`text-center ${isMobile ? 'mt-2' : 'mt-4'}`}>
@@ -39,7 +50,7 @@ const Header: React.FC = () => {
           Make informed decisions about your sustainable energy future.
         </p>
       </div>
-    </div>
+    </header>
   );
 };
 

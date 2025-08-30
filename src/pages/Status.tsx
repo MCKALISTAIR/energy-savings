@@ -81,12 +81,12 @@ const Status = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background sm:p-6 p-4">
+    <div className="min-h-screen bg-background sm:p-6 p-4" role="main">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between gap-4">
           <div>
-            <h1 className="sm:text-3xl text-2xl font-bold">Service Status</h1>
+            <h1 className="sm:text-3xl text-2xl font-bold" id="page-title">Service Status</h1>
             <p className="text-muted-foreground">
               Monitor the health of all connected services
             </p>
@@ -97,6 +97,7 @@ const Status = () => {
               variant="outline"
               disabled={isChecking}
               className="sm:w-auto w-full"
+              aria-label="Clear all service logs"
             >
               Clear Logs
             </Button>
@@ -104,6 +105,7 @@ const Status = () => {
               onClick={checkAllServices}
               disabled={isChecking}
               className="flex items-center gap-2 sm:w-auto w-full"
+              aria-label={isChecking ? 'Checking all services...' : 'Check health of all services'}
             >
               <RefreshCw className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
               {isChecking ? 'Checking...' : 'Check All Services'}
@@ -120,7 +122,8 @@ const Status = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="region" aria-labelledby="services-title">
+          <h2 id="services-title" className="sr-only">Connected Services Status</h2>
           {services.map((service) => (
             <Card key={service.id} className="relative">
               <CardHeader className="pb-3">
@@ -170,6 +173,7 @@ const Status = () => {
                   variant="outline"
                   size="sm"
                   className="w-full"
+                  aria-label={`Test ${service.name} service connection`}
                 >
                   <RefreshCw className={`w-3 h-3 mr-2 ${isChecking ? 'animate-spin' : ''}`} />
                   Test Service
@@ -182,7 +186,7 @@ const Status = () => {
         {/* Error Logs */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2" id="logs-title">
               Service Error Logs
               <Badge variant="outline">{logs.length} entries</Badge>
             </CardTitle>
@@ -191,7 +195,7 @@ const Status = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="sm:h-96 h-64">
+            <ScrollArea className="sm:h-96 h-64" role="region" aria-labelledby="logs-title">
               {logs.length === 0 ? (
                 <div className="text-center text-muted-foreground py-8">
                   No logs available. Run service checks to generate logs.
@@ -203,25 +207,26 @@ const Status = () => {
                       <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between gap-2">
                         <div className="flex items-center gap-2">
                           {getServiceIcon(log.service)}
-                          <span className="font-medium">{log.service}</span>
+                          <span className="font-medium" aria-label={`Service: ${log.service}`}>{log.service}</span>
                           <Badge 
                             variant={log.level === 'error' ? 'destructive' : 
                                    log.level === 'warning' ? 'secondary' : 'default'}
+                            aria-label={`Log level: ${log.level}`}
                           >
                             {log.level}
                           </Badge>
                         </div>
-                        <span className="sm:text-sm text-xs text-muted-foreground">
+                        <time className="sm:text-sm text-xs text-muted-foreground" dateTime={log.timestamp}>
                           {new Date(log.timestamp).toLocaleString()}
-                        </span>
+                        </time>
                       </div>
                       <p className="sm:text-sm text-xs break-words">{log.message}</p>
                       {log.details && (
-                        <details className="text-xs">
-                          <summary className="cursor-pointer text-muted-foreground">
+                        <details className="text-xs" aria-label="Log details">
+                          <summary className="cursor-pointer text-muted-foreground" aria-expanded="false">
                             Show details
                           </summary>
-                          <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto whitespace-pre-wrap break-all">
+                          <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto whitespace-pre-wrap break-all" role="region" aria-label="Detailed log information">
                             {typeof log.details === 'string' 
                               ? log.details 
                               : JSON.stringify(log.details, null, 2)

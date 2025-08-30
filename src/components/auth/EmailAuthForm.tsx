@@ -43,7 +43,8 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
       </TabsList>
       
       <TabsContent value="signin">
-        <form onSubmit={handleSignIn} className="space-y-4">
+        <form onSubmit={handleSignIn} className="space-y-4" role="form" aria-labelledby="signin-title">
+          <h3 id="signin-title" className="sr-only">Sign in to your account</h3>
           <div>
             <Label htmlFor="signin-email">
               Email <span className="text-red-500">*</span>
@@ -56,7 +57,10 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               placeholder="Enter your email address"
               required
               className="sm:text-sm text-base h-12"
+              aria-describedby="signin-email-desc"
+              autoComplete="email"
             />
+            <div id="signin-email-desc" className="sr-only">Enter your registered email address</div>
           </div>
           <div>
             <Label htmlFor="signin-password">
@@ -70,7 +74,10 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               placeholder="Enter your password"
               required
               className="sm:text-sm text-base h-12"
+              aria-describedby="signin-password-desc"
+              autoComplete="current-password"
             />
+            <div id="signin-password-desc" className="sr-only">Enter your account password</div>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -89,7 +96,8 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
       </TabsContent>
       
       <TabsContent value="signup">
-        <form onSubmit={handleSignUp} className="space-y-4">
+        <form onSubmit={handleSignUp} className="space-y-4" role="form" aria-labelledby="signup-title">
+          <h3 id="signup-title" className="sr-only">Create a new account</h3>
           <div>
             <Label htmlFor="signup-email">
               Email <span className="text-red-500">*</span>
@@ -102,7 +110,10 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               placeholder="Enter your email address"
               required
               className="sm:text-sm text-base h-12"
+              aria-describedby="signup-email-desc"
+              autoComplete="email"
             />
+            <div id="signup-email-desc" className="sr-only">Enter your email address to create an account</div>
           </div>
           <div>
             <Label htmlFor="signup-password">
@@ -117,7 +128,10 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               required
               minLength={6}
               className="sm:text-sm text-base h-12"
+              aria-describedby="signup-password-desc"
+              autoComplete="new-password"
             />
+            <div id="signup-password-desc" className="sr-only">Password must be at least 6 characters long</div>
           </div>
           <div>
             <Label htmlFor="signup-confirm-password">
@@ -132,9 +146,12 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               required
               minLength={6}
               className={`sm:text-sm text-base h-12 ${password && confirmPassword && password !== confirmPassword ? 'border-red-500' : ''}`}
+              aria-describedby="signup-confirm-desc"
+              autoComplete="new-password"
             />
+            <div id="signup-confirm-desc" className="sr-only">Re-enter your password to confirm</div>
             {password && confirmPassword && password !== confirmPassword && (
-              <p className="text-sm text-red-600 mt-1">Passwords do not match</p>
+              <p className="text-sm text-red-600 mt-1" role="alert" aria-live="polite">Passwords do not match</p>
             )}
           </div>
           <div className="flex items-center space-x-2">

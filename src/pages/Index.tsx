@@ -98,7 +98,7 @@ const Index = () => {
     savingsData.heatPump.monthlySavings > 0;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-green-50 to-blue-50 ${isMobile ? 'p-2' : 'p-4'}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-green-50 to-blue-50 ${isMobile ? 'p-2' : 'p-4'}`} role="main">
       <div className="max-w-7xl mx-auto">
         <Header />
 
@@ -110,7 +110,7 @@ const Index = () => {
           />
         )}
 
-        <Tabs defaultValue="systems" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs defaultValue="systems" value={activeTab} onValueChange={setActiveTab} className="w-full" aria-label="Renewable energy system calculators">
           <TabNavigation 
             activeTab={activeTab}
             dashboardConfig={dashboardConfig}

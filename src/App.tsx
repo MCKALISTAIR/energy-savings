@@ -6,6 +6,7 @@ import { SystemProvider } from '@/contexts/SystemContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { setupGlobalErrorHandling } from '@/utils/globalErrorHandler';
 import { logger } from '@/utils/logger';
+import SkipLinks from '@/components/accessibility/SkipLinks';
 import Landing from '@/pages/Landing';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
@@ -25,8 +26,10 @@ logger.logInfo('Application started', 'manual');
 const AppContent = () => {
   return (
     <SystemProvider>
+      <SkipLinks />
       <DatabaseSystemProvider>
-        <Routes>
+        <main id="main-content" role="main">
+          <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
@@ -36,7 +39,8 @@ const AppContent = () => {
           <Route path="/admin/logs" element={<AdminLogs />} />
           <Route path="/error" element={<ErrorPage />} />
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </main>
       </DatabaseSystemProvider>
     </SystemProvider>
   );

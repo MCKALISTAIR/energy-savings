@@ -17,6 +17,7 @@ const HelpSection: React.FC = () => {
       size="icon" 
       className="text-muted-foreground hover:text-foreground"
       onClick={handleHelpClick}
+      aria-label="Open help and support page"
     >
       <HelpCircle className="w-5 h-5" />
     </Button>

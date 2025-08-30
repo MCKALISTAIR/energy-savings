@@ -50,6 +50,7 @@ const TabContent: React.FC<TabContentProps> = ({
       )}
 
       <TabsContent value="systems" className="animate-fade-in">
+        <div id="systems-panel" role="tabpanel" aria-labelledby="systems-tab">
         <div className="space-y-6">
           {user ? (
             <>
@@ -63,47 +64,60 @@ const TabContent: React.FC<TabContentProps> = ({
             </>
           )}
         </div>
+        </div>
       </TabsContent>
 
       <TabsContent value="solar" className="animate-fade-in">
+        <div id="solar-panel" role="tabpanel" aria-labelledby="solar-tab">
         <SolarCalculator 
           onUpdate={updateSolarData} 
           energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
         />
+        </div>
       </TabsContent>
 
       <TabsContent value="battery" className="animate-fade-in">
+        <div id="battery-panel" role="tabpanel" aria-labelledby="battery-tab">
         <BatteryCalculator 
           onUpdate={updateBatteryData} 
           energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
         />
+        </div>
       </TabsContent>
 
       <TabsContent value="ev" className="animate-fade-in">
+        <div id="ev-panel" role="tabpanel" aria-labelledby="ev-tab">
         <EVCalculator 
           onUpdate={updateEVData} 
           energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
           dashboardConfig={dashboardConfig}
         />
+        </div>
       </TabsContent>
 
       <TabsContent value="heatpump" className="animate-fade-in">
+        <div id="heatpump-panel" role="tabpanel" aria-labelledby="heatpump-tab">
         <HeatPumpCalculator 
           onUpdate={updateHeatPumpData} 
           energyPrices={dashboardConfig.enableCustomPricing ? dashboardConfig.customEnergyPrices : undefined} 
         />
+        </div>
       </TabsContent>
 
       <TabsContent value="smartmeter" className="animate-fade-in">
+        <div id="smartmeter-panel" role="tabpanel" aria-labelledby="smartmeter-tab">
         <SmartMeterIntegration />
+        </div>
       </TabsContent>
 
       <TabsContent value="dashboard" className="animate-fade-in">
+        <div id="dashboard-panel" role="tabpanel" aria-labelledby="dashboard-tab">
         <SavingsDashboard 
           data={savingsData} 
           config={dashboardConfig}
           onConfigChange={onConfigChange}
         />
+        </div>
       </TabsContent>
     </>
   );

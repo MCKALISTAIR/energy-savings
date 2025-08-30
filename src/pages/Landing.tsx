@@ -10,7 +10,7 @@ const Landing: React.FC = () => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" role="main">
       <HeroSection />
       <FeaturesGrid />
       {isMobile ? (

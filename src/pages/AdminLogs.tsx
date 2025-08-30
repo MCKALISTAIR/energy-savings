@@ -248,57 +248,57 @@ const AdminLogs = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="min-w-[120px]">Time</TableHead>
-                    <TableHead>Level</TableHead>
-                    <TableHead className="min-w-[100px]">Source</TableHead>
-                    <TableHead className="min-w-[200px]">Message</TableHead>
-                    <TableHead className="min-w-[150px]">URL</TableHead>
-                    <TableHead className="min-w-[100px]">Session</TableHead>
+                    <TableHead className="min-w-[120px]" scope="col">Time</TableHead>
+                    <TableHead scope="col">Level</TableHead>
+                    <TableHead className="min-w-[100px]" scope="col">Source</TableHead>
+                    <TableHead className="min-w-[200px]" scope="col">Message</TableHead>
+                    <TableHead className="min-w-[150px]" scope="col">URL</TableHead>
+                    <TableHead className="min-w-[100px]" scope="col">Session</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody role="rowgroup">
                   {logs.map((log) => (
                     <TableRow key={log.id}>
-                      <TableCell className="font-mono sm:text-sm text-xs">
+                      <TableCell className="font-mono sm:text-sm text-xs" role="cell">
                         {format(new Date(log.timestamp), 'MMM dd HH:mm:ss')}
                       </TableCell>
-                      <TableCell>
+                      <TableCell role="cell">
                         <Badge variant={getLevelBadgeVariant(log.level)}>
                           {log.level.toUpperCase()}
                         </Badge>
                       </TableCell>
-                      <TableCell className="sm:text-sm text-xs">{log.source}</TableCell>
-                      <TableCell className="sm:max-w-md max-w-[200px]">
+                      <TableCell className="sm:text-sm text-xs" role="cell">{log.source}</TableCell>
+                      <TableCell className="sm:max-w-md max-w-[200px]" role="cell">
                         <div className="truncate" title={log.message}>
                           {log.message}
                         </div>
                         {log.details && (
-                          <details className="mt-1">
-                            <summary className="text-xs text-muted-foreground cursor-pointer">
+                          <details className="mt-1" aria-label="Log details">
+                            <summary className="text-xs text-muted-foreground cursor-pointer" aria-expanded="false">
                               Details
                             </summary>
-                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto whitespace-pre-wrap break-all">
+                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto whitespace-pre-wrap break-all" role="region" aria-label="Detailed log information">
                               {JSON.stringify(log.details, null, 2)}
                             </pre>
                           </details>
                         )}
                         {log.stack_trace && (
-                          <details className="mt-1">
-                            <summary className="text-xs text-muted-foreground cursor-pointer">
+                          <details className="mt-1" aria-label="Stack trace details">
+                            <summary className="text-xs text-muted-foreground cursor-pointer" aria-expanded="false">
                               Stack Trace
                             </summary>
-                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto whitespace-pre-wrap break-all">
+                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto whitespace-pre-wrap break-all" role="region" aria-label="Error stack trace">
                               {log.stack_trace}
                             </pre>
                           </details>
                         )}
                       </TableCell>
-                      <TableCell className="sm:max-w-xs max-w-[120px]">
+                      <TableCell className="sm:max-w-xs max-w-[120px]" role="cell">
                         <div className="truncate sm:text-sm text-xs" title={log.url}>
                           {log.url}
                         </div>
                       </TableCell>
-                      <TableCell className="font-mono text-xs">
+                      <TableCell className="font-mono text-xs" role="cell">
                         {log.session_id?.substring(0, 8)}...
                       </TableCell>
                     </TableRow>

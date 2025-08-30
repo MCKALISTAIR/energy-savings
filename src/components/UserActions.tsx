@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import ProfileModal from '@/components/ProfileModal';
+import VisuallyHidden from '@/components/accessibility/VisuallyHidden';
 
 const UserActions: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -23,6 +24,7 @@ const UserActions: React.FC = () => {
           size="sm"
           onClick={() => navigate('/auth', { state: { from: '/calculator' } })}
           className="flex items-center gap-2"
+          aria-label="Create account to save your renewable energy calculations"
         >
           <UserPlus className="w-4 h-4" />
           Create Account
@@ -37,17 +39,38 @@ const UserActions: React.FC = () => {
       <Calculator 
         className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" 
         onClick={() => navigate('/calculator')}
+        role="button"
+        tabIndex={0}
+        aria-label="Go to renewable energy calculator"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            navigate('/calculator');
+          }
+        }}
       />
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <ProfileModal>
-          <User className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
+          <button className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" aria-label="Open profile settings">
+            <User className="w-5 h-5" />
+          </button>
         </ProfileModal>
-        {user.email}
+        <span aria-label={`Logged in as ${user.email}`}>{user.email}</span>
       </div>
       <LogOut 
         className="w-5 h-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" 
         onClick={handleSignOut}
+        role="button"
+        tabIndex={0}
+        aria-label="Sign out of your account"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleSignOut();
+          }
+        }}
       />
+      <VisuallyHidden>User actions</VisuallyHidden>
     </div>
   );
 };
