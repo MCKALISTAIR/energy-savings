@@ -71,7 +71,6 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
           isMobile={isMobile}
         />
       </div>
+    </div>
   );
 };
-  )
-}
