@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Calculator, Battery, Car, Thermometer, Lightbulb, Home, BarChart3, Settings, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
