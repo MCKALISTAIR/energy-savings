@@ -358,10 +358,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto px-4">
+            <div className="flex flex-col gap-3 max-w-sm mx-auto px-6">
               <Button 
                 onClick={() => handleVehicleChoice(true)}
-                className="flex-1 text-center"
+                className="w-full"
                 size="lg"
               >
                 <Car className="w-4 h-4 mr-2" />
@@ -370,10 +370,10 @@ const EVInputForm: React.FC<EVInputFormProps> = ({
               <Button 
                 onClick={() => handleVehicleChoice(false)}
                 variant="outline"
-                className="flex-1 text-center text-sm"
+                className="w-full"
                 size="lg"
               >
-                No, I don't own a vehicle
+                No, I don't own one
               </Button>
             </div>
             
