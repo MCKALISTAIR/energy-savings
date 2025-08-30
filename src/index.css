@@ -149,6 +149,37 @@
   }
 }
 
+/* Mobile form and input improvements */
+@media (max-width: 768px) {
+  /* Increase touch targets for better usability */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve readability on small screens */
+  .mobile-readable-text {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    line-height: 1.4;
+  }
+  
+  /* Better spacing for mobile forms */
+  .mobile-form-spacing > * + * {
+    margin-top: 1rem;
+  }
+  
+  /* Mobile-friendly table styles */
+  .mobile-table {
+    font-size: 12px;
+  }
+  
+  .mobile-table th,
+  .mobile-table td {
+    padding: 8px 4px;
+    word-break: break-word;
+  }
+}
+
 /* Mobile tab navigation styles */
 @media (max-width: 768px) {
   .mobile-tab-container {

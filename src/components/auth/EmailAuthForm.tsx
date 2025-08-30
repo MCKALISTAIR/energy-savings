@@ -55,6 +55,7 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
               required
+              className="sm:text-sm text-base h-12"
             />
           </div>
           <div>
@@ -68,6 +69,7 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
+              className="sm:text-sm text-base h-12"
             />
           </div>
           <div className="flex items-center space-x-2">
@@ -99,6 +101,7 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
               required
+              className="sm:text-sm text-base h-12"
             />
           </div>
           <div>
@@ -113,6 +116,7 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               placeholder="Enter your password (min. 6 characters)"
               required
               minLength={6}
+              className="sm:text-sm text-base h-12"
             />
           </div>
           <div>
@@ -127,7 +131,7 @@ const EmailAuthForm: React.FC<EmailAuthFormProps> = ({
               placeholder="Re-enter your password"
               required
               minLength={6}
-              className={password && confirmPassword && password !== confirmPassword ? 'border-red-500' : ''}
+              className={`sm:text-sm text-base h-12 ${password && confirmPassword && password !== confirmPassword ? 'border-red-500' : ''}`}
             />
             {password && confirmPassword && password !== confirmPassword && (
               <p className="text-sm text-red-600 mt-1">Passwords do not match</p>

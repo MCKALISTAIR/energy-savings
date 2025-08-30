@@ -39,7 +39,7 @@ const HeatPumpCalculator: React.FC<HeatPumpCalculatorProps> = ({ onUpdate, energ
   const hasData = !!(homeSize || currentHeatingType || monthlyHeatingBill || heatPumpType || quotePrice);
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
       <HeatPumpInputForm
         homeSize={homeSize}
         setHomeSize={setHomeSize}

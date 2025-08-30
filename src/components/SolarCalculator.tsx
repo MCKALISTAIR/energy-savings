@@ -83,7 +83,7 @@ const SolarCalculator: React.FC<SolarCalculatorProps> = ({ onUpdate, energyPrice
   const hasData = homeSize || monthlyBill || sunlightHours || location;
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
       {/* Input Form */}
       <Card className="hover-scale">
         <CardHeader>

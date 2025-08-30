@@ -108,15 +108,15 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center sm:p-4 p-2">
+      <div className="w-full sm:max-w-md max-w-[95vw]">
         <AuthHeader />
 
         <Card>
           <CardHeader>
-            <CardTitle>Welcome</CardTitle>
+            <CardTitle className="sm:text-xl text-lg">Welcome</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="sm:p-6 p-4">
             <GoogleSignInButton
               loading={loading}
               setLoading={setLoading}
@@ -140,28 +140,28 @@ const Auth: React.FC = () => {
 
             {error && (
               <Alert className="mt-4">
-                <AlertDescription className="text-red-600">{error}</AlertDescription>
+                <AlertDescription className="text-red-600 sm:text-sm text-xs">{error}</AlertDescription>
               </Alert>
             )}
 
             {success && (
               <Alert className="mt-4">
-                <AlertDescription className="text-green-600">{success}</AlertDescription>
+                <AlertDescription className="text-green-600 sm:text-sm text-xs">{success}</AlertDescription>
               </Alert>
             )}
 
             {/* Continue without account CTA */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="mt-4 sm:mt-6 pt-4 border-t border-gray-200">
               <Button
                 variant="outline"
-                size="lg"
+                size={isMobile ? "default" : "lg"}
                 onClick={() => navigate('/calculator')}
-                className="w-full flex items-center justify-center gap-2 mb-3"
+                className="w-full flex items-center justify-center gap-2 mb-3 h-12"
               >
                 <Calculator className="w-4 h-4" />
                 Continue without account
               </Button>
-              <p className="text-xs text-muted-foreground text-center">
+              <p className="sm:text-xs text-[10px] text-muted-foreground text-center">
                 You can use the calculator without an account, but you'll need to sign up to save your data
               </p>
             </div>
@@ -172,7 +172,7 @@ const Auth: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate(cameFromCalculator ? '/calculator' : '/')}
-                className="w-full flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
+                className="w-full flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground h-10"
               >
                 <ArrowLeft className="w-4 h-4" />
                 {cameFromCalculator ? 'Back to Calculator' : 'Back to Landing Page'}

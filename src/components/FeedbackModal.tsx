@@ -77,7 +77,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ open, onOpenChange }) => 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-w-[95vw] m-2 max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-blue-500" />
@@ -88,89 +88,96 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ open, onOpenChange }) => 
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="feedbackType">Feedback Type *</Label>
-            <Select value={feedbackType} onValueChange={setFeedbackType}>
-              <SelectTrigger>
-                <SelectValue placeholder="What type of feedback are you sharing?" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="feature-request">Feature Request</SelectItem>
-                <SelectItem value="bug-report">Bug Report</SelectItem>
-                <SelectItem value="improvement">Improvement Suggestion</SelectItem>
-                <SelectItem value="question">Question</SelectItem>
-                <SelectItem value="general">General Feedback</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <div className="flex-1 overflow-y-auto px-1">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email (Optional)</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-              />
-              <p className="text-xs text-muted-foreground">
-                Include your email if you'd like a response
-              </p>
+              <Label htmlFor="feedbackType">Feedback Type *</Label>
+              <Select value={feedbackType} onValueChange={setFeedbackType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="What type of feedback are you sharing?" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="feature-request">Feature Request</SelectItem>
+                  <SelectItem value="bug-report">Bug Report</SelectItem>
+                  <SelectItem value="improvement">Improvement Suggestion</SelectItem>
+                  <SelectItem value="question">Question</SelectItem>
+                  <SelectItem value="general">General Feedback</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email (Optional)</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  className="sm:text-sm text-base"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Include your email if you'd like a response
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="subject">Subject (Optional)</Label>
+                <Input
+                  id="subject"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="Brief summary of your feedback"
+                  className="sm:text-sm text-base"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="subject">Subject (Optional)</Label>
-              <Input
-                id="subject"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Brief summary of your feedback"
+              <Label htmlFor="message">Message *</Label>
+              <Textarea
+                id="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Tell us about your experience, what features you'd like to see, or any issues you've encountered..."
+                rows={6}
+                required
+                className="sm:text-sm text-base"
               />
             </div>
-          </div>
+          </form>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="message">Message *</Label>
-            <Textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Tell us about your experience, what features you'd like to see, or any issues you've encountered..."
-              rows={6}
-              required
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              <X className="w-4 h-4 mr-2" />
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting || !feedbackType || !message.trim()}
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 mr-2 border-2 border-t-transparent border-white rounded-full animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Send className="w-4 h-4 mr-2" />
-                  Send Feedback
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
+        <div className="flex sm:flex-row flex-col gap-3 p-4 border-t bg-background">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isSubmitting}
+            className="sm:flex-initial flex-1"
+          >
+            <X className="w-4 h-4 mr-2" />
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting || !feedbackType || !message.trim()}
+            className="sm:flex-initial flex-1"
+          >
+            {isSubmitting ? (
+              <>
+                <div className="w-4 h-4 mr-2 border-2 border-t-transparent border-white rounded-full animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Send Feedback
+              </>
+            )}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

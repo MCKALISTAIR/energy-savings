@@ -30,6 +30,7 @@ interface AppLog {
 const AdminLogs = () => {
   const { isAdmin, isLoading } = useIsAdmin();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [logs, setLogs] = useState<AppLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -149,10 +150,10 @@ const AdminLogs = () => {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto sm:py-8 py-4 sm:px-4 px-2">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between gap-4">
             <div>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5" />
@@ -162,20 +163,21 @@ const AdminLogs = () => {
                 View and manage application error logs and events
               </CardDescription>
             </div>
-            <div className="flex gap-2">
+            <div className="flex sm:flex-row flex-col gap-2 sm:w-auto w-full">
               <Button variant="outline" onClick={() => navigate('/status')}>
+              <Button variant="outline" onClick={() => navigate('/status')} className="sm:w-auto w-full">
                 <Home className="h-4 w-4 mr-2" />
                 Back to Status
               </Button>
-              <Button variant="outline" onClick={exportLogs} disabled={logs.length === 0}>
+              <Button variant="outline" onClick={exportLogs} disabled={logs.length === 0} className="sm:w-auto w-full">
                 <Download className="h-4 w-4 mr-2" />
                 Export CSV
               </Button>
-              <Button variant="destructive" onClick={clearLogs} disabled={logs.length === 0}>
+              <Button variant="destructive" onClick={clearLogs} disabled={logs.length === 0} className="sm:w-auto w-full">
                 <Trash2 className="h-4 w-4 mr-2" />
                 Clear All
               </Button>
-              <Button onClick={fetchLogs}>
+              <Button onClick={fetchLogs} className="sm:w-auto w-full">
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
@@ -184,17 +186,19 @@ const AdminLogs = () => {
         </CardHeader>
         
         <CardContent>
-          <div className="flex flex-wrap gap-4 mb-6">
+          <div className="flex sm:flex-row flex-col gap-4 mb-6">
             <div className="flex-1 min-w-[200px]">
+            <div className="sm:flex-1 w-full sm:min-w-[200px]">
               <Input
                 placeholder="Search messages or URLs..."
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                className="sm:text-sm text-base"
               />
             </div>
             
             <Select value={filters.level} onValueChange={(value) => setFilters(prev => ({ ...prev, level: value }))}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="sm:w-[150px] w-full">
                 <SelectValue placeholder="All levels" />
               </SelectTrigger>
               <SelectContent>
@@ -207,7 +211,7 @@ const AdminLogs = () => {
             </Select>
 
             <Select value={filters.source} onValueChange={(value) => setFilters(prev => ({ ...prev, source: value }))}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="sm:w-[180px] w-full">
                 <SelectValue placeholder="All sources" />
               </SelectTrigger>
               <SelectContent>
@@ -220,7 +224,7 @@ const AdminLogs = () => {
             </Select>
 
             <Select value={filters.limit} onValueChange={(value) => setFilters(prev => ({ ...prev, limit: value }))}>
-              <SelectTrigger className="w-[100px]">
+              <SelectTrigger className="sm:w-[100px] w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -241,22 +245,22 @@ const AdminLogs = () => {
               No logs found matching your criteria.
             </div>
           ) : (
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Time</TableHead>
+                    <TableHead className="min-w-[120px]">Time</TableHead>
                     <TableHead>Level</TableHead>
-                    <TableHead>Source</TableHead>
-                    <TableHead>Message</TableHead>
-                    <TableHead>URL</TableHead>
-                    <TableHead>Session</TableHead>
+                    <TableHead className="min-w-[100px]">Source</TableHead>
+                    <TableHead className="min-w-[200px]">Message</TableHead>
+                    <TableHead className="min-w-[150px]">URL</TableHead>
+                    <TableHead className="min-w-[100px]">Session</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {logs.map((log) => (
                     <TableRow key={log.id}>
-                      <TableCell className="font-mono text-sm">
+                      <TableCell className="font-mono sm:text-sm text-xs">
                         {format(new Date(log.timestamp), 'MMM dd HH:mm:ss')}
                       </TableCell>
                       <TableCell>
@@ -264,8 +268,8 @@ const AdminLogs = () => {
                           {log.level.toUpperCase()}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm">{log.source}</TableCell>
-                      <TableCell className="max-w-md">
+                      <TableCell className="sm:text-sm text-xs">{log.source}</TableCell>
+                      <TableCell className="sm:max-w-md max-w-[200px]">
                         <div className="truncate" title={log.message}>
                           {log.message}
                         </div>
@@ -274,7 +278,7 @@ const AdminLogs = () => {
                             <summary className="text-xs text-muted-foreground cursor-pointer">
                               Details
                             </summary>
-                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto">
+                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto whitespace-pre-wrap break-all">
                               {JSON.stringify(log.details, null, 2)}
                             </pre>
                           </details>
@@ -284,14 +288,14 @@ const AdminLogs = () => {
                             <summary className="text-xs text-muted-foreground cursor-pointer">
                               Stack Trace
                             </summary>
-                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto">
+                            <pre className="text-xs mt-1 p-2 bg-muted rounded overflow-x-auto whitespace-pre-wrap break-all">
                               {log.stack_trace}
                             </pre>
                           </details>
                         )}
                       </TableCell>
-                      <TableCell className="max-w-xs">
-                        <div className="truncate text-sm" title={log.url}>
+                      <TableCell className="sm:max-w-xs max-w-[120px]">
+                        <div className="truncate sm:text-sm text-xs" title={log.url}>
                           {log.url}
                         </div>
                       </TableCell>

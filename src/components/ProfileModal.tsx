@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { User } from 'lucide-react';
@@ -50,7 +49,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ children }) => {
         <DialogTrigger asChild>
           {children}
         </DialogTrigger>
-        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 sm:m-0 m-2 sm:max-w-2xl max-w-[95vw] sm:max-h-[90vh] max-h-[95vh]">
           <DialogHeader className="px-8 pt-6 pb-2">
             <DialogTitle className="flex items-center gap-2">
               <User className="w-5 h-5" />

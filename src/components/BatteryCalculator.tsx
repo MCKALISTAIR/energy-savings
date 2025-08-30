@@ -37,7 +37,7 @@ const BatteryCalculator: React.FC<BatteryCalculatorProps> = ({ onUpdate, energyP
   const hasData = !!(monthlyBill || peakUsage || outageFrequency || batterySize);
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
       <BatteryInputForm
         monthlyBill={monthlyBill}
         setMonthlyBill={setMonthlyBill}

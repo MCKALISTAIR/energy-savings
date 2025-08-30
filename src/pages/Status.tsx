@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 
 const Status = () => {
+  const isMobile = useIsMobile();
   const { 
     services, 
     logs, 
@@ -79,34 +80,36 @@ const Status = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background sm:p-6 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Service Status</h1>
+            <h1 className="sm:text-3xl text-2xl font-bold">Service Status</h1>
             <p className="text-muted-foreground">
               Monitor the health of all connected services
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex sm:flex-row flex-col gap-2 sm:w-auto w-full">
             <Button
               onClick={clearLogs}
               variant="outline"
               disabled={isChecking}
+              className="sm:w-auto w-full"
             >
               Clear Logs
             </Button>
             <Button
               onClick={checkAllServices}
               disabled={isChecking}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 sm:w-auto w-full"
             >
               <RefreshCw className={`w-4 h-4 ${isChecking ? 'animate-spin' : ''}`} />
               {isChecking ? 'Checking...' : 'Check All Services'}
             </Button>
             {isAdmin && (
               <Button asChild variant="secondary">
+              <Button asChild variant="secondary" className="sm:w-auto w-full">
                 <Link to="/admin/logs">
                   <FileText className="h-4 w-4 mr-2" />
                   View All Logs
@@ -117,14 +120,14 @@ const Status = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map((service) => (
             <Card key={service.id} className="relative">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {getServiceIcon(service.id)}
-                    <CardTitle className="text-lg">{service.name}</CardTitle>
+                    <CardTitle className="sm:text-lg text-base">{service.name}</CardTitle>
                   </div>
                   <Badge variant={getStatusBadgeVariant(service.status)}>
                     <div className="flex items-center gap-1">
@@ -133,29 +136,29 @@ const Status = () => {
                     </div>
                   </Badge>
                 </div>
-                <CardDescription>{service.description}</CardDescription>
+                <CardDescription className="sm:text-sm text-xs">{service.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between sm:text-sm text-xs">
                     <span className="text-muted-foreground">Last Checked:</span>
-                    <span>
+                    <span className="text-right">
                       {service.lastChecked 
                         ? new Date(service.lastChecked).toLocaleString()
                         : 'Never'
                       }
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between sm:text-sm text-xs">
                     <span className="text-muted-foreground">Response Time:</span>
                     <span>
                       {service.responseTime ? `${service.responseTime}ms` : 'N/A'}
                     </span>
                   </div>
                   {service.lastError && (
-                    <div className="text-sm">
+                    <div className="sm:text-sm text-xs">
                       <span className="text-muted-foreground">Last Error:</span>
-                      <p className="text-red-600 text-xs mt-1 truncate" title={service.lastError}>
+                      <p className="text-red-600 text-xs mt-1 break-words" title={service.lastError}>
                         {service.lastError}
                       </p>
                     </div>
@@ -188,7 +191,7 @@ const Status = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-96">
+            <ScrollArea className="sm:h-96 h-64">
               {logs.length === 0 ? (
                 <div className="text-center text-muted-foreground py-8">
                   No logs available. Run service checks to generate logs.
@@ -197,7 +200,7 @@ const Status = () => {
                 <div className="space-y-3">
                   {logs.map((log, index) => (
                     <div key={index} className="border rounded-lg p-3 space-y-2">
-                      <div className="flex items-center justify-between">
+                      <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between gap-2">
                         <div className="flex items-center gap-2">
                           {getServiceIcon(log.service)}
                           <span className="font-medium">{log.service}</span>
@@ -208,17 +211,17 @@ const Status = () => {
                             {log.level}
                           </Badge>
                         </div>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="sm:text-sm text-xs text-muted-foreground">
                           {new Date(log.timestamp).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-sm">{log.message}</p>
+                      <p className="sm:text-sm text-xs break-words">{log.message}</p>
                       {log.details && (
                         <details className="text-xs">
                           <summary className="cursor-pointer text-muted-foreground">
                             Show details
                           </summary>
-                          <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto">
+                          <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-x-auto whitespace-pre-wrap break-all">
                             {typeof log.details === 'string' 
                               ? log.details 
                               : JSON.stringify(log.details, null, 2)

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { SavingsData } from '@/pages/Index';
 import { EnergyPricesConfig, DashboardConfig } from '@/components/dashboard/types';
@@ -87,7 +86,7 @@ const EVCalculator: React.FC<EVCalculatorProps> = ({ onUpdate, energyPrices, das
         electricityUnit={electricityUnit}
       />
       
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
         <EVInputForm
           milesPerYear={milesPerYear}
           setMilesPerYear={setMilesPerYear}
