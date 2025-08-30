@@ -68,6 +68,72 @@
   }
 }
 
+/* Tab icon animations */
+@keyframes battery-charging {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes car-moving {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(2px); }
+  75% { transform: translateX(-2px); }
+}
+
+@keyframes solar-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes settings-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
+}
+
+@keyframes heatpump-wave {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-1px); }
+  75% { transform: translateY(1px); }
+}
+
+@keyframes dashboard-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes smart-meter-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.icon-battery-charging {
+  animation: battery-charging 1.5s ease-in-out infinite;
+}
+
+.icon-car-moving {
+  animation: car-moving 1s ease-in-out infinite;
+}
+
+.icon-solar-pulse {
+  animation: solar-pulse 2s ease-in-out infinite;
+}
+
+.icon-settings-spin {
+  animation: settings-spin 1s ease-in-out;
+}
+
+.icon-heatpump-wave {
+  animation: heatpump-wave 1.2s ease-in-out infinite;
+}
+
+.icon-dashboard-bounce {
+  animation: dashboard-bounce 0.8s ease-in-out infinite;
+}
+
+.icon-smart-meter-pulse {
+  animation: smart-meter-pulse 1.5s ease-in-out infinite;
+}
+
 /* Mobile-friendly utility classes */
 .mobile-compact {
   @media (max-width: 768px) {
