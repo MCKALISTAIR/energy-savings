@@ -30,7 +30,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
           {/* System Configuration Tabs - Mobile Carousel */}
           <div className="w-full mobile-tab-container">
             <div className="overflow-x-auto scrollbar-hide">
-              <TabsList className="flex gap-2 px-4 py-2 min-w-max bg-transparent">
+              <TabsList className="flex gap-2 px-4 py-4 min-w-max bg-transparent">
                 <TabsTrigger 
                   value="systems" 
                   className="mobile-tab-trigger"
