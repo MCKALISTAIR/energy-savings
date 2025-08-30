@@ -311,15 +311,14 @@ const Help: React.FC = () => {
           />
         </div>
 
-          {/* Back to Calculator */}
-          <div className="text-center sm:mt-12 mt-8">
-            <Link to="/calculator">
-              <Button size={isMobile ? "default" : "lg"} className="gap-2 sm:w-auto w-full">
-                <Calculator className="w-4 h-4" />
-                Back to Calculator
-              </Button>
-            </Link>
-          </div>
+        {/* Back to Calculator */}
+        <div className="text-center sm:mt-12 mt-8">
+          <Link to="/calculator">
+            <Button size={isMobile ? "default" : "lg"} className="gap-2 sm:w-auto w-full">
+              <Calculator className="w-4 h-4" />
+              Back to Calculator
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
