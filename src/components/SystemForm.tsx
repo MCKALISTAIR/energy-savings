@@ -35,9 +35,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
 
   return (
     <div className="sm:max-h-[70vh] h-[75vh] overflow-hidden flex flex-col">
-      <ScrollArea className={`flex-1 ${isMobile ? 'pr-2' : 'pr-6'}`}>
       <ScrollArea className="flex-1 sm:pr-6 pr-2">
-        <div className={isMobile ? 'p-4' : 'p-6'}>
         <div className="sm:p-6 p-4">
           <form onSubmit={handleSubmit} className="space-y-4 pb-4">
             <SystemFormFields
@@ -64,7 +62,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
         </div>
       </ScrollArea>
       
-      <div className={isMobile ? 'px-4 pb-4' : 'px-6'}>
+      <div className="sm:px-6 px-4 pb-4">
         <SystemFormButtons
           initialData={initialData}
           systemOrVehicle={systemOrVehicle}
@@ -73,11 +71,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ initialData, onSuccess }) => {
           isMobile={isMobile}
         />
       </div>
-    </div>
   );
 };
 
 export default SystemForm;
-
-  )
-}

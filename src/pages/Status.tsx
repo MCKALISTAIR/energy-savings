@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useServiceStatus } from '@/hooks/useServiceStatus';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
