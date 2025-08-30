@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useServiceStatus } from '@/hooks/useServiceStatus';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -108,7 +109,6 @@ const Status = () => {
               {isChecking ? 'Checking...' : 'Check All Services'}
             </Button>
             {isAdmin && (
-              <Button asChild variant="secondary">
               <Button asChild variant="secondary" className="sm:w-auto w-full">
                 <Link to="/admin/logs">
                   <FileText className="h-4 w-4 mr-2" />
