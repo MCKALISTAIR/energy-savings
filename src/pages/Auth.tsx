@@ -16,6 +16,8 @@ const Auth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  const isMobile = useIsMobile();
+  
   // Check if user came from calculator
   const cameFromCalculator = location.state?.from === '/calculator';
   
