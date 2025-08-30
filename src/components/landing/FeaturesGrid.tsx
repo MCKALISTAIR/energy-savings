@@ -8,22 +8,26 @@ const features = [
   {
     icon: Sun,
     title: 'Solar Panel Calculator',
-    description: 'Calculate potential savings from solar panel installations based on your location and usage'
+    description: 'Calculate potential savings from solar panel installations based on your location and usage',
+    animationClass: 'icon-solar-pulse'
   },
   {
     icon: Battery,
     title: 'Battery Storage Analysis',
-    description: 'Determine the optimal battery storage solution for your energy needs'
+    description: 'Determine the optimal battery storage solution for your energy needs',
+    animationClass: 'icon-battery-charging'
   },
   {
     icon: Car,
     title: 'Electric Vehicle Planning',
-    description: 'Compare EV costs and savings against traditional fuel vehicles'
+    description: 'Compare EV costs and savings against traditional fuel vehicles',
+    animationClass: 'icon-car-moving'
   },
   {
     icon: Thermometer,
     title: 'Heat Pump Calculator',
-    description: 'Analyze heat pump efficiency and savings compared to traditional heating'
+    description: 'Analyze heat pump efficiency and savings compared to traditional heating',
+    animationClass: 'icon-heatpump-wave'
   }
 ];
 
@@ -50,7 +54,7 @@ const FeaturesGrid: React.FC = () => {
                   <Card className="h-full">
                     <CardContent className="p-4">
                       <div className="inline-flex items-center justify-center rounded-lg bg-primary/10 p-2 mb-3">
-                        <feature.icon className="h-5 w-5 text-primary" />
+                        <feature.icon className={`h-5 w-5 text-primary ${feature.animationClass}`} />
                       </div>
                       <h3 className="text-base font-semibold mb-2">
                         {feature.title}
@@ -88,7 +92,7 @@ const FeaturesGrid: React.FC = () => {
             <Card key={index} className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="inline-flex items-center justify-center rounded-lg bg-primary/10 p-3 mb-4">
-                  <feature.icon className="h-6 w-6 text-primary" />
+                  <feature.icon className={`h-6 w-6 text-primary ${feature.animationClass}`} />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">
                   {feature.title}
