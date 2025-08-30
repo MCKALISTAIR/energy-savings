@@ -16,59 +16,62 @@ const SystemConfigTabs: React.FC<SystemConfigTabsProps> = ({
   isMobile = false
 }) => {
   if (isMobile) {
-    // Mobile: Single scrollable row
+    // Mobile: Touch-friendly scrollable navigation
     return (
-      <div className="w-full overflow-x-auto">
-        <TabsList className="grid grid-cols-6 w-max min-w-full">
-          <TabsTrigger 
-            value="systems" 
-            className="flex flex-col items-center gap-1 px-3 py-2 min-w-[80px] text-xs"
-            onClick={() => onTabClick('systems')}
-          >
-            <Settings className={`w-4 h-4 ${getTabIconClassName('systems', animatingIcons)}`} />
-            <span>Systems</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="solar" 
-            className="flex flex-col items-center gap-1 px-3 py-2 min-w-[80px] text-xs"
-            onClick={() => onTabClick('solar')}
-          >
-            <Zap className={`w-4 h-4 ${getTabIconClassName('solar', animatingIcons)}`} />
-            <span>Solar</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="battery" 
-            className="flex flex-col items-center gap-1 px-3 py-2 min-w-[80px] text-xs"
-            onClick={() => onTabClick('battery')}
-          >
-            <Battery className={`w-4 h-4 ${getTabIconClassName('battery', animatingIcons)}`} />
-            <span>Battery</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="ev" 
-            className="flex flex-col items-center gap-1 px-2 py-2 min-w-[70px] text-xs"
-            onClick={() => onTabClick('ev')}
-          >
-            <Car className={`w-4 h-4 ${getTabIconClassName('ev', animatingIcons)}`} />
-            <span>EV</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="heatpump" 
-            className="flex flex-col items-center gap-1 px-2 py-2 min-w-[70px] text-xs"
-            onClick={() => onTabClick('heatpump')}
-          >
-            <Thermometer className={`w-4 h-4 ${getTabIconClassName('heatpump', animatingIcons)}`} />
-            <span>Heat</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="smartmeter" 
-            className="flex flex-col items-center gap-1 px-2 py-2 min-w-[70px] text-xs"
-            onClick={() => onTabClick('smartmeter')}
-          >
-            <Activity className={`w-4 h-4 ${getTabIconClassName('smartmeter', animatingIcons)}`} />
-            <span>Meter</span>
-          </TabsTrigger>
-        </TabsList>
+      <div className="w-full mobile-tab-container">
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 px-4 py-2 min-w-max">
+            <TabsTrigger 
+              value="systems" 
+              className="mobile-tab-trigger"
+              onClick={() => onTabClick('systems')}
+            >
+              <Settings className={`w-5 h-5 ${getTabIconClassName('systems', animatingIcons)}`} />
+              <span>Systems</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="solar" 
+              className="mobile-tab-trigger"
+              onClick={() => onTabClick('solar')}
+            >
+              <Zap className={`w-5 h-5 ${getTabIconClassName('solar', animatingIcons)}`} />
+              <span>Solar</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="battery" 
+              className="mobile-tab-trigger"
+              onClick={() => onTabClick('battery')}
+            >
+              <Battery className={`w-5 h-5 ${getTabIconClassName('battery', animatingIcons)}`} />
+              <span>Battery</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="ev" 
+              className="mobile-tab-trigger"
+              onClick={() => onTabClick('ev')}
+            >
+              <Car className={`w-5 h-5 ${getTabIconClassName('ev', animatingIcons)}`} />
+              <span>EV</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="heatpump" 
+              className="mobile-tab-trigger"
+              onClick={() => onTabClick('heatpump')}
+            >
+              <Thermometer className={`w-5 h-5 ${getTabIconClassName('heatpump', animatingIcons)}`} />
+              <span>Heat</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="smartmeter" 
+              className="mobile-tab-trigger"
+              onClick={() => onTabClick('smartmeter')}
+            >
+              <Activity className={`w-5 h-5 ${getTabIconClassName('smartmeter', animatingIcons)}`} />
+              <span>Meter</span>
+            </TabsTrigger>
+          </div>
+        </div>
+        <div className="mobile-scroll-indicator"></div>
       </div>
     );
   }

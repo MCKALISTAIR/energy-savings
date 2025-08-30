@@ -148,3 +148,96 @@
     line-height: 1.25rem !important;
   }
 }
+
+/* Mobile tab navigation styles */
+@media (max-width: 768px) {
+  .mobile-tab-container {
+    position: relative;
+  }
+  
+  .mobile-tab-trigger {
+    @apply flex flex-col items-center justify-center;
+    @apply min-w-[88px] min-h-[64px];
+    @apply px-3 py-2 gap-1;
+    @apply text-xs font-medium;
+    @apply border border-border/50;
+    @apply rounded-lg;
+    @apply bg-background;
+    @apply transition-all duration-200;
+    @apply hover:bg-accent hover:scale-105;
+    @apply active:scale-95;
+    @apply focus-visible:ring-2 focus-visible:ring-ring;
+    /* Touch-friendly minimum size (44px is Apple's recommendation) */
+    touch-action: manipulation;
+    user-select: none;
+  }
+  
+  .mobile-tab-trigger[data-state="active"] {
+    @apply bg-primary text-primary-foreground;
+    @apply border-primary;
+    @apply shadow-md scale-105;
+  }
+  
+  .mobile-tab-trigger:hover {
+    @apply shadow-sm;
+  }
+  
+  /* Custom scrollbar hiding for mobile tabs */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Subtle scroll indicator */
+  .mobile-scroll-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(var(--border)) 20%, 
+      hsl(var(--border)) 80%, 
+      transparent
+    );
+    border-radius: 1px;
+    opacity: 0.5;
+  }
+  
+  /* Smooth scroll behavior for mobile tabs */
+  .mobile-tab-container .overflow-x-auto {
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+  }
+  
+  .mobile-tab-trigger {
+    scroll-snap-align: center;
+    flex-shrink: 0;
+  }
+}
+
+/* Enhanced focus styles for accessibility */
+@media (max-width: 768px) {
+  .mobile-tab-trigger:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}
+
+/* Animation for tab switching on mobile */
+@keyframes mobile-tab-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@media (max-width: 768px) {
+  .mobile-tab-trigger[data-state="active"] {
+    animation: mobile-tab-bounce 0.3s ease-in-out;
+  }
+}
