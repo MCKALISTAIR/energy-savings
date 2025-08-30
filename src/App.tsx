@@ -44,13 +44,13 @@ const AppContent = () => {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <Router>
-        <AuthProvider>
+    <Router>
+      <AuthProvider>
+        <ErrorBoundary>
           <AppContent />
-        </AuthProvider>
-      </Router>
-    </ErrorBoundary>
+        </ErrorBoundary>
+      </AuthProvider>
+    </Router>
   );
 }
 

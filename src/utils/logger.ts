@@ -37,12 +37,14 @@ class Logger {
       // Call the edge function to log the event
       const { error } = await supabase.functions.invoke('log-event', {
         body: {
-          level,
-          message,
-          details: options.details,
-          source,
-          stack_trace: options.stackTrace,
-          url: currentUrl,
+          event: source,
+          data: {
+            level,
+            message,
+            details: options.details,
+            stack_trace: options.stackTrace,
+            url: currentUrl,
+          },
         },
         headers: {
           'x-session-id': sessionId,
