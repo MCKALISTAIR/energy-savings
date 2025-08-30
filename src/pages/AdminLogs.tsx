@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -164,7 +165,6 @@ const AdminLogs = () => {
               </CardDescription>
             </div>
             <div className="flex sm:flex-row flex-col gap-2 sm:w-auto w-full">
-              <Button variant="outline" onClick={() => navigate('/status')}>
               <Button variant="outline" onClick={() => navigate('/status')} className="sm:w-auto w-full">
                 <Home className="h-4 w-4 mr-2" />
                 Back to Status
@@ -187,7 +187,6 @@ const AdminLogs = () => {
         
         <CardContent>
           <div className="flex sm:flex-row flex-col gap-4 mb-6">
-            <div className="flex-1 min-w-[200px]">
             <div className="sm:flex-1 w-full sm:min-w-[200px]">
               <Input
                 placeholder="Search messages or URLs..."
