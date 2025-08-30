@@ -71,7 +71,6 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className={isMobile ? 'w-[95vw] max-w-[95vw] h-[90vh] max-h-[90vh] m-2 p-4' : 'max-w-2xl p-8'}>
       <DialogContent className="sm:max-w-2xl max-w-[95vw] sm:h-auto h-[90vh] m-2 p-4 sm:p-8">
         <DialogHeader className={isMobile ? 'mb-4' : 'mb-6'}>
           <DialogTitle className={isMobile ? 'text-lg' : 'text-xl'}>Add New House</DialogTitle>
