@@ -131,3 +131,6 @@ const AddHouseDialog: React.FC<AddHouseDialogProps> = ({ isOpen, onOpenChange, o
 };
 
 export default AddHouseDialog;
+
+  )
+}
